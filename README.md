@@ -22,16 +22,12 @@ Configuration classes can be used to inject `Dependencies` and other parameters 
 ```python
 from fastapi import FastAPI
 from sqlalchemy import ForeignKey, create_engine
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from losdos import Resource, CRUDFactory, GraphQLFactory
 
-# setup database boilerplate
-class Base(DeclarativeBase):
-    pass
-
 # models - just normal sqlalchemy models with the Resource mixin!
-class Pet(Base, Resource):
+class Pet(Resource):
     __tablename__ = "pets"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column()
@@ -42,7 +38,7 @@ class Pet(Base, Resource):
         back_populates="pets", cascade="all, delete-orphan"
     )
 
-class Owner(Base, Resource):
+class Owner(Resource):
     __tablename__ = "owners"
     id: Mapped[int] = mapped_column(primary_key=True)
     first_name: Mapped[str] = mapped_column()
