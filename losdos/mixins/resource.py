@@ -6,6 +6,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
 
 from losdos.mixins.create import CreateMixin
 from losdos.mixins.delete import DeleteMixin
+from losdos.mixins.gql_query import GraphQLMixin
 from losdos.mixins.patch import PatchMixin
 from losdos.mixins.read import ReadMixin
 from losdos.mixins.search import SearchMixin
@@ -30,7 +31,13 @@ class ResourceBase:
 
 
 class Resource(
-    ResourceBase, CreateMixin, ReadMixin, PatchMixin, DeleteMixin, SearchMixin
+    ResourceBase,
+    CreateMixin,
+    ReadMixin,
+    PatchMixin,
+    DeleteMixin,
+    SearchMixin,
+    GraphQLMixin,
 ):
 
     def nullraise(self):
@@ -57,6 +64,8 @@ class Resource(
             cls.build_delete()
         if hasattr(cls, "build_search"):
             cls.build_search()
+        if hasattr(cls, "build_gql"):
+            cls.build_gql()
 
     @classmethod
     def db_generator(cls) -> Session:

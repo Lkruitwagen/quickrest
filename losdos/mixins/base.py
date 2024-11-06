@@ -11,7 +11,6 @@ class RESTFactory(ABC):
     @abstractmethod
     def controller_factory(cls) -> callable: ...  # noqa: E704
 
-    @abstractmethod
     def attach_route(self, model) -> None:
 
         model.router.add_api_route(
