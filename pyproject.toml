@@ -1,0 +1,61 @@
+[project]
+name = "losdos"
+version = "0.0.1"
+description = "¿REST api? ¿GraphQL? Por qué no LosDos?"
+readme = "README.md"
+requires-python = ">=3.12"
+keywords = []
+authors = [
+  {name = "Lucas Kruitwagen", email = "lucas.kruitwagen@gmail.com" },
+]
+
+
+# For a list of valid classifiers, see https://pypi.org/classifiers/
+classifiers = [  # Optional
+  # How mature is this project? Common values are
+  #   3 - Alpha
+  #   4 - Beta
+  #   5 - Production/Stable
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering",
+  "Programming Language :: Python :: 3 :: Only",
+]
+
+# dependencies are to use eo-flow in client-only mode.
+dependencies = [
+    "fastapi",
+    "sqlalchemy",
+    "uvicorn",
+]
+
+[project.optional-dependencies] # Optional
+dev = [
+    "pytest",
+    "pre-commit",
+    "pytest-ordering",
+]
+
+[project.urls]  # Optional
+"Source" = "https://github.com/lkruitwagen/losdos"
+
+# The following would provide a command line executable called `sample`
+# which executes the function `main` from this package when invoked.
+# [project.scripts]  # Optional
+# sample = "sample:main"
+
+# This is configuration specific to the `setuptools` build backend.
+# If you are using a different build backend, you will need to change this.
+[tool.setuptools]
+# If there are data files included in your packages that need to be
+# installed, specify them here.
+# package-data = {"sample" = ["*.dat"]}
+
+[tool.setuptools.packages]
+find = {}
+
+[build-system]
+# These are the assumed default build requirements from pip:
+# https://pip.pypa.io/en/stable/reference/pip/#pep-517-and-518-support
+requires = ["setuptools>=43.0.0", "wheel"]
+build-backend = "setuptools.build_meta"

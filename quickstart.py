@@ -1,31 +1,10 @@
-_¿REST API? ¿GraphQL? ¿Por qué no..._
-
-# LosDos :v:
-
-A schema-first FastAPI abstraction framework so your team can get developing FAST.
-Simply define your database schema and let LosDos generate all your pydantic objects, CRUD controllers and routers, and a GraphQL entrypoint.
-
-[![License][license badge]][license]
-
-[license badge]: https://img.shields.io/badge/License-MIT-blue.svg
-[license]: https://opensource.org/licenses/MIT
-
-## Quickstart
-
-LosDos is available from the python package index: `pip install losdos`.
-
-LosDos exposes a `Resource` mixin that you can use with your SQLAlchemy ORM definitions.
-You can then use the LosDos `CRUDFactory` and `GraphQLFactory` to create CRUD (create, read, update, delete) REST routes for all resources,
-as well as a GraphQL entrypoint.
-Configuration classes can be used to inject `Dependencies` and other parameters into the resource-specific CRUD controllers and the GraphQL engine.
-
-```python
 import uvicorn
 from fastapi import FastAPI
 from sqlalchemy import ForeignKey, create_engine
 from sqlalchemy.orm import Mapped, mapped_column, relationship, sessionmaker
 
-from losdos.mixins.resource import Resource, Base
+from losdos.gql_factory import GQLFactory
+from losdos.mixins.resource import Base, Resource
 
 # database boilerplate - just normal sqlalchemy stuff!
 engine = create_engine("sqlite:///database.db", echo=True)
@@ -67,10 +46,9 @@ for resource in all_models.values():
     app.include_router(resource.router)
 
 # # build and add a GraphQL router
-# graphql_router = GraphQLFactory(all_models)
-# app.include_router(graphql_router)
+gql = GQLFactory(all_models.values())
+app.add_route("/graphql", gql.router)
 
 if __name__ == "__main__":
     Base.metadata.create_all(engine)
     uvicorn.run(app, host="0.0.0.0", port=8000)
-```
