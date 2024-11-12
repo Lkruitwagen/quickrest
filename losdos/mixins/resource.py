@@ -1,21 +1,22 @@
 from abc import ABC
 from copy import deepcopy
+from typing import Optional
 
 from fastapi import APIRouter
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
 
-from losdos.mixins.create import CreateMixin
-from losdos.mixins.delete import DeleteMixin
-from losdos.mixins.gql_query import GraphQLMixin
-from losdos.mixins.patch import PatchMixin
 from losdos.mixins.read import ReadMixin
-from losdos.mixins.search import SearchMixin
 
 
 class RouterParams(ABC):
     prefix = None
     tags = None
     dependencies = None
+
+
+class ResourceParams(ABC):
+    children: Optional[list[str]] = None
+    serialize: Optional[list[str]] = None
 
 
 class Base(DeclarativeBase):
@@ -29,21 +30,28 @@ class ResourceBase:
     class router_cfg(RouterParams):
         pass
 
+    class resource_cfg(ResourceParams):
+        pass
+
 
 class Resource(
     ResourceBase,
-    CreateMixin,
+    # CreateMixin,
     ReadMixin,
-    PatchMixin,
-    DeleteMixin,
-    SearchMixin,
-    GraphQLMixin,
+    # PatchMixin,
+    # DeleteMixin,
+    # SearchMixin,
 ):
 
     def nullraise(self):
         raise ValueError("No sessionmaker attached to Resource class")
 
     _sessionmaker = nullraise
+
+    @classmethod
+    def build_models(cls):
+        if hasattr(cls, "read"):
+            cls.read
 
     @classmethod
     def build_router(cls) -> None:
@@ -54,18 +62,19 @@ class Resource(
             dependencies=cls.router_cfg.dependencies,
         )
 
-        if hasattr(cls, "build_create"):
-            cls.build_create()
-        if hasattr(cls, "build_read"):
-            cls.build_read()
-        if hasattr(cls, "build_update"):
-            cls.build_update()
-        if hasattr(cls, "build_delete"):
-            cls.build_delete()
-        if hasattr(cls, "build_search"):
-            cls.build_search()
-        if hasattr(cls, "build_gql"):
-            cls.build_gql()
+        if hasattr(cls, "read"):
+            cls.read.attach_route(cls)
+
+        # if hasattr(cls, "build_create"):
+        #     cls.build_create()
+        # if hasattr(cls, "build_update"):
+        #     cls.build_update()
+        # if hasattr(cls, "build_delete"):
+        #     cls.build_delete()
+        # if hasattr(cls, "build_search"):
+        #     cls.build_search()
+
+        return cls.router
 
     @classmethod
     def db_generator(cls) -> Session:
