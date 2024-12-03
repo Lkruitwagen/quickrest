@@ -1,10 +1,8 @@
 from abc import ABC
 from functools import wraps
 from inspect import Parameter, signature
-from typing import ForwardRef
 
 from fastapi import Depends
-from pydantic import BaseModel, create_model
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -38,32 +36,20 @@ class ReadFactory(RESTFactory):
 
     METHOD = "GET"
     CFG_NAME = "read_cfg"
-    ROUTE = "/{slug}"
+    ROUTE = "/{id}"
 
     def __init__(self, model):
 
-        self.response_model = self._generate_response_model(model)
+        # self.response_model = self._generate_response_model(model)
         self.controller = self.controller_factory(model)
-        print(self.response_model)
+        print(model.basemodel)
         # self.attach_route(model)
-
-    def _generate_response_model(self, model) -> BaseModel:
-
-        cols = [c for c in model.__table__.columns]
-
-        fields = {c.name: (c.type.python_type, ...) for c in cols}
-
-        for r in model.__mapper__.relationships:
-            print(r.key, r.mapper.class_.__name__)
-            fields[r.key] = (ForwardRef("GET" + r.mapper.class_.__name__), ...)
-
-        return create_model("GET" + model.__name__, **fields)
 
     def controller_factory(self, model):
 
         parameters = [
             Parameter(
-                "slug", Parameter.POSITIONAL_OR_KEYWORD, default=..., annotation=str
+                "id", Parameter.POSITIONAL_OR_KEYWORD, default=..., annotation=str
             ),
             Parameter(
                 "db",
@@ -73,19 +59,19 @@ class ReadFactory(RESTFactory):
             ),
         ]
 
-        def inner(*args, **kwargs) -> self.response_model:
+        def inner(*args, **kwargs) -> model.basemodel:
 
             db = kwargs.get("db")
-            primary_key = kwargs.get("slug")
+            primary_key = kwargs.get("id")
 
             Q = db.query(model)
-            Q = Q.filter(model.slug == primary_key)
+            Q = Q.filter(model.id == primary_key)
             obj = Q.first()
 
             if not obj:
                 raise NoResultFound
 
-            return self.response_model.model_validate(obj)
+            return model.basemodel.model_validate(obj, from_attributes=True)
 
         @wraps(inner)
         def f(*args, **kwargs):

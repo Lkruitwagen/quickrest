@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.orm.exc import NoResultFound
 
 from losdos.mixins.base import BaseMixin, RESTFactory
+from losdos.mixins.utils import classproperty
 
 
 class PatchParams(ABC):
@@ -25,12 +26,16 @@ class PatchParams(ABC):
 
 class PatchMixin(BaseMixin):
 
+    _patch = None
+
     class patch_cfg(PatchParams):
         pass
 
-    @classmethod
-    def build_update(cls):
-        cls.patch = PatchFactory(cls)
+    @classproperty
+    def update(cls):
+        if cls._patch is None:
+            cls._patch = PatchFactory(cls)
+        return cls._patch
 
 
 class PatchFactory(RESTFactory):
@@ -43,7 +48,7 @@ class PatchFactory(RESTFactory):
         self.input_model = self._generate_input_model(model)
         self.response_model = self._generate_response_model(model)
         self.controller = self.controller_factory(model)
-        self.attach_route(model)
+        # self.attach_route(model)
 
     def _generate_input_model(self, model) -> BaseModel:
         cols = [c for c in model.__table__.columns]

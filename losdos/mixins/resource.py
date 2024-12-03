@@ -1,10 +1,13 @@
 from abc import ABC
 from copy import deepcopy
-from typing import Optional
+from typing import ForwardRef
 
 from fastapi import APIRouter
+from pydantic import create_model
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
 
+from losdos.mixins.create import CreateMixin
+from losdos.mixins.patch import PatchMixin
 from losdos.mixins.read import ReadMixin
 
 
@@ -15,8 +18,8 @@ class RouterParams(ABC):
 
 
 class ResourceParams(ABC):
-    children: Optional[list[str]] = None
-    serialize: Optional[list[str]] = None
+    children: list[str] = []
+    serialize: list[str] = []
 
 
 class Base(DeclarativeBase):
@@ -24,8 +27,7 @@ class Base(DeclarativeBase):
 
 
 class ResourceBase:
-    id: Mapped[int] = mapped_column(primary_key=True)
-    slug: Mapped[str] = mapped_column(unique=True)
+    id: Mapped[str] = mapped_column(primary_key=True)
 
     class router_cfg(RouterParams):
         pass
@@ -36,9 +38,9 @@ class ResourceBase:
 
 class Resource(
     ResourceBase,
-    # CreateMixin,
+    CreateMixin,
     ReadMixin,
-    # PatchMixin,
+    PatchMixin,
     # DeleteMixin,
     # SearchMixin,
 ):
@@ -49,26 +51,41 @@ class Resource(
     _sessionmaker = nullraise
 
     @classmethod
+    def _build_basemodel(cls):
+        cols = [c for c in cls.__table__.columns]
+
+        fields = {c.name: (c.type.python_type, ...) for c in cols}
+
+        for r in cls.__mapper__.relationships:
+            if r.key in cls.resource_cfg.serialize:
+                fields[r.key] = (ForwardRef(r.mapper.class_.__name__), ...)
+
+        return create_model(cls.__name__, **fields)
+
+    @classmethod
     def build_models(cls):
-        if hasattr(cls, "read"):
-            cls.read
+
+        cls.basemodel = cls._build_basemodel()
+
+        for attr in ["read", "create"]:
+            if hasattr(cls, attr):
+                getattr(cls, attr)
 
     @classmethod
     def build_router(cls) -> None:
 
         cls.router = APIRouter(
-            prefix=cls.router_cfg.prefix or f"/{cls.__name__.lower()}",
+            prefix=cls.router_cfg.prefix or f"/{cls.__tablename__}",
             tags=cls.router_cfg.tags,
             dependencies=cls.router_cfg.dependencies,
         )
 
         if hasattr(cls, "read"):
             cls.read.attach_route(cls)
-
-        # if hasattr(cls, "build_create"):
-        #     cls.build_create()
-        # if hasattr(cls, "build_update"):
-        #     cls.build_update()
+        if hasattr(cls, "create"):
+            cls.create.attach_route(cls)
+        # if hasattr(cls, "update"):
+        #     cls.update.attach_route(cls)
         # if hasattr(cls, "build_delete"):
         #     cls.build_delete()
         # if hasattr(cls, "build_search"):
@@ -86,8 +103,8 @@ class Resource(
                 db.close()
 
     @classmethod
-    def with_sessionmaker(cls, session_maker: callable) -> "Resource":
+    def from_factory(cls, sessionmaker: callable) -> "Resource":
 
         new_cls = deepcopy(cls)
-        new_cls._sessionmaker = session_maker
+        new_cls._sessionmaker = sessionmaker
         return new_cls
