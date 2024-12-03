@@ -34,6 +34,7 @@ dev = [
     "pytest",
     "pre-commit",
     "pytest-ordering",
+    "httpx",
 ]
 
 [project.urls]  # Optional
