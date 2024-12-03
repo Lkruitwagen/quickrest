@@ -1,0 +1,6 @@
+- id: dog
+  common_name: dog
+  scientific_name: Canis lupus familiaris
+- id: cat
+  common_name: cat
+  scientific_name: Felis catus

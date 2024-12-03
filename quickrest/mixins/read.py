@@ -6,10 +6,11 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.exc import NoResultFound
 
-from losdos.mixins.base import BaseMixin, RESTFactory
+from quickrest.mixins.base import BaseMixin, RESTFactory
+from quickrest.mixins.utils import classproperty
 
 
-class DeleteParams(ABC):
+class ReadParams(ABC):
     primary_key = None
     description = None
     summary = None
@@ -17,33 +18,37 @@ class DeleteParams(ABC):
     tags = None
 
 
-class DeleteMixin(BaseMixin):
+class ReadMixin(BaseMixin):
 
-    class delete_cfg(DeleteParams):
+    _read = None
+
+    class read_cfg(ReadParams):
         pass
 
-    @classmethod
-    def build_delete(cls):
-        cls.delete = DeleteFactory(cls)
+    @classproperty
+    def read(cls):
+        if cls._read is None:
+            cls._read = ReadFactory(cls)
+        return cls._read
 
 
-class DeleteFactory(RESTFactory):
+class ReadFactory(RESTFactory):
 
-    METHOD = "DELETE"
-    CFG_NAME = "delete_cfg"
-    ROUTE = "/{slug}"
+    METHOD = "GET"
+    CFG_NAME = "read_cfg"
+    ROUTE = "/{id}"
 
     def __init__(self, model):
 
-        self.response_model = int
+        # self.response_model = self._generate_response_model(model)
         self.controller = self.controller_factory(model)
-        self.attach_route(model)
+        # self.attach_route(model)
 
     def controller_factory(self, model):
 
         parameters = [
             Parameter(
-                "slug", Parameter.POSITIONAL_OR_KEYWORD, default=..., annotation=str
+                "id", Parameter.POSITIONAL_OR_KEYWORD, default=..., annotation=str
             ),
             Parameter(
                 "db",
@@ -53,20 +58,19 @@ class DeleteFactory(RESTFactory):
             ),
         ]
 
-        def inner(*args, **kwargs) -> self.response_model:
+        def inner(*args, **kwargs) -> model.basemodel:
 
             db = kwargs.get("db")
-            primary_key = kwargs.get("slug")
+            primary_key = kwargs.get("id")
 
             Q = db.query(model)
-            Q = Q.filter(model.slug == primary_key)
-            n_deleted = Q.delete()
+            Q = Q.filter(model.id == primary_key)
+            obj = Q.first()
 
-            if n_deleted == 0:
+            if not obj:
                 raise NoResultFound
 
-            db.commit()
-            return n_deleted
+            return model.basemodel.model_validate(obj, from_attributes=True)
 
         @wraps(inner)
         def f(*args, **kwargs):

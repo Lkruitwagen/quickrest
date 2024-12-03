@@ -21,6 +21,6 @@ class RESTFactory(ABC):
             tags=getattr(model, self.CFG_NAME).tags,
             operation_id=getattr(model, self.CFG_NAME).operation_id,
             methods=[self.METHOD],
-            status_code=200,
-            response_model=self.response_model,
+            status_code=getattr(self, "SUCCESS_CODE", None) or 200,
+            response_model=getattr(self, "response_model", model.basemodel),
         )

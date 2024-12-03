@@ -1,49 +1,65 @@
+from abc import ABC
 from functools import wraps
 from inspect import Parameter, signature
+from typing import Optional
 
 from fastapi import Depends
 from pydantic import BaseModel, create_model
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.exc import NoResultFound
 
-from losdos.mixins.base import BaseMixin, RESTFactory
+from quickrest.mixins.base import BaseMixin, RESTFactory
+from quickrest.mixins.utils import classproperty
 
 
-class CreateParams:
+class PatchParams(ABC):
+    primary_key = None
+    patchable_params = None
+    nonpatchable_params = None
+
+    # router method
     description = None
     summary = None
     operation_id = None
     tags = None
 
 
-class CreateMixin(BaseMixin):
+class PatchMixin(BaseMixin):
 
-    class create_cfg(CreateParams):
+    _patch = None
+
+    class patch_cfg(PatchParams):
         pass
 
-    @classmethod
-    def build_create(cls):
-        cls.create = CreateFactory(cls)
+    @classproperty
+    def update(cls):
+        if cls._patch is None:
+            cls._patch = PatchFactory(cls)
+        return cls._patch
 
 
-class CreateFactory(RESTFactory):
+class PatchFactory(RESTFactory):
 
-    METHOD = "POST"
-    CFG_NAME = "create_cfg"
-    ROUTE = ""
+    METHOD = "PATCH"
+    CFG_NAME = "patch_cfg"
+    ROUTE = "/{slug}"
 
     def __init__(self, model):
-
         self.input_model = self._generate_input_model(model)
         self.response_model = self._generate_response_model(model)
         self.controller = self.controller_factory(model)
-        self.attach_route(model)
+        # self.attach_route(model)
 
     def _generate_input_model(self, model) -> BaseModel:
         cols = [c for c in model.__table__.columns]
 
         return create_model(
             model.__name__,
-            **{c.name: (c.type.python_type, ...) for c in cols if c.name not in ["id"]},
+            **{
+                c.name: (Optional[c.type.python_type], None)
+                for c in cols
+                if c.name not in ["id"]
+            },
         )
 
     def _generate_response_model(self, model) -> BaseModel:
@@ -52,10 +68,14 @@ class CreateFactory(RESTFactory):
             model.__name__, **{c.name: (c.type.python_type, ...) for c in cols}
         )
 
-    def controller_factory(self, model, **kwargs) -> callable:
+    def controller_factory(self, model):
+
         parameters = [
             Parameter(
-                self.input_model.__name__.lower(),
+                "slug", Parameter.POSITIONAL_OR_KEYWORD, default=..., annotation=str
+            ),
+            Parameter(
+                "patch",
                 Parameter.POSITIONAL_OR_KEYWORD,
                 default=...,
                 annotation=self.input_model,
@@ -68,16 +88,27 @@ class CreateFactory(RESTFactory):
             ),
         ]
 
-        def inner(*args, **kwargs) -> model:
+        def inner(*args, **kwargs) -> self.response_model:
+
             db = kwargs.get("db")
-            body = kwargs.get(self.input_model.__name__.lower())
+            slug = kwargs.get("slug")
+            patch = kwargs.get("patch")
 
-            obj = model(**body.model_dump())
+            Q = db.query(model)
+            Q = Q.filter(model.slug == slug)
+            obj = Q.first()
 
-            db.add(obj)
+            if not obj:
+                raise NoResultFound
+
+            for name, val in patch.model_dump().items():
+                if val is not None:
+                    setattr(obj, name, val)
+
             db.commit()
             db.refresh(obj)
-            return obj
+
+            return self.response_model.model_validate(obj)
 
         @wraps(inner)
         def f(*args, **kwargs):

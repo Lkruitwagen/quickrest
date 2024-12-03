@@ -3,51 +3,59 @@ from fastapi import FastAPI
 from sqlalchemy import ForeignKey, create_engine
 from sqlalchemy.orm import Mapped, mapped_column, relationship, sessionmaker
 
-from losdos.gql_factory import GQLFactory
-from losdos.mixins.resource import Base, Resource
+from quickrest.mixins.resource import Base, Resource, ResourceParams
+from quickrest.router_factory import RouterFactory
 
 # database boilerplate - just normal sqlalchemy stuff!
-engine = create_engine("sqlite:///database.db", echo=True)
+engine = create_engine("sqlite:///database.db", echo=False)
 SessionMaker = sessionmaker(bind=engine)
-
-# attach a sessionmaker to the ResourceBase class
-ResourceMixin = Resource.with_sessionmaker(SessionMaker)
 
 
 # models - just normal sqlalchemy models with the Resource mixin!
-class Pet(Base, ResourceMixin):
+class Specie(Base, Resource.from_factory(sessionmaker=SessionMaker)):  # GLOBAL
+    __tablename__ = "species"
+
+    common_name: Mapped[str] = mapped_column()
+    scientific_name: Mapped[str] = mapped_column()
+
+
+class Pet(Base, Resource.from_factory(sessionmaker=SessionMaker)):  # Private
     __tablename__ = "pets"
     # note: all Resource classes have an id and slug column by default
     name: Mapped[str] = mapped_column()
-    species: Mapped[str] = mapped_column()
+
     owner_id: Mapped[int] = mapped_column(ForeignKey("owners.id"))
+    species_id: Mapped[int] = mapped_column(ForeignKey("species.id"))
 
     owner: Mapped["Owner"] = relationship(
-        back_populates="pets", cascade="all, delete-orphan"
+        back_populates="pets",
     )
+    specie: Mapped["Specie"] = relationship()
+
+    class resource_cfg(ResourceParams):
+        # choose which relationships should be serialized on the reponse
+        serialize = ["specie"]
 
 
-class Owner(Base, ResourceMixin):
+class Owner(Base, Resource.from_factory(sessionmaker=SessionMaker)):  # User
     __tablename__ = "owners"
     first_name: Mapped[str] = mapped_column()
     last_name: Mapped[str] = mapped_column()
 
     pets: Mapped[list["Pet"]] = relationship(back_populates="owner")
 
+    class resource_cfg(ResourceParams):
+        # choose which relationships should be accessible via URL /<resource>/<id>/<relationship>
+        children = ["pets"]
 
-all_models = {"pet": Pet, "owner": Owner}
+
+all_models = {"pet": Pet, "specie": Specie, "owner": Owner}
 
 # instantiate a FastAPI app
-app = FastAPI(title="LosDos Quickstart", separate_input_output_schemas=False)
+app = FastAPI(title="QuickRest Quickstart", separate_input_output_schemas=False)
 
 # # build create, read, update, delete routers for each resource and add them to the app
-for resource in all_models.values():
-    resource.build_router()
-    app.include_router(resource.router)
-
-# # build and add a GraphQL router
-gql = GQLFactory(all_models.values())
-app.add_route("/graphql", gql.router)
+RouterFactory.mount(app, all_models)
 
 if __name__ == "__main__":
     Base.metadata.create_all(engine)

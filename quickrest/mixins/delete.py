@@ -3,14 +3,13 @@ from functools import wraps
 from inspect import Parameter, signature
 
 from fastapi import Depends
-from pydantic import BaseModel, create_model
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.exc import NoResultFound
 
-from losdos.mixins.base import BaseMixin, RESTFactory
+from quickrest.mixins.base import BaseMixin, RESTFactory
 
 
-class ReadParams(ABC):
+class DeleteParams(ABC):
     primary_key = None
     description = None
     summary = None
@@ -18,33 +17,27 @@ class ReadParams(ABC):
     tags = None
 
 
-class ReadMixin(BaseMixin):
+class DeleteMixin(BaseMixin):
 
-    class read_cfg(ReadParams):
+    class delete_cfg(DeleteParams):
         pass
 
     @classmethod
-    def build_read(cls):
-        cls.read = ReadFactory(cls)
+    def build_delete(cls):
+        cls.delete = DeleteFactory(cls)
 
 
-class ReadFactory(RESTFactory):
+class DeleteFactory(RESTFactory):
 
-    METHOD = "GET"
-    CFG_NAME = "read_cfg"
+    METHOD = "DELETE"
+    CFG_NAME = "delete_cfg"
     ROUTE = "/{slug}"
 
     def __init__(self, model):
 
-        self.response_model = self._generate_response_model(model)
+        self.response_model = int
         self.controller = self.controller_factory(model)
         self.attach_route(model)
-
-    def _generate_response_model(self, model) -> BaseModel:
-        cols = [c for c in model.__table__.columns]
-        return create_model(
-            model.__name__, **{c.name: (c.type.python_type, ...) for c in cols}
-        )
 
     def controller_factory(self, model):
 
@@ -67,12 +60,13 @@ class ReadFactory(RESTFactory):
 
             Q = db.query(model)
             Q = Q.filter(model.slug == primary_key)
-            obj = Q.first()
+            n_deleted = Q.delete()
 
-            if not obj:
+            if n_deleted == 0:
                 raise NoResultFound
 
-            return self.response_model.model_validate(obj)
+            db.commit()
+            return n_deleted
 
         @wraps(inner)
         def f(*args, **kwargs):
