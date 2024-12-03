@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field, create_model
 from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
-from losdos.mixins.base import BaseMixin, RESTFactory
+from quickrest.mixins.base import BaseMixin, RESTFactory
 
 
 class SearchParams(ABC):

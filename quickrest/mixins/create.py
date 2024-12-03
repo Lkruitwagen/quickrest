@@ -5,8 +5,8 @@ from fastapi import Depends
 from pydantic import BaseModel, create_model
 from sqlalchemy.orm import Session
 
-from losdos.mixins.base import BaseMixin, RESTFactory
-from losdos.mixins.utils import classproperty
+from quickrest.mixins.base import BaseMixin, RESTFactory
+from quickrest.mixins.utils import classproperty
 
 
 class CreateParams:

@@ -7,8 +7,8 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import ForeignKey, create_engine
 from sqlalchemy.orm import Mapped, mapped_column, relationship, sessionmaker
 
-from losdos.mixins.resource import Base, Resource, ResourceParams
-from losdos.router_factory import RouterFactory
+from quickrest.mixins.resource import Base, Resource, ResourceParams
+from quickrest.router_factory import RouterFactory
 
 # database boilerplate - just normal sqlalchemy stuff!
 engine = create_engine("sqlite:///database.db", echo=False)

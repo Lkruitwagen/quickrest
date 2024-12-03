@@ -1,7 +1,7 @@
 [project]
-name = "losdos"
+name = "quickrest"
 version = "0.0.1"
-description = "¿REST api? ¿GraphQL? Por qué no LosDos?"
+description = "You deserve a..."
 readme = "README.md"
 requires-python = ">=3.12"
 keywords = []
@@ -38,7 +38,7 @@ dev = [
 ]
 
 [project.urls]  # Optional
-"Source" = "https://github.com/lkruitwagen/losdos"
+"Source" = "https://github.com/lkruitwagen/quickrest"
 
 # The following would provide a command line executable called `sample`
 # which executes the function `main` from this package when invoked.

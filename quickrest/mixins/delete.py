@@ -6,7 +6,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.exc import NoResultFound
 
-from losdos.mixins.base import BaseMixin, RESTFactory
+from quickrest.mixins.base import BaseMixin, RESTFactory
 
 
 class DeleteParams(ABC):

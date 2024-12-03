@@ -8,8 +8,8 @@ from pydantic import BaseModel, create_model
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.exc import NoResultFound
 
-from losdos.mixins.base import BaseMixin, RESTFactory
-from losdos.mixins.utils import classproperty
+from quickrest.mixins.base import BaseMixin, RESTFactory
+from quickrest.mixins.utils import classproperty
 
 
 class PatchParams(ABC):

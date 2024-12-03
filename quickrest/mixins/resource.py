@@ -6,9 +6,9 @@ from fastapi import APIRouter
 from pydantic import create_model
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
 
-from losdos.mixins.create import CreateMixin
-from losdos.mixins.patch import PatchMixin
-from losdos.mixins.read import ReadMixin
+from quickrest.mixins.create import CreateMixin
+from quickrest.mixins.patch import PatchMixin
+from quickrest.mixins.read import ReadMixin
 
 
 class RouterParams(ABC):
