@@ -1,0 +1,15 @@
+- id: pawdrick_pupper
+  first_name: Pawdrick
+  last_name: Pupper
+  certifications:
+    - dog_training_kc1
+- id: bonita_leashley
+  first_name: Bonita
+  last_name: Leashley
+  certifications:
+    - dog_training_kc1
+    - dog_training_kc2
+- id: purrcilla_meowington
+  first_name: Purrcilla
+  last_name: Meowington
+  certifications: []

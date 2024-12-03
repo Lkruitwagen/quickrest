@@ -1,0 +1,12 @@
+- id: dog_training_kc1
+  name: Dog Training kennel Club Level 1
+  description: >
+    This certification is for dog trainers who have completed the Kennel Club Level 1 training program.
+- id: dog_training_kc2
+  name: Dog Training kennel Club Level 2
+  description: >
+    This certification is for dog trainers who have completed the Kennel Club Level 2 training program.
+- id: cat_master_l1
+  name: Cat Master Level 1
+  description: >
+    This certification is for cat trainers who have completed the Master Level 1 training program.
