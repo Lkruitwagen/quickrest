@@ -42,7 +42,6 @@ class ReadFactory(RESTFactory):
 
         # self.response_model = self._generate_response_model(model)
         self.controller = self.controller_factory(model)
-        print(model.basemodel)
         # self.attach_route(model)
 
     def controller_factory(self, model):
