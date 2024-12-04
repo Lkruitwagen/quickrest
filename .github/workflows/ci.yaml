@@ -65,15 +65,26 @@ jobs:
         run: |
           jq '.totals.percent_covered' coverage.json
 
-      - name: parse coverage report float
-        id: extract_coverage_val_float
-        run: |
-          echo "COVERAGE_FLOAT=$(jq '.totals.percent_covered' coverage.json)" >> $GITHUB_ENV
+      # - name: parse coverage report float
+      #   id: extract_coverage_val_float
+      #   run: |
+      #     echo "COVERAGE_FLOAT=$(jq '.totals.percent_covered' coverage.json)" >> $GITHUB_ENV
+
+      # - name: parse coverage report
+      #   id: extract_coverage_val
+      #   run: |
+      #     echo "COVERAGE=$(jq '.totals.percent_covered_display' coverage.json)" >> $GITHUB_OUTPUT
 
       - name: parse coverage report
         id: extract_coverage_val
         run: |
-          echo "COVERAGE=$(jq '.totals.percent_covered_display' coverage.json)" >> $GITHUB_OUTPUT
+          echo "COVERAGE=$(jq '.totals.percent_covered' coverage.json)" >> $GITHUB_ENV
+
+      - name: substring coverage
+        id: substring_coverage
+        run: |
+          coverage_int=$(echo "${{ env.COVERAGE }}" | cut -c 1-2)
+          echo "coverage_int=$coverage_int" >> $GITHUB_OUTPUT
 
       - name: Create the Badge
         uses: schneegans/dynamic-badges-action@v1.7.0
@@ -82,7 +93,7 @@ jobs:
           gistID: ${{vars.GIST_ID}}
           filename: quickrest_coverage_badge.json
           label: coverage
-          message: "%${{ steps.extract_coverage_val.outputs.COVERAGE }}"
-          valColorRange: ${{ env.COVERAGE_FLOAT }}
+          message: "%${{ steps.substring_coverage.outputs.coverage_int }}"
+          valColorRange: ${{ env.COVERAGE }}
           maxColorRange: 100
           minColorRange: 50
