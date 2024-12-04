@@ -13,7 +13,7 @@ Simply define your database schema and let QuickRest generate all your pydantic 
 [license]: https://opensource.org/licenses/MIT
 
 
-[coverage badge]: https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/Lkruitwagen/c8c1dffd34c4974bfbb4de19b4d9ff1db82d80be/raw/quickrest-coverage-badge.json
+[coverage badge]: https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/Lkruitwagen/a16058370777530ed286dab325015195/raw/quickrest-coverage-badge.json
 
 
 ## Quickstart
