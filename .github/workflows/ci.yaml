@@ -62,22 +62,16 @@ jobs:
       - name: parse coverage report
         id: extract_coverage_val
         run: |
-          echo "COVERAGE=$(jq '.totals.percent_covered' coverage.json)" >> $GITHUB_ENV
-
-      - name: substring coverage
-        id: substring_coverage
-        run: |
-          coverage_int=$(echo "${{ env.COVERAGE }}" | cut -c 1-2)
-          echo "coverage_int=$coverage_int" >> $GITHUB_OUTPUT
+          echo "COVERAGE=$(jq '.totals.percent_covered_display' coverage.json)" >> $GITHUB_OUTPUT
 
       - name: Create the Badge
         uses: schneegans/dynamic-badges-action@v1.7.0
         with:
           auth: ${{ secrets.GIST_TOKEN }}
           gistID: ${{vars.GIST_ID}}
-          filename: coverage_badge.json
+          filename: quickrest_coverage_badge.json
           label: coverage
-          message: "%${{ steps.substring_coverage.outputs.coverage_int }}"
+          message: "%${{ steps.extract_coverage_val.outputs.COVERAGE }}"
           valColorRange: ${{ env.COVERAGE }}
           maxColorRange: 100
           minColorRange: 50
