@@ -51,10 +51,16 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install .[dev]
+
       - name: Test with pytest
         run: |
+          pytest --cov=quickrest
+
+      - name: Test with pytest for coverage report
+        run: |
           pytest --cov=quickrest --cov-report=json:coverage.json
-      - name: parse coverage report
+
+      - name: show coverage report
         id: show_coverage_val
         run: |
           jq '.totals.percent_covered' coverage.json
