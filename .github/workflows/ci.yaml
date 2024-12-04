@@ -52,10 +52,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .[dev]
 
-      - name: Test with pytest
-        run: |
-          pytest --cov=quickrest
-
       - name: Test with pytest for coverage report
         run: |
           pytest --cov=quickrest --cov-report=json:coverage.json
