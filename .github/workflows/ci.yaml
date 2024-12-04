@@ -65,6 +65,11 @@ jobs:
         run: |
           jq '.totals.percent_covered' coverage.json
 
+      - name: parse coverage report float
+        id: extract_coverage_val_float
+        run: |
+          echo "COVERAGE_FLOAT=$(jq '.totals.percent_covered' coverage.json)" >> $GITHUB_ENV
+
       - name: parse coverage report
         id: extract_coverage_val
         run: |
@@ -78,6 +83,6 @@ jobs:
           filename: quickrest_coverage_badge.json
           label: coverage
           message: "%${{ steps.extract_coverage_val.outputs.COVERAGE }}"
-          valColorRange: ${{ env.COVERAGE }}
+          valColorRange: ${{ env.COVERAGE_FLOAT }}
           maxColorRange: 100
           minColorRange: 50
