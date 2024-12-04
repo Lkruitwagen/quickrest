@@ -6,9 +6,14 @@ A schema-first FastAPI abstraction framework so your team can put your feet up (
 Simply define your database schema and let QuickRest generate all your pydantic objects, CRUD controllers and (nested) RESTful routes, complete with fine-grained access control.
 
 [![License][license badge]][license]
+![Coverage][coverage badge]
 
 [license badge]: https://img.shields.io/badge/License-MIT-blue.svg
 [license]: https://opensource.org/licenses/MIT
+
+
+[coverage badge]: https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/Lkruitwagen/a16058370777530ed286dab325015195/raw/quickrest_coverage_badge.json
+
 
 ## Quickstart
 
