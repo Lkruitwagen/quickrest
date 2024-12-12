@@ -58,7 +58,13 @@ class Resource(
 
         for r in cls.__mapper__.relationships:
             if r.key in cls.resource_cfg.serialize:
-                fields[r.key] = (ForwardRef(r.mapper.class_.__name__), ...)
+
+                if len(r.remote_side) > 1:
+                    # if the relationship is many-to-many, we need to use a list
+                    fields[r.key] = (list[ForwardRef(r.mapper.class_.__name__)], ...)
+                else:
+                    # otherwise, we can just use the type of the primary key
+                    fields[r.key] = (ForwardRef(r.mapper.class_.__name__), ...)
 
         return create_model(cls.__name__, **fields)
 
