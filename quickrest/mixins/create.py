@@ -1,5 +1,6 @@
 from functools import wraps
 from inspect import Parameter, signature
+from typing import Optional
 
 from fastapi import Depends
 from pydantic import BaseModel, create_model
@@ -46,7 +47,20 @@ class CreateFactory(RESTFactory):
     def _generate_input_model(self, model) -> BaseModel:
         cols = [c for c in model.__table__.columns]
 
-        fields = {c.name: (c.type.python_type, ...) for c in cols}
+        primary_fields = {c.name: (c.type.python_type, ...) for c in cols}
+
+        # map relationship fields
+        relationship_fields = {}
+        for r in model.__mapper__.relationships:
+            if len(r.remote_side) > 1:
+                # if the relationship is many-to-many, we need to use a list
+                # TODO: is this required?
+                relationship_fields[r.key] = (Optional[list[str]], None)
+            else:
+                # otherwise, we can just use the type of the primary key
+                relationship_fields[r.key] = (Optional[str], None)
+
+        fields = {**primary_fields, **relationship_fields}
 
         return create_model("CREATE" + model.__name__, **fields)
 
@@ -70,12 +84,35 @@ class CreateFactory(RESTFactory):
             db = kwargs.get("db")
             body = kwargs.get(self.input_model.__name__.lower())
 
-            obj = model(**body.model_dump())
+            obj = model(
+                **{c.name: getattr(body, c.name) for c in model.__table__.columns}
+            )
+
+            for r in model.__mapper__.relationships:
+
+                related_ids = getattr(body, r.key)
+
+                if related_ids:
+
+                    if isinstance(related_ids, list):
+                        related_objs = [
+                            r.mapper.class_.read.controller(
+                                db=db, id=id, return_db_object=True
+                            )
+                            for id in related_ids
+                        ]
+                    else:
+                        related_objs = r.mapper.class_.read.controller(
+                            db=db, id=related_ids, return_db_object=True
+                        )
+
+                    setattr(obj, r.key, related_objs)
 
             db.add(obj)
             db.commit()
             db.refresh(obj)
-            return obj
+
+            return model.basemodel.model_validate(obj, from_attributes=True)
 
         @wraps(inner)
         def f(*args, **kwargs):
