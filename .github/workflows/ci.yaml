@@ -78,7 +78,7 @@ jobs:
           auth: ${{ secrets.GIST_TOKEN }}
           gistID: ${{vars.GIST_ID}}
           filename: quickrest_coverage_badge.json
-          label: coverage
+          label: Coverage
           message: "%${{ steps.substring_coverage.outputs.coverage_int }}"
           valColorRange: ${{ env.COVERAGE }}
           maxColorRange: 100
