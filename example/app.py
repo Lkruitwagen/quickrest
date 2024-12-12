@@ -22,9 +22,14 @@ class Owner(Base, Resource.from_factory(sessionmaker=SessionMaker)):  # , User):
 
     pets: Mapped[list["Pet"]] = relationship(back_populates="owner")
 
+    certifications: Mapped[list["Certification"]] = relationship(
+        secondary="owner_certifications",
+    )
+
     class resource_cfg(ResourceParams):
         # choose which relationships should be accessible via URL /<resource>/<id>/<relationship>
         children = ["pets"]
+        serialize = ["certifications"]
 
 
 # models - just normal sqlalchemy models with the Resource mixin!
@@ -63,13 +68,13 @@ class Certification(
     name: Mapped[str] = mapped_column()
     description: Mapped[str] = mapped_column()
 
-    # owner: Mapped[list["Owner"]] = relationship(
-    #     back_populates="certifications",
-    # )
 
-    class resource_cfg(ResourceParams):
-        # choose which relationships should be serialized on the reponse
-        serialize = ["owner"]
+class OwnerCertifications(Base):
+    __tablename__ = "owner_certifications"
+    owner_id: Mapped[int] = mapped_column(ForeignKey("owners.id"), primary_key=True)
+    certification_id: Mapped[int] = mapped_column(
+        ForeignKey("certifications.id"), primary_key=True
+    )
 
 
 all_models = {
