@@ -56,12 +56,19 @@ class ReadFactory(RESTFactory):
                 default=Depends(model.db_generator),
                 annotation=Session,
             ),
+            Parameter(
+                "reurn_db_object",
+                Parameter.POSITIONAL_OR_KEYWORD,
+                default=False,
+                annotation=bool,
+            ),
         ]
 
         def inner(*args, **kwargs) -> model.basemodel:
 
             db = kwargs.get("db")
             primary_key = kwargs.get("id")
+            return_db_object = kwargs.get("return_db_object")
 
             Q = db.query(model)
             Q = Q.filter(model.id == primary_key)
@@ -69,6 +76,9 @@ class ReadFactory(RESTFactory):
 
             if not obj:
                 raise NoResultFound
+
+            if return_db_object:
+                return obj
 
             return model.basemodel.model_validate(obj, from_attributes=True)
 

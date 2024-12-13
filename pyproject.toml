@@ -56,6 +56,10 @@ dev = [
 [tool.setuptools.packages]
 find = {}
 
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "INFO"
+
 [build-system]
 # These are the assumed default build requirements from pip:
 # https://pip.pypa.io/en/stable/reference/pip/#pep-517-and-518-support
