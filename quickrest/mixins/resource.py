@@ -1,12 +1,12 @@
 from abc import ABC
-from copy import deepcopy
 from typing import ForwardRef
 
 from fastapi import APIRouter
-from pydantic import create_model
+from pydantic import BaseModel, create_model
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
 
 from quickrest.mixins.create import CreateMixin
+from quickrest.mixins.errors import default_error_handler
 from quickrest.mixins.patch import PatchMixin
 from quickrest.mixins.read import ReadMixin
 
@@ -36,7 +36,7 @@ class ResourceBase:
         pass
 
 
-class Resource(
+class _Resource(
     ResourceBase,
     CreateMixin,
     ReadMixin,
@@ -49,6 +49,9 @@ class Resource(
         raise ValueError("No sessionmaker attached to Resource class")
 
     _sessionmaker = nullraise
+    _user_generator = nullraise
+    _user_token = None
+    _error_handler = default_error_handler
 
     @classmethod
     def _build_basemodel(cls):
@@ -108,9 +111,25 @@ class Resource(
             if db is not None:
                 db.close()
 
-    @classmethod
-    def from_factory(cls, sessionmaker: callable) -> "Resource":
+    # @classmethod
+    # def from_factory(cls, sessionmaker: callable) -> "Resource":
 
-        new_cls = deepcopy(cls)
-        new_cls._sessionmaker = sessionmaker
-        return new_cls
+    #     new_cls = deepcopy(cls)
+    #     new_cls._sessionmaker = sessionmaker
+    #     return new_cls
+
+
+def build_resource(
+    sessionmaker: callable,
+    user_generator: callable,
+    user_token_model: BaseModel,
+    error_handler: callable = default_error_handler,
+) -> type:
+
+    class Resource(_Resource):
+        _sessionmaker = sessionmaker
+        _user_generator = user_generator
+        _user_token = user_token_model
+        _error_handler = default_error_handler
+
+    return Resource
