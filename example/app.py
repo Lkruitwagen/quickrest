@@ -10,6 +10,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship, sessionmaker
 
 from quickrest import (
     Base,
+    CreateParams,
     Private,
     Publishable,
     ResourceParams,
@@ -30,10 +31,9 @@ class UserToken(BaseModel):
 
 def get_current_user(request: Request):
     # write your own auth logic here - normally decoding tokens etc
-    permissions = request.headers.get("permissions")
+    permissions = request.headers.get("permissions", "")
     _id = request.headers.get("id")
-    if isinstance(permissions, str):
-        permissions = permissions.split(",")
+    permissions = permissions.split(",")
     return UserToken(
         id=_id,
         permissions=permissions,
@@ -42,10 +42,18 @@ def get_current_user(request: Request):
 
 def check_user_is_userwriter(request: Request):
     # write your own auth logic here
-    permissions = request.headers.get("permissions")
-    if isinstance(permissions, str):
-        permissions = permissions.split(",")
+    permissions = request.headers.get("permissions", "")
+    permissions = permissions.split(",")
     if "write-user" in permissions:
+        return True
+    raise HTTPException(status_code=401, detail="Insufficient permissions")
+
+
+def check_user_is_admin(request: Request):
+    # write your own auth logic here
+    permissions = request.headers.get("permissions", "")
+    permissions = permissions.split(",")
+    if "admin" in permissions:
         return True
     raise HTTPException(status_code=401, detail="Insufficient permissions")
 
@@ -86,6 +94,9 @@ class Owner(
         children = ["pets"]
         serialize = ["certifications"]
 
+    class create_cfg(CreateParams):
+        dependencies = [check_user_is_userwriter]
+
 
 # models - just normal sqlalchemy models with the Resource mixin!
 class Specie(
@@ -96,6 +107,9 @@ class Specie(
 
     common_name: Mapped[str] = mapped_column()
     scientific_name: Mapped[str] = mapped_column()
+
+    class create_cfg(CreateParams):
+        dependencies = [check_user_is_admin]
 
 
 class Pet(Base, Resource, Publishable(user_model=Owner)):
@@ -128,6 +142,9 @@ class Certification(
     # note: all Resource classes have an id and slug column by default
     name: Mapped[str] = mapped_column()
     description: Mapped[str] = mapped_column()
+
+    class create_cfg(CreateParams):
+        dependencies = [check_user_is_admin]
 
 
 class OwnerCertifications(Base):
