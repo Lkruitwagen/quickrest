@@ -18,7 +18,7 @@ class RouterParams(ABC):
 
 
 class ResourceParams(ABC):
-    children: list[str] = []
+    routed_relationships: list[str] = []
     serialize: list[str] = []
 
 
