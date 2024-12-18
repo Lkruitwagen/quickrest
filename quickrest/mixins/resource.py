@@ -130,6 +130,6 @@ def build_resource(
         _sessionmaker = sessionmaker
         _user_generator = user_generator
         _user_token = user_token_model
-        _error_handler = default_error_handler
+        _error_handler = error_handler
 
     return Resource

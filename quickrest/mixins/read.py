@@ -11,11 +11,11 @@ from quickrest.mixins.utils import classproperty
 
 
 class ReadParams(ABC):
-    primary_key = None
     description = None
     summary = None
     operation_id = None
     tags = None
+    dependencies = []
 
 
 class ReadMixin(BaseMixin):

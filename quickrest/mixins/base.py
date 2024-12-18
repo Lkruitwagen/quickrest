@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from fastapi import Depends
+
 
 class BaseMixin:
     pass
@@ -17,6 +19,9 @@ class RESTFactory(ABC):
             self.ROUTE,
             self.controller,
             description=getattr(model, self.CFG_NAME).description,
+            dependencies=[
+                Depends(d) for d in getattr(model, self.CFG_NAME).dependencies
+            ],
             summary=getattr(model, self.CFG_NAME).summary,
             tags=getattr(model, self.CFG_NAME).tags,
             operation_id=getattr(model, self.CFG_NAME).operation_id,
