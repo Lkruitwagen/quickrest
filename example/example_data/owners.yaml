@@ -1,15 +1,35 @@
 - id: pawdrick_pupper
+  permissions:
+    - read
+    - write
   first_name: Pawdrick
   last_name: Pupper
   certifications:
     - dog_training_kc1
 - id: bonita_leashley
+  permissions:
+    - read
+    - write
   first_name: Bonita
   last_name: Leashley
   certifications:
     - dog_training_kc1
     - dog_training_kc2
 - id: purrcilla_meowington
+  permissions:
+    - read
+    - write
   first_name: Purrcilla
   last_name: Meowington
   certifications: []
+- id: dr_jan_itor
+  permissions:
+    - read
+    - write
+    - admin
+  first_name: Jan
+  last_name: Itor
+  certifications:
+    - dog_training_kc1
+    - dog_training_kc2
+    - cat_master_l1

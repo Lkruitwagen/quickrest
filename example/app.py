@@ -1,26 +1,89 @@
 import logging
 
 import uvicorn
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 from sqlalchemy import ForeignKey, create_engine
 from sqlalchemy.orm import Mapped, mapped_column, relationship, sessionmaker
 
-from quickrest.mixins.resource import Base, Resource, ResourceParams
-from quickrest.router_factory import RouterFactory
+from quickrest import (
+    Base,
+    CreateParams,
+    Private,
+    Publishable,
+    ResourceParams,
+    RouterFactory,
+    User,
+    build_resource,
+)
 
-# database boilerplate - just normal sqlalchemy stuff!
+# ### Auth stuff
+# roll your own auth logic here
+# ###
+
+
+class UserToken(BaseModel):
+    id: str
+    permissions: list[str]
+
+
+def get_current_user(request: Request):
+    # write your own auth logic here - normally decoding tokens etc
+    permissions = request.headers.get("permissions", "")
+    _id = request.headers.get("id")
+    permissions = permissions.split(",")
+    return UserToken(
+        id=_id,
+        permissions=permissions,
+    )
+
+
+def check_user_is_userwriter(request: Request):
+    # write your own auth logic here
+    permissions = request.headers.get("permissions", "")
+    permissions = permissions.split(",")
+    if "write-user" in permissions:
+        return True
+    raise HTTPException(status_code=401, detail="Insufficient permissions")
+
+
+def check_user_is_admin(request: Request):
+    # write your own auth logic here
+    permissions = request.headers.get("permissions", "")
+    permissions = permissions.split(",")
+    if "admin" in permissions:
+        return True
+    raise HTTPException(status_code=401, detail="Insufficient permissions")
+
+
+# ### database boilerplate
+# just normal sqlalchemy stuff!
+
 engine = create_engine("sqlite:///database.db", echo=False)
 SessionMaker = sessionmaker(bind=engine)
 
+# ### Resource Definitions
 
-class Owner(Base, Resource.from_factory(sessionmaker=SessionMaker)):  # , User):  # User
+# instantiate the Resource class
+Resource = build_resource(
+    user_generator=get_current_user,
+    user_token_model=UserToken,
+    sessionmaker=SessionMaker,
+)
+
+
+class Owner(
+    Base,
+    Resource,
+    User,
+):
     __tablename__ = "owners"
     first_name: Mapped[str] = mapped_column()
     last_name: Mapped[str] = mapped_column()
 
-    pets: Mapped[list["Pet"]] = relationship(back_populates="owner")
+    # pets: Mapped[list["Pet"]] = relationship(back_populates="owner")
 
     certifications: Mapped[list["Certification"]] = relationship(
         secondary="owner_certifications",
@@ -31,42 +94,57 @@ class Owner(Base, Resource.from_factory(sessionmaker=SessionMaker)):  # , User):
         children = ["pets"]
         serialize = ["certifications"]
 
+    class create_cfg(CreateParams):
+        dependencies = [check_user_is_userwriter]
+
 
 # models - just normal sqlalchemy models with the Resource mixin!
-class Specie(Base, Resource.from_factory(sessionmaker=SessionMaker)):  # GLOBAL
+class Specie(
+    Base,
+    Resource,
+):
     __tablename__ = "species"
 
     common_name: Mapped[str] = mapped_column()
     scientific_name: Mapped[str] = mapped_column()
 
+    class create_cfg(CreateParams):
+        dependencies = [check_user_is_admin]
 
-class Pet(
-    Base, Resource.from_factory(sessionmaker=SessionMaker)
-):  # , Publishable(Owner)):  # Publishable
+
+class Pet(Base, Resource, Publishable(user_model=Owner)):
     __tablename__ = "pets"
     # note: all Resource classes have an id and slug column by default
     name: Mapped[str] = mapped_column()
 
-    owner_id: Mapped[int] = mapped_column(ForeignKey("owners.id"))
     species_id: Mapped[int] = mapped_column(ForeignKey("species.id"))
 
-    owner: Mapped["Owner"] = relationship(
-        back_populates="pets",
-    )
     specie: Mapped["Specie"] = relationship()
+    notes: Mapped[list["Note"]] = relationship()
 
     class resource_cfg(ResourceParams):
         # choose which relationships should be serialized on the reponse
-        serialize = ["specie"]
+        serialize = ["specie", "owner"]
+
+
+class Note(Base, Resource, Private(user_model=Owner)):
+    __tablename__ = "notes"
+
+    text: Mapped[str] = mapped_column()
+    pet_id: Mapped[int] = mapped_column(ForeignKey("pets.id"))
 
 
 class Certification(
-    Base, Resource.from_factory(sessionmaker=SessionMaker)
-):  # , Private(Owner)):  # Private, many-to-many
+    Base,
+    Resource,
+):
     __tablename__ = "certifications"
     # note: all Resource classes have an id and slug column by default
     name: Mapped[str] = mapped_column()
     description: Mapped[str] = mapped_column()
+
+    class create_cfg(CreateParams):
+        dependencies = [check_user_is_admin]
 
 
 class OwnerCertifications(Base):
@@ -78,10 +156,7 @@ class OwnerCertifications(Base):
 
 
 all_models = {
-    "pet": Pet,
-    "specie": Specie,
-    "owner": Owner,
-    "certification": Certification,
+    cls.__name__.lower(): cls for cls in [Owner, Pet, Specie, Note, Certification]
 }
 
 # instantiate a FastAPI app

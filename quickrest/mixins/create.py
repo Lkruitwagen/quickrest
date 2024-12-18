@@ -15,6 +15,7 @@ class CreateParams:
     summary = None
     operation_id = None
     tags = None
+    dependencies = []
 
 
 class CreateMixin(BaseMixin):

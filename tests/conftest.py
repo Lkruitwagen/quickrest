@@ -14,14 +14,39 @@ from example.app import Base, all_models  # noqa: E402
 from example.app import app as example_app  # noqa: E402
 
 
+def user_headers(user_blob):
+    return {
+        "id": user_blob["id"],
+        "permissions": ",".join(user_blob["permissions"]),
+    }
+
+
+@pytest.fixture(autouse=True)
+def superuser_headers():
+    return {
+        "id": "superuser",
+        "permissions": "write-user",
+    }
+
+
+@pytest.fixture(autouse=True)
+def admin_user_id():
+    return "dr_jan_itor"
+
+
+@pytest.fixture(autouse=True)
+def nonadmin_user_id():
+    return "bonita_leashley"
+
+
 @pytest.fixture(autouse=True)
 def resources():
     resources_order = [
-        # static and types first
+        # users first
+        "owners",
+        # then static and types
         "certifications",
         "species",
-        # then users
-        "owners",
         # then user data
         "pets",
     ]
@@ -54,10 +79,31 @@ def app(db):
 
 
 @pytest.fixture()
-def setup_and_fill_db(db, app, resources):
-    for resource_name, resource_list in resources.items():
-        for resource in resource_list:
-            r = app.post(f"/{resource_name}", json=resource)
+def setup_and_fill_db(db, admin_user_id, superuser_headers, app, resources):
+
+    USERS = {resource["id"]: resource for resource in resources["owners"]}
+
+    # post static and types
+    for resource_name in ["certifications", "species"]:
+        for resource in resources[resource_name]:
+            r = app.post(
+                f"/{resource_name}",
+                json=resource,
+                headers=user_headers(USERS[admin_user_id]),
+            )
             r.raise_for_status()
 
-    return True
+    # post users
+    for resource in USERS.values():
+        r = app.post("/owners", json=resource, headers=superuser_headers)
+        r.raise_for_status()
+
+    # post data
+    for resource_name in ["pets"]:
+        for resource in resources[resource_name]:
+            r = app.post(
+                f"/{resource_name}",
+                json=resource,
+                headers=user_headers(USERS[resource["owner_id"]]),
+            )
+            r.raise_for_status()

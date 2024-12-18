@@ -11,11 +11,11 @@ from quickrest.mixins.utils import classproperty
 
 
 class ReadParams(ABC):
-    primary_key = None
     description = None
     summary = None
     operation_id = None
     tags = None
+    dependencies = []
 
 
 class ReadMixin(BaseMixin):
@@ -57,6 +57,12 @@ class ReadFactory(RESTFactory):
                 annotation=Session,
             ),
             Parameter(
+                "user",
+                Parameter.POSITIONAL_OR_KEYWORD,
+                default=Depends(model._user_generator),
+                annotation=model._user_token,
+            ),
+            Parameter(
                 "reurn_db_object",
                 Parameter.POSITIONAL_OR_KEYWORD,
                 default=False,
@@ -66,21 +72,27 @@ class ReadFactory(RESTFactory):
 
         def inner(*args, **kwargs) -> model.basemodel:
 
-            db = kwargs.get("db")
-            primary_key = kwargs.get("id")
-            return_db_object = kwargs.get("return_db_object")
+            try:
+                db = kwargs.get("db")
+                primary_key = kwargs.get("id")
+                return_db_object = kwargs.get("return_db_object")
+                user = kwargs.get("user")
 
-            Q = db.query(model)
-            Q = Q.filter(model.id == primary_key)
-            obj = Q.first()
+                Q = db.query(model)
+                Q = Q.filter(model.id == primary_key)
+                if hasattr(model, "access_control"):
+                    Q = model.access_control(Q, user)
+                obj = Q.first()
 
-            if not obj:
-                raise NoResultFound
+                if not obj:
+                    raise NoResultFound
 
-            if return_db_object:
-                return obj
+                if return_db_object:
+                    return obj
 
-            return model.basemodel.model_validate(obj, from_attributes=True)
+                return model.basemodel.model_validate(obj, from_attributes=True)
+            except Exception as e:
+                raise model._error_handler(e)
 
         @wraps(inner)
         def f(*args, **kwargs):

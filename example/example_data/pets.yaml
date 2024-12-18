@@ -2,19 +2,24 @@
   name: Bacon
   owner_id: pawdrick_pupper
   species_id: dog
+  public: true
 - id: waffles
   name: Waffles
   owner_id: pawdrick_pupper
   species_id: dog
+  public: false
 - id: cheddar
   name: Cheddar
-  owner_id: boneita_leashley
+  owner_id: bonita_leashley
   species_id: dog
+  public: false
 - id: clawdia
   name: Clawdia
   owner_id: purrcilla_meowington
   species_id: cat
+  public: false
 - id: mittens
   name: Mittens
   owner_id: purrcilla_meowington
   species_id: cat
+  public: false
