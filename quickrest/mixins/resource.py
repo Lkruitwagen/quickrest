@@ -103,7 +103,7 @@ class _Resource(
         return cls.router
 
     @classmethod
-    def db_generator(cls) -> Session:
+    async def db_generator(cls) -> Session:
         try:
             db = cls._sessionmaker()
             yield db
