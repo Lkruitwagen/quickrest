@@ -70,7 +70,7 @@ class ReadFactory(RESTFactory):
             ),
         ]
 
-        def inner(*args, **kwargs) -> model.basemodel:
+        async def inner(*args, **kwargs) -> model.basemodel:
 
             try:
                 db = kwargs.get("db")
@@ -95,8 +95,8 @@ class ReadFactory(RESTFactory):
                 raise model._error_handler(e)
 
         @wraps(inner)
-        def f(*args, **kwargs):
-            return inner(*args, **kwargs)
+        async def f(*args, **kwargs):
+            return await inner(*args, **kwargs)
 
         # Override signature
         sig = signature(inner)

@@ -81,7 +81,7 @@ class CreateFactory(RESTFactory):
             ),
         ]
 
-        def inner(*args, **kwargs) -> model:
+        async def inner(*args, **kwargs) -> model:
             db = kwargs.get("db")
             body = kwargs.get(self.input_model.__name__.lower())
 
@@ -97,7 +97,7 @@ class CreateFactory(RESTFactory):
 
                     if isinstance(related_ids, list):
                         related_objs = [
-                            r.mapper.class_.read.controller(
+                            await r.mapper.class_.read.controller(
                                 db=db, id=id, return_db_object=True
                             )
                             for id in related_ids
@@ -116,8 +116,8 @@ class CreateFactory(RESTFactory):
             return model.basemodel.model_validate(obj, from_attributes=True)
 
         @wraps(inner)
-        def f(*args, **kwargs):
-            return inner(*args, **kwargs)
+        async def f(*args, **kwargs):
+            return await inner(*args, **kwargs)
 
         # Override signature
         sig = signature(inner)

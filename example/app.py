@@ -29,7 +29,7 @@ class UserToken(BaseModel):
     permissions: list[str]
 
 
-def get_current_user(request: Request):
+async def get_current_user(request: Request):
     # write your own auth logic here - normally decoding tokens etc
     permissions = request.headers.get("permissions", "")
     _id = request.headers.get("id")
@@ -40,7 +40,7 @@ def get_current_user(request: Request):
     )
 
 
-def check_user_is_userwriter(request: Request):
+async def check_user_is_userwriter(request: Request):
     # write your own auth logic here
     permissions = request.headers.get("permissions", "")
     permissions = permissions.split(",")
@@ -49,7 +49,7 @@ def check_user_is_userwriter(request: Request):
     raise HTTPException(status_code=401, detail="Insufficient permissions")
 
 
-def check_user_is_admin(request: Request):
+async def check_user_is_admin(request: Request):
     # write your own auth logic here
     permissions = request.headers.get("permissions", "")
     permissions = permissions.split(",")
