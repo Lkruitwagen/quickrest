@@ -53,3 +53,39 @@ def test_read_failcases(setup_and_fill_db, models, resources, app):
 
     # ... unless they're public
     r = app.get("/pets/{}".format(public_pet["id"]), headers=user_headers(first_user))
+
+
+def test_read_serialized_attribute(setup_and_fill_db, models, resources, app):
+
+    user_id = "bonita_leashley"
+    certification_ids = ["dog_training_kc1", "dog_training_kc2"]
+
+    USERS = {resource["id"]: resource for resource in resources["owners"]}
+
+    r = app.get(f"/owners/{user_id}", headers=user_headers(USERS[user_id]))
+    assert r.status_code == 200
+    assert r.json().get("id") == user_id
+    assert isinstance(r.json().get("certifications"), list)
+    for cert in r.json().get("certifications"):
+        assert cert["id"] in certification_ids
+    assert r.json().get("certifications")[0]["description"]
+
+
+def test_read_routed_relationship(setup_and_fill_db, models, resources, app):
+    """
+    This test uses the ids of each resource to read from the database.
+    """
+
+    USERS = {resource["id"]: resource for resource in resources["owners"]}
+    PETS = {resource["id"]: resource for resource in resources["pets"]}
+
+    user_id = "pawdrick_pupper"
+    user_pets = {k: v for k, v in PETS.items() if v["owner_id"] == user_id}
+
+    r = app.get(f"/owners/{user_id}/pets", headers=user_headers(USERS[user_id]))
+    assert r.status_code == 200
+    assert len(r.json()) == len(user_pets)
+    for pet in r.json():
+        assert pet["owner_id"] == user_id
+        assert pet["id"] in user_pets
+        assert pet["name"] == user_pets[pet["id"]]["name"]

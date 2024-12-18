@@ -63,7 +63,7 @@ class ReadFactory(RESTFactory):
                 annotation=model._user_token,
             ),
             Parameter(
-                "reurn_db_object",
+                "return_db_object",
                 Parameter.POSITIONAL_OR_KEYWORD,
                 default=False,
                 annotation=bool,
@@ -104,3 +104,102 @@ class ReadFactory(RESTFactory):
         f.__signature__ = sig
 
         return f
+
+    def relationship_paginated_controller(self, model, relationship):
+
+        parameters = [
+            Parameter(
+                "id", Parameter.POSITIONAL_OR_KEYWORD, default=..., annotation=str
+            ),
+            Parameter(
+                "limit", Parameter.POSITIONAL_OR_KEYWORD, default=10, annotation=int
+            ),
+            Parameter(
+                "page", Parameter.POSITIONAL_OR_KEYWORD, default=0, annotation=int
+            ),
+            Parameter(
+                "db",
+                Parameter.POSITIONAL_OR_KEYWORD,
+                default=Depends(model.db_generator),
+                annotation=Session,
+            ),
+            Parameter(
+                "user",
+                Parameter.POSITIONAL_OR_KEYWORD,
+                default=Depends(model._user_generator),
+                annotation=model._user_token,
+            ),
+        ]
+
+        async def inner(*args, **kwargs) -> relationship.mapper.class_.basemodel:
+
+            db = kwargs.get("db")
+            primary_key = kwargs.get("id")
+            user = kwargs.get("user")
+            page = kwargs.get("page")
+            limit = kwargs.get("limit")
+
+            offset = page * limit
+
+            Q = db.query(relationship.mapper.class_).join(model)
+            Q = Q.filter(model.id == primary_key)
+            if hasattr(model, "access_control"):
+                Q = model.access_control(Q, user)
+            Q = Q.limit(limit).offset(offset)
+
+            objs = Q.all()
+
+            return [
+                relationship.mapper.class_.basemodel.model_validate(
+                    obj, from_attributes=True
+                )
+                for obj in objs
+            ]
+
+        @wraps(inner)
+        async def f(*args, **kwargs):
+            return await inner(*args, **kwargs)
+
+        # Override signature
+        sig = signature(inner)
+        sig = sig.replace(parameters=parameters)
+        f.__signature__ = sig
+
+        return f
+
+    def attach_route(self, model) -> None:
+
+        # Overwrite this from the base class
+
+        # same as base class, add base router
+        model.router.add_api_route(
+            self.ROUTE,
+            self.controller,
+            description=getattr(model, self.CFG_NAME).description,
+            dependencies=[
+                Depends(d) for d in getattr(model, self.CFG_NAME).dependencies
+            ],
+            summary=getattr(model, self.CFG_NAME).summary,
+            tags=getattr(model, self.CFG_NAME).tags,
+            operation_id=getattr(model, self.CFG_NAME).operation_id,
+            methods=[self.METHOD],
+            status_code=getattr(self, "SUCCESS_CODE", None) or 200,
+            response_model=getattr(self, "response_model", model.basemodel),
+        )
+
+        for r in model.__mapper__.relationships:
+            if r.key in model.resource_cfg.routed_relationships:
+                model.router.add_api_route(
+                    f"{self.ROUTE}/{r.key}",
+                    self.relationship_paginated_controller(model, r),
+                    description=f"Paginated relationship endpoint for {r.key}",
+                    dependencies=[
+                        Depends(d) for d in getattr(model, self.CFG_NAME).dependencies
+                    ],
+                    summary=f"Paginated relationship endpoint for {r.key}",
+                    tags=getattr(model, self.CFG_NAME).tags,
+                    operation_id=f"get_{r.key}_paginated",
+                    methods=[self.METHOD],
+                    status_code=getattr(self, "SUCCESS_CODE", None) or 200,
+                    response_model=list[r.mapper.class_.basemodel],
+                )

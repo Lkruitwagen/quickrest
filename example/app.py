@@ -83,7 +83,7 @@ class Owner(
     first_name: Mapped[str] = mapped_column()
     last_name: Mapped[str] = mapped_column()
 
-    # pets: Mapped[list["Pet"]] = relationship(back_populates="owner")
+    pets: Mapped[list["Pet"]] = relationship(back_populates="owner")
 
     certifications: Mapped[list["Certification"]] = relationship(
         secondary="owner_certifications",
@@ -91,7 +91,7 @@ class Owner(
 
     class resource_cfg(ResourceParams):
         # choose which relationships should be accessible via URL /<resource>/<id>/<relationship>
-        children = ["pets"]
+        routed_relationships = ["pets"]
         serialize = ["certifications"]
 
     class create_cfg(CreateParams):
@@ -124,7 +124,7 @@ class Pet(Base, Resource, Publishable(user_model=Owner)):
 
     class resource_cfg(ResourceParams):
         # choose which relationships should be serialized on the reponse
-        serialize = ["specie", "owner"]
+        serialize = ["specie"]
 
 
 class Note(Base, Resource, Private(user_model=Owner)):
