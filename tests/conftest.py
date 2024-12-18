@@ -35,6 +35,11 @@ def admin_user_id():
 
 
 @pytest.fixture(autouse=True)
+def nonadmin_user_id():
+    return "bonita_leashley"
+
+
+@pytest.fixture(autouse=True)
 def resources():
     resources_order = [
         # users first
