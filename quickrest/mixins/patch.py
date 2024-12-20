@@ -42,12 +42,12 @@ class PatchFactory(RESTFactory):
 
     METHOD = "PATCH"
     CFG_NAME = "patch_cfg"
-    ROUTE = "/{slug}"
 
     def __init__(self, model):
         self.input_model = self._generate_input_model(model)
         self.response_model = self._generate_response_model(model)
         self.controller = self.controller_factory(model)
+        self.ROUTE = f"/{{{model.primary_key}}}"
         # self.attach_route(model)
 
     def _generate_input_model(self, model) -> BaseModel:

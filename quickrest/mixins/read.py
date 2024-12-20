@@ -39,10 +39,8 @@ class ReadFactory(RESTFactory):
 
     def __init__(self, model):
 
-        # self.response_model = self._generate_response_model(model)
         self.controller = self.controller_factory(model)
         self.ROUTE = f"/{{{model.primary_key}}}"
-        # self.attach_route(model)
 
     def controller_factory(self, model):
 
