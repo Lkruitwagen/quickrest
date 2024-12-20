@@ -48,7 +48,12 @@ class CreateFactory(RESTFactory):
     def _generate_input_model(self, model) -> BaseModel:
         cols = [c for c in model.__table__.columns]
 
-        primary_fields = {c.name: (c.type.python_type, ...) for c in cols}
+        primary_fields = {
+            c.name: (c.type.python_type, ...)
+            for c in cols
+            # filter ID field if it's not a (user-provided) string
+            if ((c.name != "id") or (c.type.python_type == str))
+        }
 
         # map relationship fields
         relationship_fields = {}
@@ -86,7 +91,11 @@ class CreateFactory(RESTFactory):
             body = kwargs.get(self.input_model.__name__.lower())
 
             obj = model(
-                **{c.name: getattr(body, c.name) for c in model.__table__.columns}
+                **{
+                    c.name: getattr(body, c.name)
+                    for c in model.__table__.columns
+                    if ((c.name != "id") or (c.type.python_type == str))
+                }
             )
 
             for r in model.__mapper__.relationships:
