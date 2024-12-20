@@ -1,17 +1,20 @@
+import logging
 import sys
 from os.path import abspath, dirname
+from uuid import UUID
 
 import pytest
 import yaml
+from fastapi import FastAPI, Request, status
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
+from sqlalchemy.orm import Mapped, mapped_column, sessionmaker
 
 # append to sys path so pytest can find our example app
 root_dir = dirname(dirname(abspath(__file__)))
 sys.path.append(root_dir)
-
-from example.app import Base, all_models  # noqa: E402
-from example.app import app as example_app  # noqa: E402
 
 
 def user_headers(user_blob):
@@ -61,21 +64,87 @@ def resources():
 
 
 @pytest.fixture(autouse=True)
-def models():
-    return all_models
-
-
-@pytest.fixture(autouse=True)
 def db():
+
+    from example.app import Base  # noqa: E402
+
     engine = create_engine("sqlite:///database.db", echo=False)
     Base.metadata.create_all(engine)
     yield
     Base.metadata.drop_all(engine)
+    del Base
 
 
 @pytest.fixture(autouse=True)
 def app(db):
+    from example.app import app as example_app
+
     return TestClient(example_app)
+
+
+@pytest.fixture(autouse=True, scope="session")
+def app_types():
+    from quickrest import Base, RouterFactory, build_resource
+
+    engine = create_engine("sqlite:///database-types.db", echo=False)
+
+    SessionMaker = sessionmaker(bind=engine)
+
+    # instantiate the Resource class
+    ResourceInt = build_resource(
+        id_type=int,
+        sessionmaker=SessionMaker,
+    )
+
+    ResourceUUID = build_resource(
+        id_type=UUID,
+        sessionmaker=SessionMaker,
+    )
+
+    ResourceUUIDSlug = build_resource(
+        id_type=UUID,
+        slug=True,
+        sessionmaker=SessionMaker,
+    )
+
+    class Book(Base, ResourceInt):
+        __tablename__ = "books"
+        title: Mapped[str] = mapped_column()
+        author: Mapped[str] = mapped_column()
+        year: Mapped[int] = mapped_column()
+
+    class Cheese(Base, ResourceUUID):
+        __tablename__ = "cheeses"
+        name: Mapped[str] = mapped_column()
+        origin: Mapped[str] = mapped_column()
+
+    class Knight(Base, ResourceUUIDSlug):
+        __tablename__ = "knights"
+        name: Mapped[str] = mapped_column()
+        is_round_table: Mapped[bool] = mapped_column()
+
+    Base.metadata.create_all(engine)
+
+    app = FastAPI(
+        title="QuickRest Test integer id", separate_input_output_schemas=False
+    )
+
+    @app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(
+        request: Request, exc: RequestValidationError
+    ):
+        exc_str = f"{exc}".replace("\n", " ").replace("   ", " ")
+        logging.error(f"{request}: {exc_str}")
+        content = {"status_code": 10422, "message": exc_str, "data": None}
+        return JSONResponse(
+            content=content, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY
+        )
+
+    RouterFactory.mount(app, {"books": Book, "cheeses": Cheese, "knights": Knight})
+
+    yield TestClient(app)
+
+    Base.metadata.drop_all(engine)
 
 
 @pytest.fixture()
