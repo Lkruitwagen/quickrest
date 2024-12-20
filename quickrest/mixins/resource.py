@@ -8,6 +8,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
 from sqlalchemy.types import Uuid
 
 from quickrest.mixins.create import CreateMixin
+from quickrest.mixins.delete import DeleteMixin
 from quickrest.mixins.errors import default_error_handler
 from quickrest.mixins.patch import PatchMixin
 from quickrest.mixins.read import ReadMixin
@@ -93,7 +94,7 @@ class ResourceMixin:
 
         cls.basemodel = cls._build_basemodel()
 
-        for attr in ["read", "create"]:
+        for attr in ["read", "create", "delete"]:
             if hasattr(cls, attr):
                 getattr(cls, attr)
 
@@ -110,10 +111,11 @@ class ResourceMixin:
             cls.read.attach_route(cls)
         if hasattr(cls, "create"):
             cls.create.attach_route(cls)
+        if hasattr(cls, "delete"):
+            cls.delete.attach_route(cls)
         # if hasattr(cls, "update"):
         #     cls.update.attach_route(cls)
-        # if hasattr(cls, "build_delete"):
-        #     cls.build_delete()
+
         # if hasattr(cls, "build_search"):
         #     cls.build_search()
 
@@ -154,6 +156,7 @@ def build_resource(
         CreateMixin,
         ReadMixin,
         PatchMixin,
+        DeleteMixin,
     ):
         _id_type = id_type
         _sessionmaker = sessionmaker
