@@ -1,7 +1,7 @@
 from conftest import user_headers
 
 
-def test_read_resources(setup_and_fill_db, models, resources, app):
+def test_read_resources(setup_and_fill_db, resources, app):
     """
     This test uses the ids of each resource to read from the database.
     """
@@ -30,7 +30,7 @@ def test_read_resources(setup_and_fill_db, models, resources, app):
                 assert r.json().get("id") == pet["id"]
 
 
-def test_read_failcases(setup_and_fill_db, models, resources, app):
+def test_read_failcases(setup_and_fill_db, resources, app):
 
     USERS = {resource["id"]: resource for resource in resources["owners"]}
     PETS = {resource["id"]: resource for resource in resources["pets"]}
@@ -55,7 +55,7 @@ def test_read_failcases(setup_and_fill_db, models, resources, app):
     r = app.get("/pets/{}".format(public_pet["id"]), headers=user_headers(first_user))
 
 
-def test_read_serialized_attribute(setup_and_fill_db, models, resources, app):
+def test_read_serialized_attribute(setup_and_fill_db, resources, app):
 
     user_id = "bonita_leashley"
     certification_ids = ["dog_training_kc1", "dog_training_kc2"]
@@ -71,7 +71,7 @@ def test_read_serialized_attribute(setup_and_fill_db, models, resources, app):
     assert r.json().get("certifications")[0]["description"]
 
 
-def test_read_routed_relationship(setup_and_fill_db, models, resources, app):
+def test_read_routed_relationship(setup_and_fill_db, resources, app):
     """
     This test uses the ids of each resource to read from the database.
     """

@@ -1,14 +1,24 @@
 from abc import ABC
 from typing import ForwardRef
+from uuid import UUID, uuid4
 
 from fastapi import APIRouter
 from pydantic import BaseModel, create_model
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
+from sqlalchemy.types import Uuid
 
 from quickrest.mixins.create import CreateMixin
 from quickrest.mixins.errors import default_error_handler
 from quickrest.mixins.patch import PatchMixin
 from quickrest.mixins.read import ReadMixin
+
+
+def nullraise(caller):
+    raise ValueError(f"{caller.__name__} - No callable declared")
+
+
+def nullreturn():
+    return None
 
 
 class RouterParams(ABC):
@@ -26,32 +36,39 @@ class Base(DeclarativeBase):
     pass
 
 
-class ResourceBase:
+class ResourceBaseStr:
     id: Mapped[str] = mapped_column(primary_key=True)
+
+
+class ResourceBaseUUID:
+    id: Mapped[UUID] = mapped_column(
+        Uuid,
+        primary_key=True,
+        default=uuid4,
+        # server_default=text("gen_random_uuid")
+    )
+
+
+class ResourceBaseInt:
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+
+
+class ResourceBaseSlug:
+    slug: Mapped[str] = mapped_column(unique=True)
+    primary_key = "slug"
+
+
+class ResourceBaseSlugPass:
+    primary_key = "id"
+
+
+class ResourceMixin:
 
     class router_cfg(RouterParams):
         pass
 
     class resource_cfg(ResourceParams):
         pass
-
-
-class _Resource(
-    ResourceBase,
-    CreateMixin,
-    ReadMixin,
-    PatchMixin,
-    # DeleteMixin,
-    # SearchMixin,
-):
-
-    def nullraise(self):
-        raise ValueError("No sessionmaker attached to Resource class")
-
-    _sessionmaker = nullraise
-    _user_generator = nullraise
-    _user_token = None
-    _error_handler = default_error_handler
 
     @classmethod
     def _build_basemodel(cls):
@@ -111,22 +128,34 @@ class _Resource(
             if db is not None:
                 db.close()
 
-    # @classmethod
-    # def from_factory(cls, sessionmaker: callable) -> "Resource":
-
-    #     new_cls = deepcopy(cls)
-    #     new_cls._sessionmaker = sessionmaker
-    #     return new_cls
-
 
 def build_resource(
-    sessionmaker: callable,
-    user_generator: callable,
-    user_token_model: BaseModel,
+    sessionmaker: callable = nullraise,
+    user_generator: callable = nullreturn,
+    user_token_model: BaseModel = None,
+    id_type: type = str,
+    slug: bool = False,
     error_handler: callable = default_error_handler,
 ) -> type:
 
-    class Resource(_Resource):
+    if id_type is str:
+        ResourceBase = ResourceBaseStr
+    elif id_type is UUID:
+        ResourceBase = ResourceBaseUUID
+    elif id_type is int:
+        ResourceBase = ResourceBaseInt
+    else:
+        raise ValueError(f"id_type must be str, uuid.UUID, or int, got {id_type}")
+
+    class Resource(
+        ResourceBase,
+        ResourceBaseSlug if slug else ResourceBaseSlugPass,
+        ResourceMixin,
+        CreateMixin,
+        ReadMixin,
+        PatchMixin,
+    ):
+        _id_type = id_type
         _sessionmaker = sessionmaker
         _user_generator = user_generator
         _user_token = user_token_model

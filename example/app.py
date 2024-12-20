@@ -68,6 +68,7 @@ SessionMaker = sessionmaker(bind=engine)
 
 # instantiate the Resource class
 Resource = build_resource(
+    id_type=str,
     user_generator=get_current_user,
     user_token_model=UserToken,
     sessionmaker=SessionMaker,

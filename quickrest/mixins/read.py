@@ -36,19 +36,24 @@ class ReadFactory(RESTFactory):
 
     METHOD = "GET"
     CFG_NAME = "read_cfg"
-    ROUTE = "/{id}"
 
     def __init__(self, model):
 
         # self.response_model = self._generate_response_model(model)
         self.controller = self.controller_factory(model)
+        self.ROUTE = f"/{{{model.primary_key}}}"
         # self.attach_route(model)
 
     def controller_factory(self, model):
 
+        primary_key_type = str if model.primary_key == "slug" else model._id_type
+
         parameters = [
             Parameter(
-                "id", Parameter.POSITIONAL_OR_KEYWORD, default=..., annotation=str
+                model.primary_key,
+                Parameter.POSITIONAL_OR_KEYWORD,
+                default=...,
+                annotation=primary_key_type,
             ),
             Parameter(
                 "db",
@@ -74,12 +79,12 @@ class ReadFactory(RESTFactory):
 
             try:
                 db = kwargs.get("db")
-                primary_key = kwargs.get("id")
+                primary_key = kwargs.get(model.primary_key)
                 return_db_object = kwargs.get("return_db_object")
                 user = kwargs.get("user")
 
                 Q = db.query(model)
-                Q = Q.filter(model.id == primary_key)
+                Q = Q.filter(getattr(model, model.primary_key) == primary_key)
                 if hasattr(model, "access_control"):
                     Q = model.access_control(Q, user)
                 obj = Q.first()
@@ -107,9 +112,14 @@ class ReadFactory(RESTFactory):
 
     def relationship_paginated_controller(self, model, relationship):
 
+        primary_key_type = str if model.primary_key == "slug" else model._id_type
+
         parameters = [
             Parameter(
-                "id", Parameter.POSITIONAL_OR_KEYWORD, default=..., annotation=str
+                model.primary_key,
+                Parameter.POSITIONAL_OR_KEYWORD,
+                default=...,
+                annotation=primary_key_type,
             ),
             Parameter(
                 "limit", Parameter.POSITIONAL_OR_KEYWORD, default=10, annotation=int
@@ -134,7 +144,7 @@ class ReadFactory(RESTFactory):
         async def inner(*args, **kwargs) -> relationship.mapper.class_.basemodel:
 
             db = kwargs.get("db")
-            primary_key = kwargs.get("id")
+            primary_key = kwargs.get(model.primary_key)
             user = kwargs.get("user")
             page = kwargs.get("page")
             limit = kwargs.get("limit")
@@ -142,7 +152,7 @@ class ReadFactory(RESTFactory):
             offset = page * limit
 
             Q = db.query(relationship.mapper.class_).join(model)
-            Q = Q.filter(model.id == primary_key)
+            Q = Q.filter(getattr(model, model.primary_key) == primary_key)
             if hasattr(model, "access_control"):
                 Q = model.access_control(Q, user)
             Q = Q.limit(limit).offset(offset)
