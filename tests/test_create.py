@@ -3,12 +3,10 @@ import logging
 from conftest import user_headers
 
 
-def test_create_resources(resources, app, superuser_headers, admin_user_id):
+def test_create_resources(resources, app, USERS, superuser_headers, admin_user_id):
     """
     This test runs through all resources (in order) and makes sure they can be posted to the app
     """
-
-    USERS = {resource["id"]: resource for resource in resources["owners"]}
 
     # post static and types
     for resource_name in ["certifications", "species"]:
@@ -40,13 +38,11 @@ def test_create_resources(resources, app, superuser_headers, admin_user_id):
 
 
 def test_create_fail_on_dependencies(
-    resources, app, superuser_headers, admin_user_id, nonadmin_user_id
+    resources, USERS, app, admin_user_id, nonadmin_user_id
 ):
     """
     This test checks that global dependency injection is working correctly
     """
-
-    USERS = {resource["id"]: resource for resource in resources["owners"]}
 
     # static types are protected 'admin only'
     for resource_name in ["certifications", "species"]:

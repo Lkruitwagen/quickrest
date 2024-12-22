@@ -1,12 +1,10 @@
 from conftest import user_headers
 
 
-def test_read_resources(setup_and_fill_db, resources, app):
+def test_read_resources(setup_and_fill_db, resources, app, USERS):
     """
     This test uses the ids of each resource to read from the database.
     """
-
-    USERS = {resource["id"]: resource for resource in resources["owners"]}
 
     # each user can read their own data
     for user_id, user in USERS.items():
@@ -30,10 +28,7 @@ def test_read_resources(setup_and_fill_db, resources, app):
                 assert r.json().get("id") == pet["id"]
 
 
-def test_read_failcases(setup_and_fill_db, resources, app):
-
-    USERS = {resource["id"]: resource for resource in resources["owners"]}
-    PETS = {resource["id"]: resource for resource in resources["pets"]}
+def test_read_failcases(setup_and_fill_db, resources, app, USERS, PETS):
 
     # users can't read other users
     first_user, second_user = USERS["bonita_leashley"], USERS["pawdrick_pupper"]
@@ -55,12 +50,10 @@ def test_read_failcases(setup_and_fill_db, resources, app):
     r = app.get("/pets/{}".format(public_pet["id"]), headers=user_headers(first_user))
 
 
-def test_read_serialized_attribute(setup_and_fill_db, resources, app):
+def test_read_serialized_attribute(setup_and_fill_db, app, USERS):
 
     user_id = "bonita_leashley"
     certification_ids = ["dog_training_kc1", "dog_training_kc2"]
-
-    USERS = {resource["id"]: resource for resource in resources["owners"]}
 
     r = app.get(f"/owners/{user_id}", headers=user_headers(USERS[user_id]))
     assert r.status_code == 200
@@ -71,13 +64,10 @@ def test_read_serialized_attribute(setup_and_fill_db, resources, app):
     assert r.json().get("certifications")[0]["description"]
 
 
-def test_read_routed_relationship(setup_and_fill_db, resources, app):
+def test_read_routed_relationship(setup_and_fill_db, USERS, PETS, app):
     """
     This test uses the ids of each resource to read from the database.
     """
-
-    USERS = {resource["id"]: resource for resource in resources["owners"]}
-    PETS = {resource["id"]: resource for resource in resources["pets"]}
 
     user_id = "pawdrick_pupper"
     user_pets = {k: v for k, v in PETS.items() if v["owner_id"] == user_id}

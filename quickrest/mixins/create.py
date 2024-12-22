@@ -43,13 +43,16 @@ class CreateFactory(RESTFactory):
 
         self.input_model = self._generate_input_model(model)
         self.controller = self.controller_factory(model)
-        # self.attach_route(model)
 
     def _generate_input_model(self, model) -> BaseModel:
         cols = [c for c in model.__table__.columns]
 
         primary_fields = {
-            c.name: (c.type.python_type, ...)
+            c.name: (
+                (Optional[c.type.python_type], None)
+                if c.nullable
+                else (c.type.python_type, ...)
+            )
             for c in cols
             # filter ID field if it's not a (user-provided) string
             if ((c.name != "id") or (c.type.python_type == str))
@@ -68,7 +71,7 @@ class CreateFactory(RESTFactory):
 
         fields = {**primary_fields, **relationship_fields}
 
-        return create_model("CREATE" + model.__name__, **fields)
+        return create_model("Create" + model.__name__, **fields)
 
     def controller_factory(self, model, **kwargs) -> callable:
         parameters = [
@@ -107,13 +110,21 @@ class CreateFactory(RESTFactory):
                     if isinstance(related_ids, list):
                         related_objs = [
                             await r.mapper.class_.read.controller(
-                                db=db, id=id, return_db_object=True
+                                **{
+                                    "db": db,
+                                    r.mapper.class_.primary_key: primary_key,
+                                    "return_db_object": True,
+                                }
                             )
-                            for id in related_ids
+                            for primary_key in related_ids
                         ]
                     else:
                         related_objs = r.mapper.class_.read.controller(
-                            db=db, id=related_ids, return_db_object=True
+                            **{
+                                "db": db,
+                                r.mapper.class_.primary_key: related_ids,
+                                "return_db_object": True,
+                            }
                         )
 
                     setattr(obj, r.key, related_objs)
