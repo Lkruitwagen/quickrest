@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import ForwardRef
+from typing import ForwardRef, Optional
 from uuid import UUID, uuid4
 
 from fastapi import APIRouter
@@ -46,7 +46,6 @@ class ResourceBaseUUID:
         Uuid,
         primary_key=True,
         default=uuid4,
-        # server_default=text("gen_random_uuid")
     )
 
 
@@ -75,7 +74,14 @@ class ResourceMixin:
     def _build_basemodel(cls):
         cols = [c for c in cls.__table__.columns]
 
-        fields = {c.name: (c.type.python_type, ...) for c in cols}
+        fields = {
+            c.name: (
+                (Optional[c.type.python_type], None)
+                if c.nullable
+                else (c.type.python_type, ...)
+            )
+            for c in cols
+        }
 
         for r in cls.__mapper__.relationships:
             if r.key in cls.resource_cfg.serialize:
@@ -113,8 +119,8 @@ class ResourceMixin:
             cls.create.attach_route(cls)
         if hasattr(cls, "delete"):
             cls.delete.attach_route(cls)
-        # if hasattr(cls, "update"):
-        #     cls.update.attach_route(cls)
+        if hasattr(cls, "patch"):
+            cls.patch.attach_route(cls)
 
         # if hasattr(cls, "build_search"):
         #     cls.build_search()
