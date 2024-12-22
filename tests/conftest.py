@@ -64,6 +64,16 @@ def resources():
 
 
 @pytest.fixture(autouse=True)
+def USERS(resources):
+    return {resource["id"]: resource for resource in resources["owners"]}
+
+
+@pytest.fixture(autouse=True)
+def PETS(resources):
+    return {resource["id"]: resource for resource in resources["pets"]}
+
+
+@pytest.fixture(autouse=True)
 def db():
 
     from example.app import Base  # noqa: E402
@@ -148,9 +158,7 @@ def app_types():
 
 
 @pytest.fixture()
-def setup_and_fill_db(db, admin_user_id, superuser_headers, app, resources):
-
-    USERS = {resource["id"]: resource for resource in resources["owners"]}
+def setup_and_fill_db(db, admin_user_id, superuser_headers, app, resources, USERS):
 
     # post static and types
     for resource_name in ["certifications", "species"]:

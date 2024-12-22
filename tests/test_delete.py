@@ -1,9 +1,7 @@
 from conftest import user_headers
 
 
-def test_delete(setup_and_fill_db, resources, app):
-
-    USERS = {resource["id"]: resource for resource in resources["owners"]}
+def test_delete(setup_and_fill_db, USERS, app):
 
     # users can't read other users
     authorized_user = USERS["pawdrick_pupper"]
