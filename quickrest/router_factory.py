@@ -16,18 +16,6 @@ class RouterFactory:
             m.patch.input_model.__name__: m.patch.input_model
             for m in all_models.values()
         }
-        # create_response_models = {
-        #     m.create.response_model.__name__: m.create.response_model
-        #     for m in all_models.values()
-        # }
-        # update_input_models = {
-        #     m.update.input_model.__name__: m.update.input_model
-        #     for m in all_models.values()
-        # }
-        # update_response_models = {
-        #     m.update.response_model.__name__: m.update.response_model
-        #     for m in all_models.values()
-        # }
 
         all_pydantic_models = {
             **base_response_models,
