@@ -1,4 +1,6 @@
 import logging
+from datetime import date
+from typing import Optional
 
 import uvicorn
 from fastapi import FastAPI, HTTPException, Request, status
@@ -117,6 +119,7 @@ class Pet(Base, Resource, Publishable(user_model=Owner)):
     __tablename__ = "pets"
     # note: all Resource classes have an id and slug column by default
     name: Mapped[str] = mapped_column()
+    vaccination_date: Mapped[Optional[date]] = mapped_column(nullable=True)
 
     species_id: Mapped[int] = mapped_column(ForeignKey("species.id"))
 
