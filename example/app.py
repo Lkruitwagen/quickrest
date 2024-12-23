@@ -17,6 +17,7 @@ from quickrest import (
     Publishable,
     ResourceParams,
     RouterFactory,
+    SearchParams,
     User,
     build_resource,
 )
@@ -129,6 +130,12 @@ class Pet(Base, Resource, Publishable(user_model=Owner)):
     class resource_cfg(ResourceParams):
         # choose which relationships should be serialized on the reponse
         serialize = ["specie"]
+
+    class search_cfg(SearchParams):
+        search_gte = ["vaccination_date"]  # greater than or equal to, list[str] | bool
+        search_lt = ["vaccination_date"]  # less than, list[str] | bool
+        search_trgm = ["name"]  # string trigram search
+        search_trgm_threshold = 0.7  # trigram search threshold
 
 
 class Note(Base, Resource, Private(user_model=Owner)):

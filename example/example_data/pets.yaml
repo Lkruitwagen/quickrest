@@ -25,4 +25,4 @@
   owner_id: purrcilla_meowington
   vaccination_date: "2023-05-05"
   species_id: cat
-  public: false
+  public: true
