@@ -12,6 +12,7 @@ from quickrest.mixins.delete import DeleteMixin
 from quickrest.mixins.errors import default_error_handler
 from quickrest.mixins.patch import PatchMixin
 from quickrest.mixins.read import ReadMixin
+from quickrest.mixins.search import SearchMixin
 
 
 def nullraise(caller):
@@ -121,9 +122,9 @@ class ResourceMixin:
             cls.delete.attach_route(cls)
         if hasattr(cls, "patch"):
             cls.patch.attach_route(cls)
-
-        # if hasattr(cls, "build_search"):
-        #     cls.build_search()
+        if hasattr(cls, "search"):
+            print("YEAr SEARCH")
+            cls.search.attach_route(cls)
 
         return cls.router
 
@@ -163,6 +164,7 @@ def build_resource(
         ReadMixin,
         PatchMixin,
         DeleteMixin,
+        SearchMixin,
     ):
         _id_type = id_type
         _sessionmaker = sessionmaker

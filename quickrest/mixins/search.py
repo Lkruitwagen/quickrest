@@ -10,6 +10,7 @@ from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
 from quickrest.mixins.base import BaseMixin, RESTFactory
+from quickrest.mixins.utils import classproperty
 
 
 class SearchParams(ABC):
@@ -35,16 +36,22 @@ class SearchParams(ABC):
     summary = None
     operation_id = None
     tags = None
+    dependencies = []
 
 
 class SearchMixin(BaseMixin):
 
+    _search = None
+
     class search_cfg(SearchParams):
         pass
 
-    @classmethod
-    def build_search(cls):
-        cls.search = SearchFactory(cls)
+    @classproperty
+    def search(cls):
+
+        if cls._search is None:
+            cls._search = SearchFactory(cls)
+        return cls._search
 
 
 class SearchFactory(RESTFactory):
@@ -57,7 +64,6 @@ class SearchFactory(RESTFactory):
         self.input_model = self._generate_input_model(model)
         self.response_model = self._generate_response_model(model)
         self.controller = self.controller_factory(model)
-        self.attach_route(model)
 
     def _generate_input_model(self, model) -> BaseModel:
 
@@ -187,9 +193,17 @@ class SearchFactory(RESTFactory):
         return query_model
 
     def _generate_response_model(self, model) -> BaseModel:
-        cols = [c for c in model.__table__.columns]
+        [c for c in model.__table__.columns]
         return create_model(
-            model.__name__, **{c.name: (c.type.python_type, ...) for c in cols}
+            "SearchResponse" + model.__name__,
+            **{
+                "page": (int, Field(title="page")),
+                "total_pages": (int, Field(title="total_pages")),
+                model.__tablename__: (
+                    list[model.basemodel],
+                    Field(title=model.__tablename__),
+                ),
+            },
         )
 
     def controller_factory(self, model):
@@ -207,79 +221,107 @@ class SearchFactory(RESTFactory):
                 default=Depends(model.db_generator),
                 annotation=Session,
             ),
+            Parameter(
+                "user",
+                Parameter.POSITIONAL_OR_KEYWORD,
+                default=Depends(model._user_generator),
+                annotation=model._user_token,
+            ),
         ]
 
-        def inner(*args, **kwargs) -> list[model]:
+        async def inner(*args, **kwargs) -> list[model]:
             db = kwargs.get("db")
             query = kwargs.get("query")
+            user = kwargs.get("user")
 
-            Q = db.query(model)
+            try:
 
-            for name, val in query.model_dump().items():
-                if val is not None:
+                Q = db.query(model)
 
-                    # check type of param
+                # add access control
+                if hasattr(model, "access_control"):
+                    Q = model.access_control(Q, user)
 
-                    if type(val) in [int, float, date, datetime]:
+                for name, val in query.model_dump().items():
+                    if val is not None:
 
-                        compare_type = name.split("_")[-1]
-                        param_name = "_".join(name.split("_")[:-1])
+                        # check type of param
 
-                        if compare_type == "eq":
-                            Q = Q.filter(getattr(model, param_name) == val)
-                        elif compare_type == "gte":
-                            Q = Q.filter(getattr(model, param_name) >= val)
-                        elif compare_type == "gt":
-                            Q = Q.filter(getattr(model, param_name) > val)
-                        elif compare_type == "lte":
-                            Q = Q.filter(getattr(model, param_name) <= val)
-                        elif compare_type == "lt":
-                            Q = Q.filter(getattr(model, param_name) < val)
+                        if type(val) in [int, float, date, datetime]:
 
-                    if type(val) is str:
+                            compare_type = name.split("_")[-1]
+                            param_name = "_".join(name.split("_")[:-1])
 
-                        if (
-                            model.search_cfg.search_contains
-                            and model.search_cfg.search_trgm
-                        ):
-                            # if contains AND trgm
-                            Q = Q.filter(
-                                or_(
-                                    getattr(model, name).contains(val),
-                                    func.similarity(getattr(model, name), val)
-                                    > query.threshold,
+                            if compare_type == "eq":
+                                Q = Q.filter(getattr(model, param_name) == val)
+                            elif compare_type == "gte":
+                                Q = Q.filter(getattr(model, param_name) >= val)
+                            elif compare_type == "gt":
+                                Q = Q.filter(getattr(model, param_name) > val)
+                            elif compare_type == "lte":
+                                Q = Q.filter(getattr(model, param_name) <= val)
+                            elif compare_type == "lt":
+                                Q = Q.filter(getattr(model, param_name) < val)
+
+                        if type(val) is str:
+
+                            if (
+                                model.search_cfg.search_contains
+                                and model.search_cfg.search_trgm
+                            ):
+                                # if contains AND trgm
+                                Q = Q.filter(
+                                    or_(
+                                        getattr(model, name).contains(val),
+                                        func.similarity(getattr(model, name), val)
+                                        > query.threshold,
+                                    )
                                 )
-                            )
 
-                        elif model.search_cfg.search_contains:
-                            # if just contains
-                            Q = Q.filter(getattr(model, name).contains(val))
+                            elif model.search_cfg.search_contains:
+                                # if just contains
+                                Q = Q.filter(getattr(model, name).contains(val))
 
-                        elif model.search_cfg.search_trgm:
-                            # if just trgm
-                            Q = Q.filter(
-                                func.similarity(getattr(model, name), val)
-                                > query.threshold
-                            )
+                            elif model.search_cfg.search_trgm:
+                                # if just trgm
+                                Q = Q.filter(
+                                    func.similarity(getattr(model, name), val)
+                                    > query.threshold
+                                )
 
-                        else:
-                            # else jsut extact match
-                            Q = Q.filter(getattr(model, name) == val)
+                            else:
+                                # else jsut extact match
+                                Q = Q.filter(getattr(model, name) == val)
 
-            # pagination
-            # Count total results (without fetching)
-            db.query(func.count()).select_from(Q.subquery()).scalar()
+                # pagination
+                # Count total results (without fetching)
+                total_results = (
+                    db.query(func.count()).select_from(Q.subquery()).scalar()
+                )
 
-            # Get filtered set of results
-            filtered_results = (
-                Q.offset(query.page * query.limit).limit(query.limit).all()
-            )
+                # Get filtered set of results
+                filtered_results = (
+                    Q.offset(query.page * query.limit).limit(query.limit).all()
+                )
 
-            return filtered_results
+                pydnatic_results = [
+                    model.basemodel.model_validate(obj, from_attributes=True)
+                    for obj in filtered_results
+                ]
+
+                return model.response_model(
+                    **{
+                        "page": query.page,
+                        "total_pages": (total_results // query.limit) + 1,
+                        model.__tablename__: pydnatic_results,
+                    }
+                )
+            except Exception as e:
+                raise model._error_handler(e)
 
         @wraps(inner)
-        def f(*args, **kwargs):
-            return inner(*args, **kwargs)
+        async def f(*args, **kwargs):
+            return await inner(*args, **kwargs)
 
         # Override signature
         sig = signature(inner)
