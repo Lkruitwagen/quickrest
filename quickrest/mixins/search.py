@@ -161,7 +161,7 @@ class SearchFactory(RESTFactory):
             query_fields["threshold"] = (float, Field(title="threshold", default=0.7))
 
         query_model = create_model(
-            model.__name__,
+            "Search" + model.__name__,
             __base__=BaseModel,
             **query_fields,
         )
