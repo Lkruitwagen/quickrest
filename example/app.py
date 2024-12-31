@@ -1,5 +1,6 @@
 import logging
 from datetime import date
+from pathlib import Path
 from typing import Optional
 
 import uvicorn
@@ -7,7 +8,7 @@ from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from sqlalchemy import ForeignKey, create_engine
+from sqlalchemy import ForeignKey, create_engine, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship, sessionmaker
 
 from quickrest import (
@@ -66,6 +67,15 @@ async def check_user_is_admin(request: Request):
 
 engine = create_engine("sqlite:///database.db", echo=False)
 SessionMaker = sessionmaker(bind=engine)
+
+
+# load the similarity extension
+@event.listens_for(engine, "connect")
+def receive_connect(conn, _):
+    conn.enable_load_extension(True)
+    conn.load_extension(str(Path.cwd() / "spellfix.so"))
+    conn.enable_load_extension(False)
+
 
 # ### Resource Definitions
 
@@ -134,8 +144,8 @@ class Pet(Base, Resource, Publishable(user_model=Owner)):
     class search_cfg(SearchParams):
         search_gte = ["vaccination_date"]  # greater than or equal to, list[str] | bool
         search_lt = ["vaccination_date"]  # less than, list[str] | bool
-        search_trgm = ["name"]  # string trigram search
-        search_trgm_threshold = 0.7  # trigram search threshold
+        search_similarity = ["name"]  # string trigram search
+        search_similarity_threshold = 300  # trigram search threshold
 
 
 class Note(Base, Resource, Private(user_model=Owner)):

@@ -123,7 +123,6 @@ class ResourceMixin:
         if hasattr(cls, "patch"):
             cls.patch.attach_route(cls)
         if hasattr(cls, "search"):
-            print("YEAr SEARCH")
             cls.search.attach_route(cls)
 
         return cls.router

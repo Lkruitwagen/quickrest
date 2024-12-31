@@ -2,6 +2,7 @@ from abc import ABC
 from datetime import date, datetime
 from functools import wraps
 from inspect import Parameter, signature
+from operator import gt, lt
 from typing import Optional
 
 from fastapi import Depends
@@ -17,7 +18,7 @@ class SearchParams(ABC):
     required_params = []
     pop_params = None
 
-    results_limit = None
+    results_limit = 10
 
     # for float, int, datetime:
     search_eq = None  # is precisely equal to
@@ -28,8 +29,8 @@ class SearchParams(ABC):
 
     # for str:
     search_contains = None  # string contains search
-    search_trgm = None  # string trigram search
-    search_trgm_threshold = None
+    search_similarity = None  # string trigram search
+    search_similarity_threshold = None
 
     # router method
     description = None
@@ -145,6 +146,16 @@ class SearchFactory(RESTFactory):
                             Field(title=c.name, default=None),
                         )
 
+                elif c.type.python_type == bool:
+                    # add filtering for boolean data
+                    if c.name in model.search_cfg.required_params:
+                        query_fields[c.name] = (bool, Field(title=c.name, default=...))
+                    else:
+                        query_fields[c.name] = (
+                            Optional[bool],
+                            Field(title=c.name, default=None),
+                        )
+
                 else:
                     print("unknown", c.name, c.type.python_type)
                     print(repr(c.type.python_type))
@@ -156,9 +167,32 @@ class SearchFactory(RESTFactory):
         )
         query_fields["page"] = (int, Field(title="page", default=0))
 
-        # maybe add trgm threshold
-        if model.search_cfg.search_trgm is not None:
-            query_fields["threshold"] = (float, Field(title="threshold", default=0.7))
+        # maybe add similarity threshold
+        if model.search_cfg.search_similarity is not None:
+
+            if model._sessionmaker.kw.get("bind").dialect.name == "sqlite":
+
+                self.similarity_fn = func.editdist3
+                self.similarity_op = lt
+                query_fields["threshold"] = (
+                    int,
+                    Field(title="threshold", default=300, gt=99),
+                )
+
+            elif model._sessionmaker.kw.get("bind").dialect.name == "postgresql":
+                self.similarity_fn = func.similarity
+                self.similarity_op = gt
+                query_fields["threshold"] = (
+                    float,
+                    Field(title="threshold", default=0.7, lt=1.0),
+                )
+
+            else:
+                raise ValueError(
+                    "Unsupported database: {}".format(
+                        model._sessionmaker.kw.get("bind")
+                    )
+                )
 
         query_model = create_model(
             "Search" + model.__name__,
@@ -247,6 +281,9 @@ class SearchFactory(RESTFactory):
 
                         # check type of param
 
+                        if type(val) is bool:
+                            Q = Q.filter(getattr(model, name) == val)
+
                         if type(val) in [int, float, date, datetime]:
 
                             compare_type = name.split("_")[-1]
@@ -267,14 +304,18 @@ class SearchFactory(RESTFactory):
 
                             if (
                                 model.search_cfg.search_contains
-                                and model.search_cfg.search_trgm
+                                and model.search_cfg.search_similarity
                             ):
-                                # if contains AND trgm
+                                # if contains AND similarity
                                 Q = Q.filter(
                                     or_(
                                         getattr(model, name).contains(val),
-                                        func.similarity(getattr(model, name), val)
-                                        > query.threshold,
+                                        self.similarity_op(
+                                            self.similarity_fn(
+                                                getattr(model, name), val
+                                            ),
+                                            query.threshold,
+                                        ),
                                     )
                                 )
 
@@ -282,11 +323,13 @@ class SearchFactory(RESTFactory):
                                 # if just contains
                                 Q = Q.filter(getattr(model, name).contains(val))
 
-                            elif model.search_cfg.search_trgm:
-                                # if just trgm
+                            elif model.search_cfg.search_similarity:
+                                # if just similarity
                                 Q = Q.filter(
-                                    func.similarity(getattr(model, name), val)
-                                    > query.threshold
+                                    self.similarity_op(
+                                        self.similarity_fn(getattr(model, name), val),
+                                        query.threshold,
+                                    )
                                 )
 
                             else:
@@ -309,7 +352,7 @@ class SearchFactory(RESTFactory):
                     for obj in filtered_results
                 ]
 
-                return model.response_model(
+                return self.response_model(
                     **{
                         "page": query.page,
                         "total_pages": (total_results // query.limit) + 1,
