@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import ForwardRef, Optional
+from typing import Callable, ForwardRef, Generator, Optional, Type
 from uuid import UUID, uuid4
 
 from fastapi import APIRouter
@@ -65,6 +65,10 @@ class ResourceBaseSlugPass:
 
 class ResourceMixin:
 
+    router: APIRouter
+    _sessionmaker: Callable
+    __tablename__: str
+
     class router_cfg(RouterParams):
         pass
 
@@ -125,10 +129,8 @@ class ResourceMixin:
         if hasattr(cls, "search"):
             cls.search.attach_route(cls)
 
-        return cls.router
-
     @classmethod
-    async def db_generator(cls) -> Session:
+    def db_generator(cls) -> Generator[Session, None, None]:
         try:
             db = cls._sessionmaker()
             yield db
@@ -136,15 +138,24 @@ class ResourceMixin:
             if db is not None:
                 db.close()
 
+    # @classmethod
+    # async def async_db_generator(cls) -> AsyncGenerator[_AsyncSession, None]:
+    #     r"""Get a fresh database session for the current request, for use with FastAPI Depends()."""
+    #     async with cls._sessionmaker() as db:
+    #         yield db
+    #         db.close()
+
 
 def build_resource(
-    sessionmaker: callable = nullraise,
-    user_generator: callable = nullreturn,
-    user_token_model: BaseModel = None,
+    sessionmaker: Callable = nullraise,
+    user_generator: Callable = nullreturn,
+    user_token_model: Optional[BaseModel] = None,
     id_type: type = str,
     slug: bool = False,
-    error_handler: callable = default_error_handler,
+    error_handler: Callable = default_error_handler,
 ) -> type:
+
+    ResourceBase: Type[object]
 
     if id_type is str:
         ResourceBase = ResourceBaseStr
@@ -156,8 +167,8 @@ def build_resource(
         raise ValueError(f"id_type must be str, uuid.UUID, or int, got {id_type}")
 
     class Resource(
-        ResourceBase,
-        ResourceBaseSlug if slug else ResourceBaseSlugPass,
+        ResourceBase,  # type: ignore
+        ResourceBaseSlug if slug else ResourceBaseSlugPass,  # type: ignore
         ResourceMixin,
         CreateMixin,
         ReadMixin,

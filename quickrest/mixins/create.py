@@ -1,6 +1,6 @@
 from functools import wraps
 from inspect import Parameter, signature
-from typing import Optional
+from typing import Any, Callable, Optional
 
 from fastapi import Depends
 from pydantic import BaseModel, create_model
@@ -11,11 +11,11 @@ from quickrest.mixins.utils import classproperty
 
 
 class CreateParams:
-    description = None
-    summary = None
-    operation_id = None
-    tags = None
-    dependencies = []
+    description: Optional[str] = None
+    summary: Optional[str] = None
+    operation_id: Optional[str] = None
+    tags: Optional[list[str]] = None
+    dependencies: list[Callable] = []
 
 
 class CreateMixin(BaseMixin):
@@ -63,17 +63,16 @@ class CreateFactory(RESTFactory):
         for r in model.__mapper__.relationships:
             if len(r.remote_side) > 1:
                 # if the relationship is many-to-many, we need to use a list
-                # TODO: is this required?
                 relationship_fields[r.key] = (Optional[list[str]], None)
             else:
                 # otherwise, we can just use the type of the primary key
                 relationship_fields[r.key] = (Optional[str], None)
 
-        fields = {**primary_fields, **relationship_fields}
+        fields: Any = {**primary_fields, **relationship_fields}
 
-        return create_model("Create" + model.__name__, **fields)
+        return create_model(str("Create" + model.__name__), **fields)
 
-    def controller_factory(self, model, **kwargs) -> callable:
+    def controller_factory(self, model, **kwargs) -> Callable:
         parameters = [
             Parameter(
                 self.input_model.__name__.lower(),
@@ -90,8 +89,8 @@ class CreateFactory(RESTFactory):
         ]
 
         async def inner(*args, **kwargs) -> model:
-            db = kwargs.get("db")
-            body = kwargs.get(self.input_model.__name__.lower())
+            db: Session = kwargs["db"]
+            body: BaseModel = kwargs[self.input_model.__name__.lower()]
 
             obj = model(
                 **{
@@ -142,6 +141,6 @@ class CreateFactory(RESTFactory):
         # Override signature
         sig = signature(inner)
         sig = sig.replace(parameters=parameters)
-        f.__signature__ = sig
+        f.__signature__ = sig  # type: ignore
 
         return f

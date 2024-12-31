@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Callable
 
 from fastapi import Depends
 
@@ -9,9 +10,8 @@ class BaseMixin:
 
 class RESTFactory(ABC):
 
-    @classmethod
     @abstractmethod
-    def controller_factory(cls) -> callable: ...  # noqa: E704
+    def controller_factory(self, model, **kwargs) -> Callable: ...  # noqa: E704
 
     def attach_route(self, model) -> None:
 

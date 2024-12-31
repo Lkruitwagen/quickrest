@@ -1,7 +1,7 @@
 from abc import ABC
 from functools import wraps
 from inspect import Parameter, signature
-from typing import Optional
+from typing import Any, Callable, Optional
 
 from fastapi import Depends
 from pydantic import BaseModel, create_model
@@ -13,16 +13,16 @@ from quickrest.mixins.utils import classproperty
 
 
 class PatchParams(ABC):
-    primary_key = None
-    patchable_params = None
-    nonpatchable_params = None
-    dependencies = []
+    primary_key: Optional[str] = None
+    patchable_params: Optional[list[str]] = None
+    nonpatchable_params: Optional[list[str]] = None
+    dependencies: list[Callable] = []
 
     # router method
-    description = None
-    summary = None
-    operation_id = None
-    tags = None
+    description: Optional[str] = None
+    summary: Optional[str] = None
+    operation_id: Optional[str] = None
+    tags: Optional[list[str]] = None
 
 
 class PatchMixin(BaseMixin):
@@ -71,7 +71,7 @@ class PatchFactory(RESTFactory):
                 # otherwise, we can just use the type of the primary key
                 relationship_fields[r.key] = (Optional[str], None)
 
-        fields = {**primary_fields, **relationship_fields}
+        fields: Any = {**primary_fields, **relationship_fields}
 
         return create_model("Patch" + model.__name__, **fields)
 
@@ -109,10 +109,10 @@ class PatchFactory(RESTFactory):
         async def inner(*args, **kwargs) -> model:
 
             try:
-                db = kwargs.get("db")
-                primary_key = kwargs.get(model.primary_key)
-                user = kwargs.get("user")
-                patch = kwargs.get("patch")
+                db = kwargs["db"]
+                primary_key = kwargs[model.primary_key]
+                user = kwargs["user"]
+                patch = kwargs["patch"]
 
                 Q = db.query(model)
                 Q = Q.filter(getattr(model, model.primary_key) == primary_key)
