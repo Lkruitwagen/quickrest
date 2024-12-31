@@ -16,13 +16,21 @@ class RouterFactory:
             m.patch.input_model.__name__: m.patch.input_model
             for m in all_models.values()
         }
+        search_input_models = {
+            m.search.input_model.__name__: m.search.input_model
+            for m in all_models.values()
+        }
+        search_reponse_models = {
+            m.search.response_model.__name__: m.search.response_model
+            for m in all_models.values()
+        }
 
         all_pydantic_models = {
             **base_response_models,
             **create_input_models,
             **patch_input_models,
-            # **create_response_models,
-            # **update_response_models,
+            **search_input_models,
+            **search_reponse_models,
         }
 
         for _name, model in all_models.items():

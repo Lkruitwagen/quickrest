@@ -46,6 +46,11 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: "3.12"
+      - name: install sqlite similarity
+        run: |
+          wget https://sqlite.org/2016/sqlite-src-3110100.zip
+          unzip sqlite-src-3110100.zip
+          gcc -shared -fPIC -Wall -Isqlite-src-3110100 sqlite-src-3110100/ext/misc/spellfix.c -o spellfix.so
       - name: install dependences
         shell: bash
         run: |
