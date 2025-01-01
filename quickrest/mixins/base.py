@@ -10,6 +10,11 @@ class BaseMixin:
 
 class RESTFactory(ABC):
 
+    METHOD: str
+    CFG_NAME: str
+    ROUTE: str
+    controller: Callable
+
     @abstractmethod
     def controller_factory(self, model, **kwargs) -> Callable: ...  # noqa: E704
 
@@ -22,8 +27,9 @@ class RESTFactory(ABC):
             dependencies=[
                 Depends(d) for d in getattr(model, self.CFG_NAME).dependencies
             ],
-            summary=getattr(model, self.CFG_NAME).summary,
-            tags=getattr(model, self.CFG_NAME).tags,
+            summary=getattr(model, self.CFG_NAME).summary
+            or self.METHOD.lower() + " " + model.__name__.lower(),
+            tags=getattr(model, self.CFG_NAME).tags or [model.__name__],
             operation_id=getattr(model, self.CFG_NAME).operation_id,
             methods=[self.METHOD],
             status_code=getattr(self, "SUCCESS_CODE", None) or 200,

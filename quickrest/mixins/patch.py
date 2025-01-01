@@ -146,6 +146,7 @@ class PatchFactory(RESTFactory):
                                         "db": db,
                                         r.mapper.class_.primary_key: primary_key,
                                         "return_db_object": True,
+                                        "user": user,
                                     }
                                 )
                                 for primary_key in related_ids
@@ -156,6 +157,7 @@ class PatchFactory(RESTFactory):
                                     "db": db,
                                     r.mapper.class_.primary_key: primary_key,
                                     "return_db_object": True,
+                                    "user": user,
                                 }
                             )
 

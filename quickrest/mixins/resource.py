@@ -30,7 +30,6 @@ class RouterParams(ABC):
 
 
 class ResourceParams(ABC):
-    routed_relationships: list[str] = []
     serialize: list[str] = []
 
 
@@ -118,15 +117,15 @@ class ResourceMixin:
             dependencies=cls.router_cfg.dependencies,
         )
 
-        if hasattr(cls, "read"):
+        if hasattr(cls, "read") and getattr(cls, "read_cfg", None) is not None:
             cls.read.attach_route(cls)
-        if hasattr(cls, "create"):
+        if hasattr(cls, "create") and getattr(cls, "create_cfg", None) is not None:
             cls.create.attach_route(cls)
-        if hasattr(cls, "delete"):
+        if hasattr(cls, "delete") and getattr(cls, "delete_cfg", None) is not None:
             cls.delete.attach_route(cls)
-        if hasattr(cls, "patch"):
+        if hasattr(cls, "patch") and getattr(cls, "patch_cfg", None) is not None:
             cls.patch.attach_route(cls)
-        if hasattr(cls, "search"):
+        if hasattr(cls, "search") and getattr(cls, "search_cfg", None) is not None:
             cls.search.attach_route(cls)
 
     @classmethod
@@ -137,13 +136,6 @@ class ResourceMixin:
         finally:
             if db is not None:
                 db.close()
-
-    # @classmethod
-    # async def async_db_generator(cls) -> AsyncGenerator[_AsyncSession, None]:
-    #     r"""Get a fresh database session for the current request, for use with FastAPI Depends()."""
-    #     async with cls._sessionmaker() as db:
-    #         yield db
-    #         db.close()
 
 
 def build_resource(

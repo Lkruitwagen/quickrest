@@ -86,11 +86,18 @@ class CreateFactory(RESTFactory):
                 default=Depends(model.db_generator),
                 annotation=Session,
             ),
+            Parameter(
+                "user",
+                Parameter.POSITIONAL_OR_KEYWORD,
+                default=Depends(model._user_generator),
+                annotation=model._user_token,
+            ),
         ]
 
         async def inner(*args, **kwargs) -> model:
-            db: Session = kwargs["db"]
-            body: BaseModel = kwargs[self.input_model.__name__.lower()]
+            db = kwargs["db"]
+            body = kwargs[self.input_model.__name__.lower()]
+            user = kwargs["user"]
 
             obj = model(
                 **{
@@ -113,6 +120,7 @@ class CreateFactory(RESTFactory):
                                     "db": db,
                                     r.mapper.class_.primary_key: primary_key,
                                     "return_db_object": True,
+                                    "user": user,
                                 }
                             )
                             for primary_key in related_ids
@@ -123,6 +131,7 @@ class CreateFactory(RESTFactory):
                                 "db": db,
                                 r.mapper.class_.primary_key: related_ids,
                                 "return_db_object": True,
+                                "user": user,
                             }
                         )
 

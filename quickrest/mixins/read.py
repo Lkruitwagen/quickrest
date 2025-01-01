@@ -1,6 +1,7 @@
 from abc import ABC
 from functools import wraps
 from inspect import Parameter, signature
+from typing import Callable, Optional
 
 from fastapi import Depends
 from sqlalchemy.orm import Session
@@ -11,14 +12,75 @@ from quickrest.mixins.utils import classproperty
 
 
 class ReadParams(ABC):
-    description = None
-    summary = None
-    operation_id = None
-    tags = None
-    dependencies = []
+    description: Optional[str] = None
+    summary: Optional[str] = None
+    operation_id: Optional[str] = None
+    tags: Optional[list[str]] = None
+    dependencies: list[Callable] = []
+
+    routed_relationships: list[str] = []
 
 
 class ReadMixin(BaseMixin):
+    """
+    # Read
+
+    The ReadMixin provides a `GET` endpoint for a resource, keyed by the primary key of the resource:
+
+        `GET {resource_name}/{primary_key}`
+
+    The primary key is the `id` of the resource, unless the resource has a `slug` primary key, in which case the primary key is the `slug`.
+    The ReadMixin also provides paginated endpoints for each relationship of the resource, with a `page` and `limit` query parameter:
+
+        `GET {resource_name}/{primary_key}/{relationship_name}?limit=10&page=0`
+
+    ## ReadParams
+
+    The ReadMixin Optionally accepts a `ReadParams` class to be defined on the resource class.
+    This class should inherit from `ReadParams` and must be called `read_cfg`.
+    `read_cfg` can be defined with the following parameters:
+
+    ## Parameters
+
+    `description` `(str)` - Description of the endpoint. Optional, defaults to `None`.
+
+    `summary` `(str)` - Summary of the endpoint. Optional, defaults to `get {resource_name}`.
+
+    `operation_id` `(str)` - Operation ID of the endpoint. Optional, defaults to `None`.
+
+    `tags` `(list[str])` - Tags for the endpoint. Optional, defaults to `None`.
+
+    `dependencies` `(list[Callable])` - Injectable callable dependencies for the endpoint. Optional, defaults to `[]`.
+
+    `routed_relationships` `(list[str])` - List of relationship names to create paginated endpoints for. Strings must match the relationship attributes. Optional, defaults to `[]`.
+
+    ## Example
+
+    A simple example of how to define a one-to-many relationship between a `Parent` and `Child` resource, and create a paginated endpoint for the `children` relationship.
+
+    ```python
+    from sqlalchemy import ForeignKey
+    from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+    from quickrest import Base, Resource
+
+
+    class Parent(Base, Resource):
+        __tablename__ = "parents"
+
+        children: Mapped[list["Child"]] = relationship()
+
+        class read_cfg(ReadParams):
+            routed_relationships = ["children"]
+
+
+    class Child(Base, Resource):
+
+        __tablename__ = "dogs"
+
+        parent_id: Mapped[int] = mapped_column(ForeignKey("parents.id"))
+    ```
+    """
 
     _read = None
 
@@ -73,13 +135,13 @@ class ReadFactory(RESTFactory):
             ),
         ]
 
-        async def inner(*args, **kwargs) -> model.basemodel:
+        async def inner(*args, **kwargs) -> model.basemodel:  # type: ignore
 
             try:
-                db = kwargs.get("db")
-                primary_key = kwargs.get(model.primary_key)
-                return_db_object = kwargs.get("return_db_object")
-                user = kwargs.get("user")
+                db = kwargs["db"]
+                primary_key = kwargs[model.primary_key]
+                return_db_object = kwargs["return_db_object"]
+                user = kwargs["user"]
 
                 Q = db.query(model)
                 Q = Q.filter(getattr(model, model.primary_key) == primary_key)
@@ -139,13 +201,13 @@ class ReadFactory(RESTFactory):
             ),
         ]
 
-        async def inner(*args, **kwargs) -> relationship.mapper.class_.basemodel:
+        async def inner(*args, **kwargs) -> relationship.mapper.class_.basemodel:  # type: ignore
 
-            db = kwargs.get("db")
-            primary_key = kwargs.get(model.primary_key)
-            user = kwargs.get("user")
-            page = kwargs.get("page")
-            limit = kwargs.get("limit")
+            db = kwargs["db"]
+            primary_key = kwargs[model.primary_key]
+            user = kwargs["user"]
+            page = kwargs["page"]
+            limit = kwargs["limit"]
 
             offset = page * limit
 
@@ -187,16 +249,18 @@ class ReadFactory(RESTFactory):
             dependencies=[
                 Depends(d) for d in getattr(model, self.CFG_NAME).dependencies
             ],
-            summary=getattr(model, self.CFG_NAME).summary,
-            tags=getattr(model, self.CFG_NAME).tags,
+            summary=getattr(model, self.CFG_NAME).summary
+            or self.METHOD.lower() + " " + model.__name__.lower(),
+            tags=getattr(model, self.CFG_NAME).tags or [model.__name__],
             operation_id=getattr(model, self.CFG_NAME).operation_id,
             methods=[self.METHOD],
             status_code=getattr(self, "SUCCESS_CODE", None) or 200,
             response_model=getattr(self, "response_model", model.basemodel),
         )
 
+        # add paginated relationship routes for each relationship
         for r in model.__mapper__.relationships:
-            if r.key in model.resource_cfg.routed_relationships:
+            if r.key in getattr(model, self.CFG_NAME).routed_relationships:
                 model.router.add_api_route(
                     f"{self.ROUTE}/{r.key}",
                     self.relationship_paginated_controller(model, r),
@@ -205,9 +269,9 @@ class ReadFactory(RESTFactory):
                         Depends(d) for d in getattr(model, self.CFG_NAME).dependencies
                     ],
                     summary=f"Paginated relationship endpoint for {r.key}",
-                    tags=getattr(model, self.CFG_NAME).tags,
+                    tags=getattr(model, self.CFG_NAME).tags or [model.__name__],
                     operation_id=f"get_{r.key}_paginated",
                     methods=[self.METHOD],
                     status_code=getattr(self, "SUCCESS_CODE", None) or 200,
-                    response_model=list[r.mapper.class_.basemodel],
+                    response_model=list[r.mapper.class_.basemodel],  # type: ignore
                 )
