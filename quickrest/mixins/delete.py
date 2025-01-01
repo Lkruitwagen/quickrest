@@ -1,6 +1,7 @@
 from abc import ABC
 from functools import wraps
 from inspect import Parameter, signature
+from typing import Callable, Optional
 
 from fastapi import Depends
 from sqlalchemy.orm import Session
@@ -11,12 +12,12 @@ from quickrest.mixins.utils import classproperty
 
 
 class DeleteParams(ABC):
-    primary_key = None
-    description = None
-    summary = None
-    operation_id = None
-    tags = None
-    dependencies = []
+    primary_key: Optional[str] = None
+    description: Optional[str] = None
+    summary: Optional[str] = None
+    operation_id: Optional[str] = None
+    tags: Optional[list[str]] = None
+    dependencies: list[Callable] = []
 
 
 class DeleteMixin(BaseMixin):
@@ -69,12 +70,12 @@ class DeleteFactory(RESTFactory):
             ),
         ]
 
-        def inner(*args, **kwargs) -> self.response_model:
+        def inner(*args, **kwargs) -> int:
 
             try:
-                db = kwargs.get("db")
-                primary_key = kwargs.get(model.primary_key)
-                user = kwargs.get("user")
+                db = kwargs["db"]
+                primary_key = kwargs[model.primary_key]
+                user = kwargs["user"]
 
                 Q = db.query(model)
                 Q = Q.filter(getattr(model, model.primary_key) == primary_key)

@@ -3,7 +3,7 @@ from datetime import date, datetime
 from functools import wraps
 from inspect import Parameter, signature
 from operator import gt, lt
-from typing import Optional
+from typing import Any, Callable, Optional, Union
 
 from fastapi import Depends
 from pydantic import BaseModel, Field, create_model
@@ -15,29 +15,33 @@ from quickrest.mixins.utils import classproperty
 
 
 class SearchParams(ABC):
-    required_params = []
-    pop_params = None
+    required_params: list[str] = []
+    pop_params: Optional[list[str]] = None
 
-    results_limit = 10
+    results_limit: int = 10
 
     # for float, int, datetime:
-    search_eq = None  # is precisely equal to
-    search_gt = None  # greater than, list[str] | bool
-    search_gte = None  # greater than or equal to, list[str] | bool
-    search_lt = None  # less than, list[str] | bool
-    search_lte = None  # less than or equal to, list[str] | bool
+    search_eq: Optional[Union[list[str], bool]] = None  # is precisely equal to
+    search_gt: Optional[Union[list[str], bool]] = None  # greater than, list[str] | bool
+    search_gte: Optional[Union[list[str], bool]] = (
+        None  # greater than or equal to, list[str] | bool
+    )
+    search_lt: Optional[Union[list[str], bool]] = None  # less than, list[str] | bool
+    search_lte: Optional[Union[list[str], bool]] = (
+        None  # less than or equal to, list[str] | bool
+    )
 
     # for str:
-    search_contains = None  # string contains search
-    search_similarity = None  # string trigram search
-    search_similarity_threshold = None
+    search_contains: Optional[Union[list[str], bool]] = None  # string contains search
+    search_similarity: Optional[Union[list[str], bool]] = None  # string trigram search
+    search_similarity_threshold: Optional[Union[int, float]] = None
 
     # router method
-    description = None
-    summary = None
-    operation_id = None
-    tags = None
-    dependencies = []
+    description: Optional[str] = None
+    summary: Optional[str] = None
+    operation_id: Optional[str] = None
+    tags: Optional[list[str]] = None
+    dependencies: list[Callable] = []
 
 
 class SearchMixin(BaseMixin):
@@ -55,6 +59,10 @@ class SearchMixin(BaseMixin):
         return cls._search
 
 
+class BaseModelWithBridge(BaseModel):
+    _bridge: Callable
+
+
 class SearchFactory(RESTFactory):
 
     METHOD = "GET"
@@ -66,7 +74,7 @@ class SearchFactory(RESTFactory):
         self.response_model = self._generate_response_model(model)
         self.controller = self.controller_factory(model)
 
-    def _generate_input_model(self, model) -> BaseModel:
+    def _generate_input_model(self, model) -> type[BaseModelWithBridge]:
 
         def maybe_add_param(search_cfg, name):
             add_param_fields = []
@@ -116,7 +124,8 @@ class SearchFactory(RESTFactory):
         cols = [c for c in model.__table__.columns]
 
         # build the query fields
-        query_fields = {}
+        query_fields: Any = {}
+
         for c in cols:
             if c.name not in ["id"]:
 
@@ -196,7 +205,7 @@ class SearchFactory(RESTFactory):
 
         query_model = create_model(
             "Search" + model.__name__,
-            __base__=BaseModel,
+            __base__=BaseModelWithBridge,
             **query_fields,
         )
 
@@ -220,25 +229,26 @@ class SearchFactory(RESTFactory):
         # Override signature
         sig = signature(bridge_inner)
         sig = sig.replace(parameters=bridge_parameters)
-        bridge.__signature__ = sig
+        bridge.__signature__ = sig  # type: ignore
 
-        query_model.bridge = bridge
+        query_model._bridge = bridge
 
         return query_model
 
     def _generate_response_model(self, model) -> BaseModel:
+
         [c for c in model.__table__.columns]
-        return create_model(
-            "SearchResponse" + model.__name__,
-            **{
-                "page": (int, Field(title="page")),
-                "total_pages": (int, Field(title="total_pages")),
-                model.__tablename__: (
-                    list[model.basemodel],
-                    Field(title=model.__tablename__),
-                ),
-            },
-        )
+
+        fields: Any = {
+            "page": (int, Field(title="page")),
+            "total_pages": (int, Field(title="total_pages")),
+            model.__tablename__: (
+                list[model.basemodel],
+                Field(title=model.__tablename__),
+            ),
+        }
+
+        return create_model("SearchResponse" + model.__name__, **fields)
 
     def controller_factory(self, model):
 
@@ -246,7 +256,7 @@ class SearchFactory(RESTFactory):
             Parameter(
                 "query",
                 Parameter.POSITIONAL_OR_KEYWORD,
-                default=Depends(self.input_model.bridge),
+                default=Depends(self.input_model._bridge),
                 annotation=self.input_model,
             ),
             Parameter(
@@ -264,9 +274,9 @@ class SearchFactory(RESTFactory):
         ]
 
         async def inner(*args, **kwargs) -> list[model]:
-            db = kwargs.get("db")
-            query = kwargs.get("query")
-            user = kwargs.get("user")
+            db = kwargs["db"]
+            query = kwargs["query"]
+            user = kwargs["user"]
 
             try:
 

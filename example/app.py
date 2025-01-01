@@ -16,6 +16,7 @@ from quickrest import (
     CreateParams,
     Private,
     Publishable,
+    ReadParams,
     ResourceParams,
     RouterFactory,
     SearchParams,
@@ -104,12 +105,14 @@ class Owner(
     )
 
     class resource_cfg(ResourceParams):
-        # choose which relationships should be accessible via URL /<resource>/<id>/<relationship>
-        routed_relationships = ["pets"]
         serialize = ["certifications"]
 
     class create_cfg(CreateParams):
         dependencies = [check_user_is_userwriter]
+
+    class read_cfg(ReadParams):
+        # choose which relationships should be accessible via URL /<resource>/<id>/<relationship>
+        routed_relationships = ["pets"]
 
 
 # models - just normal sqlalchemy models with the Resource mixin!

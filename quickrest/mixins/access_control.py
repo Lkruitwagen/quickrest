@@ -1,3 +1,8 @@
+# mypy: disable-error-code="name-defined"
+
+from typing import Union
+from uuid import UUID
+
 from sqlalchemy import ForeignKey, or_
 from sqlalchemy.orm import (
     DeclarativeBase,
@@ -9,14 +14,24 @@ from sqlalchemy.orm import (
 )
 
 
-class User:
+class UserTokenMeta:
+    id: str
+
+
+class ResourceBaseMeta:
+    id: Union[str, UUID, int]
+    __name__: str
+    __tablename__: str
+
+
+class User(ResourceBaseMeta):
 
     @classmethod
-    def access_control(cls, Q: Query, user) -> Query:
-        return Q.filter(cls.id == user.id)
+    def access_control(cls, Q: Query, user: UserTokenMeta) -> Query:
+        return Q.filter(cls.id == user.id)  # type: ignore
 
 
-def Publishable(user_model: DeclarativeBase):
+def Publishable(user_model: ResourceBaseMeta):
 
     cls_annotations = {
         user_model.__name__.lower() + "_id": Mapped[str],
@@ -28,7 +43,6 @@ def Publishable(user_model: DeclarativeBase):
     def resource_owner_relationship(self) -> Mapped[user_model.__name__]:
         return relationship()
 
-    @classmethod
     def access_control(cls, Q: Query, user) -> Query:
         return Q.filter(
             or_(
@@ -51,7 +65,7 @@ def Publishable(user_model: DeclarativeBase):
             "public": mapped_column(),
             # class methods (inc. relationships)
             user_model.__name__.lower(): resource_owner_relationship,
-            "access_control": access_control,
+            "access_control": classmethod(access_control),
         },
     )
 
@@ -69,7 +83,6 @@ def Private(user_model: DeclarativeBase):
     def resource_owner_relationship(self) -> Mapped[user_model.__name__]:
         return relationship()
 
-    @classmethod
     def access_control(cls, Q: Query, user) -> Query:
         return Q.filter(getattr(cls, user_model.__name__.lower() + "_id") == user.id)
 
@@ -86,7 +99,7 @@ def Private(user_model: DeclarativeBase):
             + "_id": mapped_column(ForeignKey(user_model.__tablename__ + ".id")),
             # class methods (inc. relationships)
             user_model.__name__.lower(): resource_owner_relationship,
-            "access_control": access_control,
+            "access_control": classmethod(access_control),
         },
     )
 

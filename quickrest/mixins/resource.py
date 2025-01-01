@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import ForwardRef, Optional
+from typing import Callable, ForwardRef, Generator, Optional, Type
 from uuid import UUID, uuid4
 
 from fastapi import APIRouter
@@ -30,7 +30,6 @@ class RouterParams(ABC):
 
 
 class ResourceParams(ABC):
-    routed_relationships: list[str] = []
     serialize: list[str] = []
 
 
@@ -64,6 +63,10 @@ class ResourceBaseSlugPass:
 
 
 class ResourceMixin:
+
+    router: APIRouter
+    _sessionmaker: Callable
+    __tablename__: str
 
     class router_cfg(RouterParams):
         pass
@@ -114,21 +117,19 @@ class ResourceMixin:
             dependencies=cls.router_cfg.dependencies,
         )
 
-        if hasattr(cls, "read"):
+        if hasattr(cls, "read") and getattr(cls, "read_cfg", None) is not None:
             cls.read.attach_route(cls)
-        if hasattr(cls, "create"):
+        if hasattr(cls, "create") and getattr(cls, "create_cfg", None) is not None:
             cls.create.attach_route(cls)
-        if hasattr(cls, "delete"):
+        if hasattr(cls, "delete") and getattr(cls, "delete_cfg", None) is not None:
             cls.delete.attach_route(cls)
-        if hasattr(cls, "patch"):
+        if hasattr(cls, "patch") and getattr(cls, "patch_cfg", None) is not None:
             cls.patch.attach_route(cls)
-        if hasattr(cls, "search"):
+        if hasattr(cls, "search") and getattr(cls, "search_cfg", None) is not None:
             cls.search.attach_route(cls)
 
-        return cls.router
-
     @classmethod
-    async def db_generator(cls) -> Session:
+    def db_generator(cls) -> Generator[Session, None, None]:
         try:
             db = cls._sessionmaker()
             yield db
@@ -138,13 +139,15 @@ class ResourceMixin:
 
 
 def build_resource(
-    sessionmaker: callable = nullraise,
-    user_generator: callable = nullreturn,
-    user_token_model: BaseModel = None,
+    sessionmaker: Callable = nullraise,
+    user_generator: Callable = nullreturn,
+    user_token_model: Optional[BaseModel] = None,
     id_type: type = str,
     slug: bool = False,
-    error_handler: callable = default_error_handler,
+    error_handler: Callable = default_error_handler,
 ) -> type:
+
+    ResourceBase: Type[object]
 
     if id_type is str:
         ResourceBase = ResourceBaseStr
@@ -156,8 +159,8 @@ def build_resource(
         raise ValueError(f"id_type must be str, uuid.UUID, or int, got {id_type}")
 
     class Resource(
-        ResourceBase,
-        ResourceBaseSlug if slug else ResourceBaseSlugPass,
+        ResourceBase,  # type: ignore
+        ResourceBaseSlug if slug else ResourceBaseSlugPass,  # type: ignore
         ResourceMixin,
         CreateMixin,
         ReadMixin,

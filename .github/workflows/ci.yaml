@@ -51,6 +51,7 @@ jobs:
           wget https://sqlite.org/2016/sqlite-src-3110100.zip
           unzip sqlite-src-3110100.zip
           gcc -shared -fPIC -Wall -Isqlite-src-3110100 sqlite-src-3110100/ext/misc/spellfix.c -o spellfix.so
+
       - name: install dependences
         shell: bash
         run: |
@@ -60,6 +61,10 @@ jobs:
       - name: Test with pytest for coverage report
         run: |
           pytest --cov=quickrest --cov-report=json:coverage.json
+
+      - name: Run mypy
+        run: |
+          mypy quickrest
 
       - name: show coverage report
         id: show_coverage_val

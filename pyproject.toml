@@ -36,6 +36,7 @@ dev = [
     "pre-commit",
     "pytest-ordering",
     "httpx",
+    "mypy",
 ]
 
 [project.urls]  # Optional
