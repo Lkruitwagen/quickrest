@@ -37,6 +37,5 @@ def test_patch(setup_and_fill_db, app, USERS):
     # verify owner patched
     r = app.get("/owners/pawdrick_pupper", headers=user_headers(authorized_user))
     assert r.status_code == 200
-    print(r.json())
     for cert in r.json().get("certifications"):
         assert cert.get("id") in data_certs["certifications"]

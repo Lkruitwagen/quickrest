@@ -95,24 +95,24 @@ def app(db):
 
 @pytest.fixture(autouse=True, scope="session")
 def app_types():
-    from quickrest import Base, ResourceParams, RouterFactory, build_resource
+    from quickrest import Base, ResourceParams, RouterFactory, build_mixin
 
     engine = create_engine("sqlite:///database-types.db", echo=False)
 
     SessionMaker = sessionmaker(bind=engine)
 
     # instantiate the Resource class
-    ResourceInt = build_resource(
+    ResourceInt = build_mixin(
         id_type=int,
         sessionmaker=SessionMaker,
     )
 
-    ResourceUUID = build_resource(
+    ResourceUUID = build_mixin(
         id_type=UUID,
         sessionmaker=SessionMaker,
     )
 
-    ResourceUUIDSlug = build_resource(
+    ResourceUUIDSlug = build_mixin(
         id_type=UUID,
         slug=True,
         sessionmaker=SessionMaker,
