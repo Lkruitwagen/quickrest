@@ -26,6 +26,13 @@ class PatchParams(ABC):
 
 
 class PatchMixin(BaseMixin):
+    """
+    patch mixin
+
+    Attibutes:
+        name: The name of the person to greet.
+
+    """
 
     _patch = None
 

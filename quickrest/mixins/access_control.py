@@ -3,6 +3,7 @@
 from typing import Union
 from uuid import UUID
 
+from pydantic import BaseModel
 from sqlalchemy import ForeignKey, or_
 from sqlalchemy.orm import (
     DeclarativeBase,
@@ -16,6 +17,10 @@ from sqlalchemy.orm import (
 
 class UserTokenMeta:
     id: str
+
+
+class BaseUserModel(BaseModel):
+    id: str | int | UUID
 
 
 class ResourceBaseMeta:

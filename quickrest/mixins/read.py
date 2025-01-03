@@ -12,6 +12,55 @@ from quickrest.mixins.utils import classproperty
 
 
 class ReadParams(ABC):
+    """
+    The `ReadParams` class can optionally be defined on the resource class.
+    This class should inherit from `ReadParams` and must be called `read_cfg`.
+    If `read_cfg` is set to `None`, then the read route isn't created.
+
+    ## Example:
+
+    ```python
+    from sqlalchemy import ForeignKey
+    from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+    from quickrest import Base, Resource
+
+    from some_package.auth import must_be_admin
+
+
+    class Company(Base, Resource):
+        __tablename__ = "companies"
+
+        name: Mapped[str] = mapped_column()
+
+        class read_cfg(ReadParams):
+            description = "Get a company by ID"
+            summary = "Get a company by ID"
+            operation_id = "get_company"
+            tags = ["companies"]
+            dependencies = [must_be_admin]
+
+
+    class Employee(Base, Resource):
+        __tablename__ = "employees"
+
+        name: Mapped[str] = mapped_column()
+        company_id: Mapped[int] = mapped_column(ForeignKey("companies.id"))
+
+        # set read_cfg to None to disable the read route
+        read_cfg = None
+    ```
+
+    Attributes:
+        description (str, optional): Description of the endpoint. Optional, defaults to `None`.
+        summary (str, optional): Summary of the endpoint. Optional, defaults to `get {resource_name}`.
+        operation_id (str, optional): Operation ID of the endpoint. Optional, defaults to `None`.
+        tags (list[str], optional): Tags for the endpoint. Optional, defaults to `None`.
+        dependencies (list[Callable]): Injectable callable dependencies for the endpoint. Optional, defaults to `[]`.
+        routed_relationships (list[str]: List of relationship names to create paginated endpoints for. Strings must match the relationship attributes. Optional, defaults to `[]`.
+
+    """
+
     description: Optional[str] = None
     summary: Optional[str] = None
     operation_id: Optional[str] = None
@@ -23,38 +72,38 @@ class ReadParams(ABC):
 
 class ReadMixin(BaseMixin):
     """
-    # Read
+    This mixin is automatically inherited by the `Resource` class and provides endpoints for reading resources.
+    Multiple endpoints are created for reading resources, including a `GET` endpoint for a single resource, and paginated endpoints for each relationship of the resource.
 
-    The ReadMixin provides a `GET` endpoint for a resource, keyed by the primary key of the resource:
+    ## Endpoints - Read One
 
-        `GET {resource_name}/{primary_key}`
+        GET /{resource_name}/{primary_key}
 
     The primary key is the `id` of the resource, unless the resource has a `slug` primary key, in which case the primary key is the `slug`.
+
+    | Property | Description |
+    | :--- | :---- |
+    | Method | `GET` |
+    | Route | `/{resource_name}/{primary_key}` |
+    | Request  | Path: `{primary_key}` </br> Query: `<none>` </br> Body: `<none>` |
+    | Success Response | 200 OK: Resource [BaseModel](resource.md#BaseModel) |
+
+
+    ## Endpoints - Read Related Resources
+
+        GET /{resource_name}/{primary_key}/{relationship_name}?limit=10&page=0
+
     The ReadMixin also provides paginated endpoints for each relationship of the resource, with a `page` and `limit` query parameter:
 
-        `GET {resource_name}/{primary_key}/{relationship_name}?limit=10&page=0`
+    | Property | Description |
+    | :--- | :---- |
+    | Method | `GET` |
+    | Route | `/{resource_name}/{primary_key}/{related_resource_name}` |
+    | Request  | Path: `{primary_key}` </br> Query: `limit [int]; page [int]` </br> Body: `<none>` |
+    | Success Response | 200 OK: Resource [PaginatedBaseModel](resource.md#PaginatedBaseModel) |
 
-    ## ReadParams
 
-    The ReadMixin Optionally accepts a `ReadParams` class to be defined on the resource class.
-    This class should inherit from `ReadParams` and must be called `read_cfg`.
-    `read_cfg` can be defined with the following parameters:
-
-    ## Parameters
-
-    `description` `(str)` - Description of the endpoint. Optional, defaults to `None`.
-
-    `summary` `(str)` - Summary of the endpoint. Optional, defaults to `get {resource_name}`.
-
-    `operation_id` `(str)` - Operation ID of the endpoint. Optional, defaults to `None`.
-
-    `tags` `(list[str])` - Tags for the endpoint. Optional, defaults to `None`.
-
-    `dependencies` `(list[Callable])` - Injectable callable dependencies for the endpoint. Optional, defaults to `[]`.
-
-    `routed_relationships` `(list[str])` - List of relationship names to create paginated endpoints for. Strings must match the relationship attributes. Optional, defaults to `[]`.
-
-    ## Example
+    ## Example:
 
     A simple example of how to define a one-to-many relationship between a `Parent` and `Child` resource, and create a paginated endpoint for the `children` relationship.
 
@@ -76,7 +125,7 @@ class ReadMixin(BaseMixin):
 
     class Child(Base, Resource):
 
-        __tablename__ = "dogs"
+        __tablename__ = "children"
 
         parent_id: Mapped[int] = mapped_column(ForeignKey("parents.id"))
     ```
