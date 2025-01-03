@@ -1,0 +1,1 @@
+::: quickrest.mixins.patch.PatchMixin
