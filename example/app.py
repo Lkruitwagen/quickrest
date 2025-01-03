@@ -7,12 +7,12 @@ import uvicorn
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
 from sqlalchemy import ForeignKey, create_engine, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship, sessionmaker
 
 from quickrest import (
     Base,
+    BaseUserModel,
     CreateParams,
     Private,
     Publishable,
@@ -29,7 +29,7 @@ from quickrest import (
 # ###
 
 
-class UserToken(BaseModel):
+class UserToken(BaseUserModel):
     id: str
     permissions: list[str]
 
