@@ -66,7 +66,7 @@ class DeleteFactory(RESTFactory):
                 "user",
                 Parameter.POSITIONAL_OR_KEYWORD,
                 default=Depends(model._user_generator),
-                annotation=model._user_token,
+                annotation=model._user_generator.__annotations__["return"],
             ),
         ]
 

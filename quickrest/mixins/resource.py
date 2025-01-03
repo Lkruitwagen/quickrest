@@ -4,7 +4,7 @@ from typing import Callable, ForwardRef, Generator, Optional, Type
 from uuid import UUID, uuid4
 
 from fastapi import APIRouter, Depends
-from pydantic import BaseModel, create_model
+from pydantic import create_model
 from sqlalchemy import create_engine
 from sqlalchemy.ext.associationproxy import ColumnAssociationProxyInstance
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
@@ -23,7 +23,7 @@ def nullraise(caller):
     raise ValueError(f"{caller.__name__} - No callable declared")
 
 
-def nullreturn():
+def nullreturn() -> None:
     return None
 
 
@@ -33,6 +33,12 @@ def default_sessionmaker():
         return sessionmaker(bind=engine)
     else:
         return nullraise
+
+
+def indirect_caller(path):
+    module, func = path.rsplit(".", 1)
+    mod = __import__(module, fromlist=[func])
+    return getattr(mod, func)
 
 
 class RouterParams(ABC):
@@ -156,13 +162,21 @@ class ResourceBaseSlugPass:
 
 class ResourceMixin:
     """
-    The Resource class is a mixin that provides CRUD operations for a SQLAlchemy model.
+    The ResourceMixin class is the primary mixin for attaching a router with CRUD operations to a SQLAlchemy model.
+    It inherits from a ResourceBase class and ResourceBaseSlug class that provide the choice of primary key and slug fields, respectively, based on `env_settings`.
+    It also inherits from the CreateMixin, ReadMixin, PatchMixin, DeleteMixin, and SearchMixin, which provide the CRUD+Search operations and routes for the resource.
 
+    Attributes:
+        router (fastapi.APIRouter): The FastAPI APIRouter for the resource.
+        router_cfg (RouterParams): The parameters for the APIRouter.
+        resource_cfg (ResourceParams): The parameters for the resource.
+        _sessionmaker (Callable): A callable that returns a SQLAlchemy session.
+        _user_generator (Callable): A callable that returns a user model.
+        _error_handler (Callable): A callable that handles errors, defaults to `quickrest.mixins.errors.default_error_handler`.
 
     """
 
     router: APIRouter
-    _sessionmaker: Callable
     __tablename__: str
 
     class router_cfg(RouterParams):
@@ -174,8 +188,46 @@ class ResourceMixin:
     @classmethod
     def _build_basemodel(cls):
         """
-        Hello
+        Each Resource class has a Pydantic BaseModel that is used to serialize the response for the API endpoints.
+        This method builds the BaseModel using the declared columns on the SQLAlchemy model and the `resource_cfg` parameters.
+        Each column is defined as a field on the BaseModel, with the python-equivalent type of the column as the type of the field.
+        Columns that are `nullable` are `Optional` on the pydantic model.
+        Relationships are also added to the pydantic model as fields if they are included in the `resource_cfg.serialize` list.
+        Relationship fields have the type of the basemodel of the related resource, which is instatiated as a `ForwardRef` and then evaluated when the router is built.
+        If the relationship is many-to-many, the field is a list of the related resource's basemodel.
+        Any parameters in the `pop_params` list are excluded from the BaseModel.
 
+        ## Example
+        For this SQLAlchemy model (instantiated with default `Resource` mixin with `Int` ID):
+
+        ```python
+        from sqlalchemy.orm import Mapped, mapped_column
+
+        from quickrest import Base, Resource
+
+
+        class Book(Base, Resource):
+            __tablename__ = "books"
+            title: Mapped[str] = mapped_column()
+            year: Mapped[Optional[int]] = mapped_column(nullable=True)
+            author_name: Mapped[str] = mapped_column()
+        ```
+
+        Will have the equivalent Pydantic model:
+
+        ```python
+        from typing import Optional
+
+        from pydantic import BaseModel, create_model
+
+
+        # >>> Book.basemodel
+        class BookBase(BaseModel):
+            id: int
+            title: str
+            year: Optional[int]
+            author_name: str
+        ```
         """
 
         cols = [c for c in cls.__table__.columns]
@@ -229,6 +281,10 @@ class ResourceMixin:
 
         cls.basemodel = cls._build_basemodel()
 
+        for _attr in ["create", "read", "delete", "patch", "search"]:
+            if hasattr(cls, _attr):
+                getattr(cls, _attr)
+
     @classmethod
     def build_router(cls) -> None:
 
@@ -259,10 +315,9 @@ class ResourceMixin:
                 db.close()
 
 
-def build_resource(
+def build_mixin(
     sessionmaker: Callable = nullraise,
     user_generator: Callable = nullreturn,
-    user_token_model: Optional[BaseModel] = None,
     id_type: type = str,
     slug: bool = False,
     error_handler: Callable = default_error_handler,
@@ -287,7 +342,6 @@ def build_resource(
     Args:
         sessionmaker (Callable): A callable that returns a SQLAlchemy session.
         user_generator (Callable): A callable that returns a user model.
-        user_token_model (Optional[BaseModel]): A Pydantic model representing a user.
         id_type (type): The type of the resource's ID. Must be str, uuid.UUID, or int.
         slug (bool): If True, the resource will have a slug field.
         error_handler (Callable): A callable that handles errors.
@@ -296,6 +350,10 @@ def build_resource(
         type: A Resource class.
 
     """
+
+    assert (
+        "return" in user_generator.__annotations__
+    ), "user_generator must have a return annotation"
 
     ResourceBase: Type[object]
 
@@ -322,28 +380,15 @@ def build_resource(
         _id_type = id_type
         _sessionmaker = sessionmaker
         _user_generator = user_generator
-        _user_token = user_token_model
         _error_handler = error_handler
 
     return Resource
 
 
-class Resource(
-    ResourceBaseInt if env_settings.QUICKREST_ID_TYPE == UUID else (ResourceBaseStr if env_settings.QUICKREST_ID_TYPE == str else ResourceBaseInt),  # type: ignore
-    ResourceBaseSlug if env_settings.QUICKREST_USE_SLUG else ResourceBaseSlugPass,  # type: ignore
-    ResourceMixin,
-    CreateMixin,
-    ReadMixin,
-    PatchMixin,
-    DeleteMixin,
-    SearchMixin,
-):
-    """
-    A default Resource class that uses an integer ID and builds a default SessionGenerator from environment variables.
-    """
-
-    _id_type = int
-    _sessionmaker = default_sessionmaker()
-    _user_generator = nullreturn
-    _user_token = None
-    _error_handler = default_error_handler
+Resource = build_mixin(
+    sessionmaker=indirect_caller(env_settings.QUICKREST_INDIRECT_SESSION_GENERATOR),
+    user_generator=indirect_caller(env_settings.QUICKREST_INDIRECT_USER_GENERATOR),
+    id_type=env_settings.QUICKREST_ID_TYPE,
+    slug=env_settings.QUICKREST_USE_SLUG,
+    error_handler=indirect_caller(env_settings.QUICKREST_ERROR_HANDLER),
+)

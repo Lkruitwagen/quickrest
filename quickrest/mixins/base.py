@@ -9,7 +9,21 @@ from pydantic_settings import BaseSettings
 
 class EnvSettings(BaseSettings):
     """
-    Database settings to load automatically from environment variables.
+    Settings to load automatically from environment variables.
+
+    Attributes:
+        POSTGRES_DB_SCHEME (Optional[str]): The scheme for the Postgres database, defaults to just "postgresql".
+        POSTGRES_DB_USER (Optional[str]): The username for the Postgres database.
+        POSTGRES_DB_PASSWORD (Optional[str]): The password for the Postgres database.
+        POSTGRES_DB_HOST (Optional[str]): The host for the Postgres database.
+        POSTGRES_DB_PORT (Optional[int]): The port for the Postgres database.
+        POSTGRES_DB_NAME (Optional[str]): The name of the Postgres database.
+        SQLITE_DB_PATH (Optional[str]): A file path for the SQLite database (not pre-pended with `sqlite:///`).
+        pg_dsn (Optional[PostgresDsn]): A postgres DSN generated from the environment variables.
+        DB_PATH (Optional[str]): The connection string for the database, populated by the Postgres DSN or the SQLite path.
+        QUICKREST_ID_TYPE (Optional[type]): The default ID type for Resources, defaults to `Int`
+        QUICKREST_USE_SLUG (Optional[bool]): Whether to use slug unique identifiers on Resources, defaults to False
+
     """
 
     POSTGRES_DB_SCHEME: Optional[str] = None
@@ -26,10 +40,21 @@ class EnvSettings(BaseSettings):
     DB_PATH: Optional[str] = None
 
     # default ID type
-    QUICKREST_ID_TYPE: Optional[type] = None
+    QUICKREST_ID_TYPE: type | str = int
 
     # default slug use
-    QUICKREST_USE_SLUG: Optional[bool] = False
+    QUICKREST_USE_SLUG: bool = False
+
+    # session_generator
+    QUICKREST_INDIRECT_SESSION_GENERATOR: str = (
+        "quickrest.mixins.resource.default_sessionmaker"
+    )
+
+    # user_generator
+    QUICKREST_INDIRECT_USER_GENERATOR: str = "quickrest.mixins.resource.nullreturn"
+
+    # error handler
+    QUICKREST_ERROR_HANDLER: str = "quickrest.mixins.errors.default_error_handler"
 
     @field_validator("pg_dsn", mode="after")
     @classmethod
@@ -75,6 +100,8 @@ class EnvSettings(BaseSettings):
                     raise ValueError(
                         "ENV(QUICKREST_ID_TYPE) must be one of 'str', 'int', or 'uuid'"
                     )
+            if v in (str, int, UUID):
+                return v
             else:
                 raise ValueError("ENV(QUICKREST_ID_TYPE) must be a string")
         return v

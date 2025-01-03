@@ -36,9 +36,6 @@ class RouterFactory:
         for _name, model in all_models.items():
             model.basemodel.model_rebuild(_types_namespace=all_pydantic_models)
             model.create.input_model.model_rebuild(_types_namespace=all_pydantic_models)
-            # model.create.response_model.model_rebuild(_types_namespace=all_pydantic_models)
-            # model.update.input_model.model_rebuild(_types_namespace=all_pydantic_models)
-            # model.update.response_model.model_rebuild(_types_namespace=all_pydantic_models)
 
         for _name, model in all_models.items():
             model.build_router()

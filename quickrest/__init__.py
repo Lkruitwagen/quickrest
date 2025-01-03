@@ -3,14 +3,13 @@ from quickrest.mixins.create import CreateParams
 from quickrest.mixins.delete import DeleteParams
 from quickrest.mixins.patch import PatchParams
 from quickrest.mixins.read import ReadParams
-from quickrest.mixins.resource import Base, Resource, ResourceParams, build_resource
+from quickrest.mixins.resource import Base, Resource, ResourceParams, build_mixin
 from quickrest.mixins.search import SearchParams
 from quickrest.router_factory import RouterFactory
 
 __all__ = [
     "Base",
     "BaseUserModel",
-    "build_resource",
     "ResourceParams",
     "RouterFactory",
     "CreateParams",
@@ -22,4 +21,5 @@ __all__ = [
     "Private",
     "User",
     "Resource",
+    "build_mixin",
 ]

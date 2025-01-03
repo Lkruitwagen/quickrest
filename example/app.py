@@ -21,7 +21,7 @@ from quickrest import (
     RouterFactory,
     SearchParams,
     User,
-    build_resource,
+    build_mixin,
 )
 
 # ### Auth stuff
@@ -34,7 +34,7 @@ class UserToken(BaseUserModel):
     permissions: list[str]
 
 
-async def get_current_user(request: Request):
+async def get_current_user(request: Request) -> UserToken:
     # write your own auth logic here - normally decoding tokens etc
     permissions = request.headers.get("permissions", "")
     _id = request.headers.get("id")
@@ -81,10 +81,9 @@ def receive_connect(conn, _):
 # ### Resource Definitions
 
 # instantiate the Resource class
-Resource = build_resource(
+Resource = build_mixin(
     id_type=str,
     user_generator=get_current_user,
-    user_token_model=UserToken,
     sessionmaker=SessionMaker,
 )
 
