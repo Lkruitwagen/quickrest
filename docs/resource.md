@@ -2,6 +2,8 @@
     options:
       members:
         - _build_basemodel
+        - build_resource
+      show_signature: false
 
 ::: quickrest.mixins.resource.ResourceParams
     options:
@@ -11,8 +13,8 @@
     options:
       members: false
 
-::: quickrest.mixins.resource.build_resource
+::: quickrest.mixins.resource.build_mixin
     options:
       show_signature: false
 
-::: quickrest.mixins.resource.Resource
+::: quickrest.mixins.base.EnvSettings
