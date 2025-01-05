@@ -12,7 +12,47 @@ from quickrest.mixins.utils import classproperty
 
 
 class DeleteParams(ABC):
-    primary_key: Optional[str] = None
+    """
+    The `DeleteParams` class can optionally be defined on the resource class.
+    This class should inherit from `DeleteParams` and must be called `delete_cfg`.
+    If `delete_cfg` is set to `None`, then the delete route isn't created.
+    The delete route is used for deleting a single resource object.
+
+    ## Example:
+
+    This example shows a typical use case - resources can only be deleted by admin users.
+
+    ```python
+    from sqlalchemy.orm import Mapped, mapped_column
+
+    from quickrest import Base, Resource, DeleteParams
+
+    from some_package.auth import is_admin_user
+
+
+    class Employee(Base, Resource):
+        __tablename__ = "employees"
+
+        name: Mapped[str] = mapped_column()
+        job_title: Mapped[str] = mapped_column()
+
+        class patch_cfg(DeleteParams):
+            description = "delete an employee"
+            summary = "delete an employee"
+            operation_id = "delete_employee"
+            tags = ["employees"]
+            dependencies = [is_admin_user]
+    ```
+
+    Attributes:
+        description (str, optional): Description of the endpoint. Optional, defaults to `None`.
+        summary (str, optional): Summary of the endpoint. Optional, defaults to `get {resource_name}`.
+        operation_id (str, optional): Operation ID of the endpoint. Optional, defaults to `None`.
+        tags (list[str], optional): Tags for the endpoint. Optional, defaults to `None`.
+        dependencies (list[Callable]): Injectable callable dependencies for the endpoint. Optional, defaults to `[]`.
+
+    """
+
     description: Optional[str] = None
     summary: Optional[str] = None
     operation_id: Optional[str] = None
@@ -21,6 +61,25 @@ class DeleteParams(ABC):
 
 
 class DeleteMixin(BaseMixin):
+    """
+    This mixin is automatically inherited by the `Resource` class and provides endpoints for deleting resources.
+    The delete method is a `DELETE` request to the resource endpoint with the `primary_key` (i.e. slug or id) in the path.
+    The response model is the number of resources deleted, which should always be `1` if the resource exists.
+
+    ## Endpoint - Delete Resource
+
+        DELETE /{resource_name}/{primary_key}
+
+    The primary key is the `id` of the resource, unless the resource has a `slug` primary key, in which case the primary key is the `slug`.
+
+    | Property | Description |
+    | :--- | :---- |
+    | Method | `DELETE` |
+    | Route | `/{resource_name}/{primary_key}` |
+    | Request  | Path: `{primary_key}` </br> Query: `<none>` </br> Body: `<none>` |
+    | Success Response | 200 OK: `int` |
+
+    """
 
     _delete = None
 

@@ -1,4 +1,9 @@
-from quickrest.mixins.access_control import BaseUserModel, Private, Publishable, User
+from quickrest.mixins.access_control import (
+    BaseUserModel,
+    User,
+    make_private,
+    make_publishable,
+)
 from quickrest.mixins.create import CreateParams
 from quickrest.mixins.delete import DeleteParams
 from quickrest.mixins.patch import PatchParams
@@ -17,8 +22,8 @@ __all__ = [
     "PatchParams",
     "DeleteParams",
     "SearchParams",
-    "Publishable",
-    "Private",
+    "make_publishable",
+    "make_private",
     "User",
     "Resource",
     "build_mixin",

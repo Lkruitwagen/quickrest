@@ -21,8 +21,11 @@ class EnvSettings(BaseSettings):
         SQLITE_DB_PATH (Optional[str]): A file path for the SQLite database (not pre-pended with `sqlite:///`).
         pg_dsn (Optional[PostgresDsn]): A postgres DSN generated from the environment variables.
         DB_PATH (Optional[str]): The connection string for the database, populated by the Postgres DSN or the SQLite path.
-        QUICKREST_ID_TYPE (Optional[type]): The default ID type for Resources, defaults to `Int`
-        QUICKREST_USE_SLUG (Optional[bool]): Whether to use slug unique identifiers on Resources, defaults to False
+        QUICKREST_ID_TYPE (type): The default ID type for Resources, defaults to `Int`
+        QUICKREST_USE_SLUG (bool): Whether to use slug unique identifiers on Resources, defaults to False
+        QUICKREST_INDIRECT_SESSION_GENERATOR (str): The path to the session generator function, defaults to `quickrest.mixins.resource.default_sessionmaker`
+        QUICKREST_INDIRECT_USER_GENERATOR (str): The path to the user generator function, defaults to `quickrest.mixins.resource.nullreturn`
+        QUICKREST_ERROR_HANDLER (str): The path to the error handler function, defaults to `quickrest.mixins.errors.default_error_handler`
 
     """
 
@@ -37,10 +40,10 @@ class EnvSettings(BaseSettings):
 
     pg_dsn: Optional[PostgresDsn] = None
 
-    DB_PATH: Optional[str] = None
+    DB_CONNECTION_URL: Optional[str] = None
 
     # default ID type
-    QUICKREST_ID_TYPE: type | str = int
+    QUICKREST_ID_TYPE: type = int
 
     # default slug use
     QUICKREST_USE_SLUG: bool = False
@@ -75,7 +78,7 @@ class EnvSettings(BaseSettings):
                 raise e
         return v
 
-    @field_validator("DB_PATH", mode="after")
+    @field_validator("DB_CONNECTION_URL", mode="after")
     def set_db_path(cls, v, info):
         if not v:
             if info.data.get("pg_dsn"):

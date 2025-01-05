@@ -28,8 +28,8 @@ def nullreturn() -> None:
 
 
 def default_sessionmaker():
-    if env_settings.DB_PATH:
-        engine = create_engine(env_settings.DB_PATH, echo=False)
+    if env_settings.DB_CONNECTION_URL:
+        engine = create_engine(env_settings.DB_CONNECTION_URL, echo=False)
         return sessionmaker(bind=engine)
     else:
         return nullraise
@@ -178,6 +178,7 @@ class ResourceMixin:
 
     router: APIRouter
     __tablename__: str
+    _sessionmaker: Callable
 
     class router_cfg(RouterParams):
         pass
@@ -188,7 +189,7 @@ class ResourceMixin:
     @classmethod
     def _build_basemodel(cls):
         """
-        Each Resource class has a Pydantic BaseModel that is used to serialize the response for the API endpoints.
+        Each Resource class has a Pydantic `BaseModel` that is used to serialize the response for the API endpoints.
         This method builds the BaseModel using the declared columns on the SQLAlchemy model and the `resource_cfg` parameters.
         Each column is defined as a field on the BaseModel, with the python-equivalent type of the column as the type of the field.
         Columns that are `nullable` are `Optional` on the pydantic model.
@@ -197,37 +198,60 @@ class ResourceMixin:
         If the relationship is many-to-many, the field is a list of the related resource's basemodel.
         Any parameters in the `pop_params` list are excluded from the BaseModel.
 
-        ## Example
-        For this SQLAlchemy model (instantiated with default `Resource` mixin with `Int` ID):
+        When multiple resource objects are returned by a route (for example, a search route or a related object route),
+        the response is paginated using a `PaginatedBaseModel`.
+        The PaginatedBaseModel includes a list of the resource object's BaseModel and metadata about the pagination: the current page and the total number of pages.
 
-        ```python
-        from sqlalchemy.orm import Mapped, mapped_column
+        === "SQLAlchemy Model"
 
-        from quickrest import Base, Resource
+            ```python
+            from sqlalchemy.orm import Mapped, mapped_column
 
-
-        class Book(Base, Resource):
-            __tablename__ = "books"
-            title: Mapped[str] = mapped_column()
-            year: Mapped[Optional[int]] = mapped_column(nullable=True)
-            author_name: Mapped[str] = mapped_column()
-        ```
-
-        Will have the equivalent Pydantic model:
-
-        ```python
-        from typing import Optional
-
-        from pydantic import BaseModel, create_model
+            from quickrest import Base, Resource
 
 
-        # >>> Book.basemodel
-        class BookBase(BaseModel):
-            id: int
-            title: str
-            year: Optional[int]
-            author_name: str
-        ```
+            class Book(Base, Resource):
+                __tablename__ = "books"
+                title: Mapped[str] = mapped_column()
+                year: Mapped[Optional[int]] = mapped_column(nullable=True)
+                author_name: Mapped[str] = mapped_column()
+            ```
+
+        === "Equivalent Pydantic Model"
+
+            ```python
+            from typing import Optional
+
+            from pydantic import BaseModel
+
+
+            class BookBase(BaseModel):
+                id: int
+                title: str
+                year: Optional[int]
+                author_name: str
+            ```
+
+        === "Paginated Pydantic Model"
+
+            ```python
+            from typing import Optional
+
+            from pydantic import BaseModel
+
+
+            class BookBase(BaseModel):
+                id: int
+                title: str
+                year: Optional[int]
+                author_name: str
+
+
+            class PaginatedBookBase(BaseModel):
+                books: list[BookBase]
+                page: int
+                total_pages: int
+            ```
         """
 
         cols = [c for c in cls.__table__.columns]

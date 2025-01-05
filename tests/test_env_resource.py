@@ -12,7 +12,7 @@ def test_sqlite_case(monkeypatch):
         importlib.reload(base)
 
         assert base.env_settings.SQLITE_DB_PATH == "database.db"
-        assert base.env_settings.DB_PATH == "sqlite:///database.db"
+        assert base.env_settings.DB_CONNECTION_URL == "sqlite:///database.db"
 
 
 def test_postgres_case(monkeypatch):
@@ -31,7 +31,7 @@ def test_postgres_case(monkeypatch):
             == "postgresql://pguser:pgdbpw@127.0.0.1:5432/mydb"
         )
         assert (
-            base.env_settings.DB_PATH
+            base.env_settings.DB_CONNECTION_URL
             == "postgresql://pguser:pgdbpw@127.0.0.1:5432/mydb"
         )
 
@@ -47,7 +47,7 @@ def test_postgres_case_fail(monkeypatch):
         importlib.reload(base)
 
         assert base.env_settings.pg_dsn is None
-        assert base.env_settings.DB_PATH is None
+        assert base.env_settings.DB_CONNECTION_URL is None
 
 
 def test_id_types(monkeypatch):

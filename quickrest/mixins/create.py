@@ -11,6 +11,53 @@ from quickrest.mixins.utils import classproperty
 
 
 class CreateParams:
+    """
+    The `CreateParams` class can optionally be defined on the resource class.
+    This class should inherit from `CreateParams` and must be called `create_cfg`.
+    If `create_cfg` is set to `None`, then the create route isn't created.
+
+    ## Example:
+
+    ```python
+    from sqlalchemy import ForeignKey
+    from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+    from quickrest import Base, Resource, CreateParams
+
+    from some_package.auth import authenticate_user
+
+
+    class Company(Base, Resource):
+        __tablename__ = "companies"
+
+        name: Mapped[str] = mapped_column()
+
+        # disable the create route
+        create_cfg = None
+
+
+    class Employee(Base, Resource):
+        __tablename__ = "employees"
+
+        name: Mapped[str] = mapped_column()
+        company_id: Mapped[int] = mapped_column(ForeignKey("companies.id"))
+
+        class create_cfg(CreateParams):
+            description = "create a new employee"
+            summary = "create a new employee"
+            operation_id = "create_employee"
+            tags = ["employees"]
+            dependencies = [authenticate_user]
+    ```
+
+    Attributes:
+        description (str, optional): Description of the endpoint. Optional, defaults to `None`.
+        summary (str, optional): Summary of the endpoint. Optional, defaults to `get {resource_name}`.
+        operation_id (str, optional): Operation ID of the endpoint. Optional, defaults to `None`.
+        tags (list[str], optional): Tags for the endpoint. Optional, defaults to `None`.
+        dependencies (list[Callable]): Injectable callable dependencies for the endpoint. Optional, defaults to `[]`.
+    """
+
     description: Optional[str] = None
     summary: Optional[str] = None
     operation_id: Optional[str] = None
@@ -19,6 +66,63 @@ class CreateParams:
 
 
 class CreateMixin(BaseMixin):
+    """
+    This mixin is automatically inherited by the `Resource` class and provides endpoints for creating resources.
+    The mixin also builds a Pydantic model for the input body of the create endpoint.
+
+    ## CreateModel
+
+    The `CreateModel` is a Pydantic model build using the fields of the sqlalchemy model.
+    If the Resource mixin uses and integer or UUID primary key, the id is not required on the input model.
+    The model may include a `slug` field if it has been specified on the Resource mixin.
+    If the Resource mixin uses a string primary key, the id is required on the input model and a `slug` field cannot be included.
+
+    For relationship fields, many-to-many related objects can be specified by a list of primary keys.
+    One-to-many related objects can be specified by a single primary key, suffixed with `_id`.
+
+    === "SQLAlchemy Resource"
+
+        ```python
+        from sqlalchemy.orm import Mapped, mapped_column
+
+        from quickrest import Base, Resource
+
+        # default Resource has an integer primary key
+
+
+        class Book(Base, Resource):
+            __tablename__ = "books"
+            title: Mapped[str] = mapped_column()
+            year: Mapped[Optional[int]] = mapped_column(nullable=True)
+            author_name: Mapped[str] = mapped_column()
+        ```
+
+    === "Equivalent Pydantic Model"
+
+        ```python
+        from pydantic import BaseModel
+
+
+        class CreateBook(BaseModel):
+            title: str
+            year: Optional[int]
+            author_name: str
+        ```
+
+    ## Endpoint - Create Resource
+
+        POST /{resource_name}
+
+    The primary key is the `id` of the resource, unless the resource has a `slug` primary key, in which case the primary key is the `slug`.
+
+    | Property | Description |
+    | :--- | :---- |
+    | Method | `POST` |
+    | Route | `/{resource_name}` |
+    | Request  | Path: `<none>` </br> Query: `<none>` </br> Body: Resource CreateModel |
+    | Success Response | 201 OK: Resource [BaseModel](resource.md#quickrest.mixins.resource.ResourceMixin._build_basemodel) |
+
+    """
 
     _create = None
 
