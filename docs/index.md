@@ -68,11 +68,43 @@ They also allow the developer to specify certain properties of the route, like w
 
 ### Fine-Grained Access Control
 
+QuickRest also provides fine-grained access control mixins for resources.
+Two access control patterns are currently supported: a `Private` resource, where only the resource creator has access to objects they've created;
+and a `Publishable` resource, where resource creators can optionally share their objects publicly.
+To use the fine-grained access control utilities, these classes must be defined at runtime from their respective `make_private` and `make_publishable` methods.
+These build methods must also reference the owner Resource model that will own the resources.
+This resource must have the `User` mixin.
+
+```python
+import uvicorn
+from fastapi import FastAPI
+from sqlalchemy.orm import Mapped, mapped_column
+
+from quickrest import Base, Resource, RouterFactory, make_private
+
+
+class Owner(Base, Resource, User):
+    __tablename__ = "Owners"
+    name: Mapped[str] = mapped_column
+
+
+class Pet(Base, Resource, make_private(user_model=Owner)):
+    __tablename__ = "pets"
+    name: Mapped[str] = mapped_column()
+    specie: Mapped[str] = mapped_column()
+```
+
 ### RouterFactory
 
 The `RouterFactory` class is needed to finally rebuild all schemae, reconciling any forward references, and then mount the routes to the main FastAPI app.
 
+```python
+from quickrest import RouterFactory
 
+# ... build models, etc.
+
+app = FastAPI
+```
 
 ## Installation
 
@@ -86,6 +118,9 @@ QuickRest is available via the python package index (PyPi). It can be installed 
 
 
 ### Initialization from Environment
+
+When the `Resource` class is first imported, it is initialized from environment variables.
+
 
 ### Manually Building Classes
 
