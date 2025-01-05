@@ -22,17 +22,16 @@ markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
 
 nav:
   - QuickRest: index.md
   - Resource: resource.md
-  - CRUD+Search:
+  - CRUD:
     - Read: read.md
     - Create: create.md
     - Update: update.md
     - Delete: delete.md
-    - Search: search.md
-  - Fine-Grained Access Control:
-    - User: user.md
-    - Private: private.md
-    - Publishable: publishable.md
+  - Search: search.md
+  - Fine-Grained Access Control: access_control.md

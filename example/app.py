@@ -14,14 +14,14 @@ from quickrest import (
     Base,
     BaseUserModel,
     CreateParams,
-    Private,
-    Publishable,
     ReadParams,
     ResourceParams,
     RouterFactory,
     SearchParams,
     User,
     build_mixin,
+    make_private,
+    make_publishable,
 )
 
 # ### Auth stuff
@@ -128,7 +128,7 @@ class Specie(
         dependencies = [check_user_is_admin]
 
 
-class Pet(Base, Resource, Publishable(user_model=Owner)):
+class Pet(Base, Resource, make_publishable(user_model=Owner)):
     __tablename__ = "pets"
     # note: all Resource classes have an id and slug column by default
     name: Mapped[str] = mapped_column()
@@ -150,7 +150,7 @@ class Pet(Base, Resource, Publishable(user_model=Owner)):
         search_similarity_threshold = 300  # trigram search threshold
 
 
-class Note(Base, Resource, Private(user_model=Owner)):
+class Note(Base, Resource, make_private(user_model=Owner)):
     __tablename__ = "notes"
 
     text: Mapped[str] = mapped_column()
