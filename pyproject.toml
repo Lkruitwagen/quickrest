@@ -1,6 +1,6 @@
 [project]
 name = "quickrest"
-version = "0.0.1"
+dynamic = ["version"]
 description = "You deserve a..."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -36,6 +36,7 @@ dev = [
     "pytest-cov",
     "pre-commit",
     "pytest-ordering",
+    "mkdocs-material",
     "httpx",
     "mypy",
 ]
