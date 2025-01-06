@@ -25,6 +25,7 @@ classifiers = [  # Optional
 # dependencies are to use eo-flow in client-only mode.
 dependencies = [
     "fastapi",
+    "pydantic-settings",
     "sqlalchemy",
     "uvicorn",
 ]
