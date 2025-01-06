@@ -1,9 +1,6 @@
-_You've been working really hard. You deserve a ..._
-
 # QuickRest
 
-A schema-first FastAPI abstraction framework so your team can put your feet up (or get back to the interesting stuff).
-Simply define your database schema and let QuickRest generate all your pydantic objects, CRUD controllers and (nested) RESTful routes, complete with fine-grained access control.
+A schema-first CRUD-generation framework for FastAPI and SQLAlchemy so your team can put your feet up (or get back to the interesting stuff).
 
 [![License][license badge]][license]
 ![Coverage][coverage badge]
@@ -15,95 +12,146 @@ Simply define your database schema and let QuickRest generate all your pydantic 
 [coverage badge]: https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/Lkruitwagen/a16058370777530ed286dab325015195/raw/quickrest_coverage_badge.json
 
 
-## Quickstart
+Full Documentation: [lucaskruitwagen.github.io/quickrest](https://lucaskruitwagen.github.io/quickrest)
+
+Issues and Feature Requests: [github.com/Lkruitwagen/quickrest/issues](https://github.com/Lkruitwagen/quickrest/issues)
+
+## Features
+
+- Mixins classes for [SQLAlchemy](https://www.sqlalchemy.org/) declarative ORM classes that automatically build `create`, `read`, `update`, `delete`, and `search` (CRUD+Search) [FastAPI](https://fastapi.tiangolo.com/) endpoints and [Pydantic](https://docs.pydantic.dev/latest/) models.
+- Full exposure of joined tables, either via serialized related objects or additional `GET <resource>/<id>/<relationship>` routes
+- Route-level protections via standard dependency injection
+- Row-level fine-grained access control via developer-defineable user generation
+- Many additional configuration options available via `<Method>Config` classes
+
+See [docs](https://lucaskruitwagen.github.io/quickrest) for more.
+
+
+## Installation
 
 QuickRest is available from the python package index: `pip install quickrest`.
 
-QuickRest exposes a `Resource` mixin that you can use with your SQLAlchemy ORM definitions.
-You can also mixin the access control pattern for each of your tables (which will be used to autogenerate routes).
-Available patterns include a unique `User` table, a `Global` pattern, and `Private`, `Publishable`, and `Shareable` fine-grained access control patterns.
-You can then use the QuickRest `RouteFactory` to create standard RESTful API routes based on the defined access-control patterns.
+## Quickstart
+
+Simple mixin the `Resource` class with your ORM classes and you're good to go.
+Define some environment variables to set the default sessionmaker and user generator for the `Resource` class ()or use the `build_resource` method.
+Mixin the `User`, `Private (via make_private)`, and `Publishable (via make_publishabe)` classes to add fine-grained access control.
+
+Check the docs for the full range of customisation options.
 
 ```python
+from datetime import date
+from typing import Optional
+
 import uvicorn
 from fastapi import FastAPI
-from sqlalchemy import ForeignKey, create_engine
-from sqlalchemy.orm import Mapped, mapped_column, relationship, sessionmaker
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from quickrest.mixins.resource import Base, Resource
-from quickrest.router_factory import RouterFactory
-
-# database boilerplate - just normal sqlalchemy stuff!
-engine = create_engine("sqlite:///database.db", echo=True)
-SessionMaker = sessionmaker(bind=engine)
-
-# attach a sessionmaker to the ResourceBase class
-ResourceMixin = Resource.with_sessionmaker(SessionMaker)
-
-
-# models - just normal sqlalchemy models with the Resource mixin!
-class Specie(Base, ResourceMixin):  # GLOBAL
-    __tablename__ = "species"
-
-    common_name: Mapped[str] = mapped_column()
-    scientific_name: Mapped[str] = mapped_column()
+from quickrest import (
+    Base,
+    ReadConfig,
+    ResourceConfig,
+    RouterFactory,
+    SearchConfig,
+    Resource,
+)
 
 
-class Pet(Base, ResourceMixin):  # Private
-    __tablename__ = "pets"
-    # note: all Resource classes have an id and slug column by default
-    name: Mapped[str] = mapped_column()
-
-    owner_id: Mapped[int] = mapped_column(ForeignKey("owners.id"))
-    species_id: Mapped[int] = mapped_column(ForeignKey("species.id"))
-
-    owner: Mapped["Owner"] = relationship(
-        back_populates="pets",
-    )
-    specie: Mapped["Specie"] = relationship()
-
-    class resource_cfg:
-        # choose which relationships should be serialized on the reponse
-        serialize = ["specie"]
-
-
-class Owner(Base, ResourceMixin):  # User
+class Owner(
+    Base,
+    Resource,
+):
     __tablename__ = "owners"
     first_name: Mapped[str] = mapped_column()
     last_name: Mapped[str] = mapped_column()
 
     pets: Mapped[list["Pet"]] = relationship(back_populates="owner")
 
-    class resource_cfg:
-        # which relationships should be accessible via URL /<resource>/<id>/<relationship>
-        children = ["pets"]
+    certifications: Mapped[list["Certification"]] = relationship(
+        secondary="owner_certifications",
+    )
+
+    class resource_cfg(ResourceConfig):
+        serialize = ["certifications"]
+
+    class read_cfg(ReadConfig):
+        # choose which relationships should be accessible via URL /<resource>/<id>/<relationship>
+        routed_relationships = ["pets"]
 
 
-all_models = {"pet": Pet, "specie": Specie, "owner": Owner}
+class Specie(
+    Base,
+    Resource,
+):
+    __tablename__ = "species"
+
+    common_name: Mapped[str] = mapped_column()
+    scientific_name: Mapped[str] = mapped_column()
+
+
+class Pet(Base, Resource):
+    __tablename__ = "pets"
+    # note: all Resource classes have an id and slug column by default
+    name: Mapped[str] = mapped_column()
+    vaccination_date: Mapped[Optional[date]] = mapped_column(nullable=True)
+
+    species_id: Mapped[int] = mapped_column(ForeignKey("species.id"))
+    owner_id: Mapped[int] = mapped_column(ForeignKey("owners.id"))
+
+    owner: Mapped["Owner"] = relationship()
+    specie: Mapped["Specie"] = relationship()
+    notes: Mapped[list["Note"]] = relationship()
+
+    class resource_cfg(ResourceConfig):
+        # choose which relationships should be serialized on the reponse
+        serialize = ["specie"]
+
+    class search_cfg(SearchConfig):
+        search_gte = ["vaccination_date"]  # greater than or equal to, list[str] | bool
+        search_lt = ["vaccination_date"]  # less than, list[str] | bool
+
+
+class Note(Base, Resource):
+    __tablename__ = "notes"
+
+    text: Mapped[str] = mapped_column()
+    pet_id: Mapped[int] = mapped_column(ForeignKey("pets.id"))
+
+
+class Certification(
+    Base,
+    Resource,
+):
+    __tablename__ = "certifications"
+    # note: all Resource classes have an id and slug column by default
+    name: Mapped[str] = mapped_column()
+    description: Mapped[str] = mapped_column()
+
+
+class OwnerCertifications(Base):
+    __tablename__ = "owner_certifications"
+    owner_id: Mapped[int] = mapped_column(ForeignKey("owners.id"), primary_key=True)
+    certification_id: Mapped[int] = mapped_column(
+        ForeignKey("certifications.id"), primary_key=True
+    )
+
 
 # instantiate a FastAPI app
 app = FastAPI(title="QuickRest Quickstart", separate_input_output_schemas=False)
 
-# # build create, read, update, delete routers for each resource and add them to the app
-RouterFactory.mount(app, all_models)
+# build create, read, update, delete routers for each resource and add them to the app
+RouterFactory.mount(app, [Owner, Pet, Specie, Note, Certification])
 
 if __name__ == "__main__":
-    Base.metadata.create_all(engine)
+    # Base.metadata.create_all(Resource._sessionmaker.kw.get("bind"))  # uncomment this line to create the tables in db backend
     uvicorn.run(app, host="0.0.0.0", port=8000)
 ```
 
+## Contributing
 
-# Access Control Pattern classes:
+Contributions welcome!
 
-- **UserMixin**: Unique for the main User table. Can be `listable [bool | str]`. If `listable=column_name[str]`, users control their own listing permissions.
-- **GlobalMixin**: No fine-grained access control. CRUD routes can still be protected with dependency injections (e.g. open access for `Read`, some 'admin' role for `Create,Update,Delete`)
-- **PrivateMixin**: Only scoped to the owning `User` resource.
-- **PublishableMixin**: Resources can be flagged as 'public', and then read by any user.
-- **ShareableMixin**: Read-access can be given to a set of users apart from the owner.
+To set up for development simply clone the repo and then:
 
-# Generated Routes:
-
-- All resources receive root `/<resource>{/<id>}` routes.
-- Specified 'serialise' relationships will always be returned on the object
-- 'children' resources relationships are mounted as  `/<resource>/<resource_id>/<child_resource>{/<child_resource_id>}` routes.
-- 'children' resources are automatically nested: `/<resource>/<resource_id>/<child_resource>/<child_resource_id>/<nested_child_resource{/<nested_child_resource_id>}`
+    pip install -e .[dev]
