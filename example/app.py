@@ -74,7 +74,7 @@ SessionMaker = sessionmaker(bind=engine)
 @event.listens_for(engine, "connect")
 def receive_connect(conn, _):
     conn.enable_load_extension(True)
-    conn.load_extension(str(Path.cwd() / "spellfix.so"))
+    conn.load_extension(str(Path.cwd() / "tests" / "spellfix.so"))
     conn.enable_load_extension(False)
 
 
