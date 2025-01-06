@@ -1,10 +1,10 @@
-from quickrest.mixins.resource import Base
+from typing import Any
 
 
 class RouterFactory:
 
     @classmethod
-    def mount(cls, app, all_models: list[Base]):
+    def mount(cls, app, all_models: list[Any]):
         for model in all_models:
             model.build_models()
 

@@ -335,7 +335,7 @@ class SearchFactory(RESTFactory):
                     "Sessionmaker not set on model - search_similarity requires a database backend."
                 )
 
-            if model._sessionmaker.kw.get("bind").dialect.name == "sqlite":
+            if model._sessionmaker.kw.get("bind").dialect.name == "sqlite":  # type: ignore
 
                 self.similarity_fn = func.editdist3
                 self.similarity_op = lt
@@ -344,7 +344,7 @@ class SearchFactory(RESTFactory):
                     Field(title="threshold", default=300, gt=99),
                 )
 
-            elif model._sessionmaker.kw.get("bind").dialect.name == "postgresql":
+            elif model._sessionmaker.kw.get("bind").dialect.name == "postgresql":  # type: ignore
                 self.similarity_fn = func.similarity
                 self.similarity_op = gt
                 query_fields["threshold"] = (
