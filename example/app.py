@@ -13,13 +13,13 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship, sessionmaker
 from quickrest import (
     Base,
     BaseUserModel,
-    CreateParams,
-    ReadParams,
-    ResourceParams,
+    CreateConfig,
+    ReadConfig,
+    ResourceConfig,
     RouterFactory,
-    SearchParams,
+    SearchConfig,
     User,
-    build_mixin,
+    build_resource,
     make_private,
     make_publishable,
 )
@@ -81,7 +81,7 @@ def receive_connect(conn, _):
 # ### Resource Definitions
 
 # instantiate the Resource class
-Resource = build_mixin(
+Resource = build_resource(
     id_type=str,
     user_generator=get_current_user,
     sessionmaker=SessionMaker,
@@ -103,13 +103,13 @@ class Owner(
         secondary="owner_certifications",
     )
 
-    class resource_cfg(ResourceParams):
+    class resource_cfg(ResourceConfig):
         serialize = ["certifications"]
 
-    class create_cfg(CreateParams):
+    class create_cfg(CreateConfig):
         dependencies = [check_user_is_userwriter]
 
-    class read_cfg(ReadParams):
+    class read_cfg(ReadConfig):
         # choose which relationships should be accessible via URL /<resource>/<id>/<relationship>
         routed_relationships = ["pets"]
 
@@ -124,7 +124,7 @@ class Specie(
     common_name: Mapped[str] = mapped_column()
     scientific_name: Mapped[str] = mapped_column()
 
-    class create_cfg(CreateParams):
+    class create_cfg(CreateConfig):
         dependencies = [check_user_is_admin]
 
 
@@ -139,11 +139,11 @@ class Pet(Base, Resource, make_publishable(user_model=Owner)):
     specie: Mapped["Specie"] = relationship()
     notes: Mapped[list["Note"]] = relationship()
 
-    class resource_cfg(ResourceParams):
+    class resource_cfg(ResourceConfig):
         # choose which relationships should be serialized on the reponse
         serialize = ["specie"]
 
-    class search_cfg(SearchParams):
+    class search_cfg(SearchConfig):
         search_gte = ["vaccination_date"]  # greater than or equal to, list[str] | bool
         search_lt = ["vaccination_date"]  # less than, list[str] | bool
         search_similarity = ["name"]  # string trigram search
@@ -166,7 +166,7 @@ class Certification(
     name: Mapped[str] = mapped_column()
     description: Mapped[str] = mapped_column()
 
-    class create_cfg(CreateParams):
+    class create_cfg(CreateConfig):
         dependencies = [check_user_is_admin]
 
 
@@ -178,15 +178,11 @@ class OwnerCertifications(Base):
     )
 
 
-all_models = {
-    cls.__name__.lower(): cls for cls in [Owner, Pet, Specie, Note, Certification]
-}
-
 # instantiate a FastAPI app
 app = FastAPI(title="QuickRest Quickstart", separate_input_output_schemas=False)
 
 # build create, read, update, delete routers for each resource and add them to the app
-RouterFactory.mount(app, all_models)
+RouterFactory.mount(app, [Owner, Pet, Specie, Note, Certification])
 
 
 @app.exception_handler(RequestValidationError)
