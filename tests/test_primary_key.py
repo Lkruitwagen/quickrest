@@ -1,22 +1,53 @@
-def test_int_read_write(app_types):
+def test_pop_serialize(app_types):
+
+    authors = [
+        dict(
+            first_name="Ursula",
+            last_name="Le Guin",
+            dark_secret="She's a wizard",
+        ),
+        dict(
+            first_name="Dan", last_name="Simmons", dark_secret="doesn't like broccoli"
+        ),
+    ]
 
     books = [
         dict(
             title="The Dispossessed",
-            author="Ursula K. Le Guin",
+            author_id="1",
             year=1974,
         ),
         dict(
             title="Hyperion",
-            author="Dan Simmons",
+            author_id="2",
             year=1989,
         ),
     ]
 
     # post data
+    for author in authors:
+        r = app_types.post("/authors", json=author)
+        assert r.status_code == 201
+
     for book in books:
         r = app_types.post("/books", json=book)
         assert r.status_code == 201
+
+    # read back and check no dark secrets
+    r = app_types.get("/authors/1")
+    assert r.status_code == 200
+    assert r.json().get("first_name") == "Ursula"
+    assert "dark_secret" not in r.json().keys()
+
+    # read back and check full name
+    r = app_types.get("/authors/2")
+    assert r.status_code == 200
+    assert r.json().get("full_name") == "Dan Simmons"
+
+    # read back and check association proxy
+    r = app_types.get("/books/1")
+    assert r.status_code == 200
+    assert r.json().get("author_last_name") == "Le Guin"
 
     # read back using int
     r = app_types.get("/books/2")

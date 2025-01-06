@@ -9,8 +9,9 @@ from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Mapped, mapped_column, sessionmaker
+from sqlalchemy import ForeignKey, create_engine
+from sqlalchemy.ext.associationproxy import AssociationProxy, association_proxy
+from sqlalchemy.orm import Mapped, mapped_column, relationship, sessionmaker
 
 # append to sys path so pytest can find our example app
 root_dir = dirname(dirname(abspath(__file__)))
@@ -94,7 +95,7 @@ def app(db):
 
 @pytest.fixture(autouse=True, scope="session")
 def app_types():
-    from quickrest import Base, RouterFactory, build_resource
+    from quickrest import Base, ResourceConfig, RouterFactory, build_resource
 
     engine = create_engine("sqlite:///database-types.db", echo=False)
 
@@ -120,8 +121,31 @@ def app_types():
     class Book(Base, ResourceInt):
         __tablename__ = "books"
         title: Mapped[str] = mapped_column()
-        author: Mapped[str] = mapped_column()
         year: Mapped[int] = mapped_column()
+
+        author_id: Mapped[int] = mapped_column(ForeignKey("authors.id"))
+        author: Mapped["Author"] = relationship()
+
+        author_last_name: AssociationProxy[str] = association_proxy(
+            "author", "last_name"
+        )
+
+        class resource_cfg(ResourceConfig):
+            serialize = ["author_last_name"]
+
+    class Author(Base, ResourceInt):
+        __tablename__ = "authors"
+        first_name: Mapped[str] = mapped_column()
+        last_name: Mapped[str] = mapped_column()
+        dark_secret: Mapped[str] = mapped_column()
+
+        @property
+        def full_name(self) -> str:
+            return f"{self.first_name} {self.last_name}"
+
+        class resource_cfg(ResourceConfig):
+            serialize = ["full_name"]
+            pop_params = ["dark_secret"]
 
     class Cheese(Base, ResourceUUID):
         __tablename__ = "cheeses"
@@ -150,7 +174,7 @@ def app_types():
             content=content, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY
         )
 
-    RouterFactory.mount(app, {"books": Book, "cheeses": Cheese, "knights": Knight})
+    RouterFactory.mount(app, [Author, Book, Cheese, Knight])
 
     yield TestClient(app)
 

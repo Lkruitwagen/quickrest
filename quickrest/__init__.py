@@ -1,23 +1,30 @@
-from quickrest.mixins.access_control import Private, Publishable, User
-from quickrest.mixins.create import CreateParams
-from quickrest.mixins.delete import DeleteParams
-from quickrest.mixins.patch import PatchParams
-from quickrest.mixins.read import ReadParams
-from quickrest.mixins.resource import Base, ResourceParams, build_resource
-from quickrest.mixins.search import SearchParams
+from quickrest.mixins.access_control import (
+    BaseUserModel,
+    User,
+    make_private,
+    make_publishable,
+)
+from quickrest.mixins.create import CreateConfig
+from quickrest.mixins.delete import DeleteConfig
+from quickrest.mixins.patch import PatchConfig
+from quickrest.mixins.read import ReadConfig
+from quickrest.mixins.resource import Base, Resource, ResourceConfig, build_resource
+from quickrest.mixins.search import SearchConfig
 from quickrest.router_factory import RouterFactory
 
 __all__ = [
     "Base",
-    "build_resource",
-    "ResourceParams",
+    "BaseUserModel",
+    "ResourceConfig",
     "RouterFactory",
-    "CreateParams",
-    "ReadParams",
-    "PatchParams",
-    "DeleteParams",
-    "SearchParams",
-    "Publishable",
-    "Private",
+    "CreateConfig",
+    "ReadConfig",
+    "PatchConfig",
+    "DeleteConfig",
+    "SearchConfig",
+    "make_publishable",
+    "make_private",
     "User",
+    "Resource",
+    "build_resource",
 ]

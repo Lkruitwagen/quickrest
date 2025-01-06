@@ -7,21 +7,21 @@ import uvicorn
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
 from sqlalchemy import ForeignKey, create_engine, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship, sessionmaker
 
 from quickrest import (
     Base,
-    CreateParams,
-    Private,
-    Publishable,
-    ReadParams,
-    ResourceParams,
+    BaseUserModel,
+    CreateConfig,
+    ReadConfig,
+    ResourceConfig,
     RouterFactory,
-    SearchParams,
+    SearchConfig,
     User,
     build_resource,
+    make_private,
+    make_publishable,
 )
 
 # ### Auth stuff
@@ -29,12 +29,12 @@ from quickrest import (
 # ###
 
 
-class UserToken(BaseModel):
+class UserToken(BaseUserModel):
     id: str
     permissions: list[str]
 
 
-async def get_current_user(request: Request):
+async def get_current_user(request: Request) -> UserToken:
     # write your own auth logic here - normally decoding tokens etc
     permissions = request.headers.get("permissions", "")
     _id = request.headers.get("id")
@@ -74,7 +74,7 @@ SessionMaker = sessionmaker(bind=engine)
 @event.listens_for(engine, "connect")
 def receive_connect(conn, _):
     conn.enable_load_extension(True)
-    conn.load_extension(str(Path.cwd() / "spellfix.so"))
+    conn.load_extension(str(Path.cwd() / "tests" / "spellfix.so"))
     conn.enable_load_extension(False)
 
 
@@ -84,7 +84,6 @@ def receive_connect(conn, _):
 Resource = build_resource(
     id_type=str,
     user_generator=get_current_user,
-    user_token_model=UserToken,
     sessionmaker=SessionMaker,
 )
 
@@ -104,13 +103,13 @@ class Owner(
         secondary="owner_certifications",
     )
 
-    class resource_cfg(ResourceParams):
+    class resource_cfg(ResourceConfig):
         serialize = ["certifications"]
 
-    class create_cfg(CreateParams):
+    class create_cfg(CreateConfig):
         dependencies = [check_user_is_userwriter]
 
-    class read_cfg(ReadParams):
+    class read_cfg(ReadConfig):
         # choose which relationships should be accessible via URL /<resource>/<id>/<relationship>
         routed_relationships = ["pets"]
 
@@ -125,11 +124,11 @@ class Specie(
     common_name: Mapped[str] = mapped_column()
     scientific_name: Mapped[str] = mapped_column()
 
-    class create_cfg(CreateParams):
+    class create_cfg(CreateConfig):
         dependencies = [check_user_is_admin]
 
 
-class Pet(Base, Resource, Publishable(user_model=Owner)):
+class Pet(Base, Resource, make_publishable(user_model=Owner)):
     __tablename__ = "pets"
     # note: all Resource classes have an id and slug column by default
     name: Mapped[str] = mapped_column()
@@ -140,18 +139,18 @@ class Pet(Base, Resource, Publishable(user_model=Owner)):
     specie: Mapped["Specie"] = relationship()
     notes: Mapped[list["Note"]] = relationship()
 
-    class resource_cfg(ResourceParams):
+    class resource_cfg(ResourceConfig):
         # choose which relationships should be serialized on the reponse
         serialize = ["specie"]
 
-    class search_cfg(SearchParams):
+    class search_cfg(SearchConfig):
         search_gte = ["vaccination_date"]  # greater than or equal to, list[str] | bool
         search_lt = ["vaccination_date"]  # less than, list[str] | bool
         search_similarity = ["name"]  # string trigram search
         search_similarity_threshold = 300  # trigram search threshold
 
 
-class Note(Base, Resource, Private(user_model=Owner)):
+class Note(Base, Resource, make_private(user_model=Owner)):
     __tablename__ = "notes"
 
     text: Mapped[str] = mapped_column()
@@ -167,7 +166,7 @@ class Certification(
     name: Mapped[str] = mapped_column()
     description: Mapped[str] = mapped_column()
 
-    class create_cfg(CreateParams):
+    class create_cfg(CreateConfig):
         dependencies = [check_user_is_admin]
 
 
@@ -179,15 +178,11 @@ class OwnerCertifications(Base):
     )
 
 
-all_models = {
-    cls.__name__.lower(): cls for cls in [Owner, Pet, Specie, Note, Certification]
-}
-
 # instantiate a FastAPI app
 app = FastAPI(title="QuickRest Quickstart", separate_input_output_schemas=False)
 
 # build create, read, update, delete routers for each resource and add them to the app
-RouterFactory.mount(app, all_models)
+RouterFactory.mount(app, [Owner, Pet, Specie, Note, Certification])
 
 
 @app.exception_handler(RequestValidationError)

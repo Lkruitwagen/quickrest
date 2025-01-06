@@ -1,0 +1,39 @@
+site_name: QuickRest
+
+repo_url: https://github.com/example/repository/
+
+theme:
+  name: "material"
+
+plugins:
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            heading_level: 2
+            show_bases: False
+            show_root_heading: True
+            show_root_full_path: false
+            show_symbol_type_heading: true
+            parameter_headings: true
+
+
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+nav:
+  - QuickRest: index.md
+  - Resource: resource.md
+  - CRUD:
+    - Read: read.md
+    - Create: create.md
+    - Update: update.md
+    - Delete: delete.md
+  - Search: search.md
+  - Fine-Grained Access Control: access_control.md
