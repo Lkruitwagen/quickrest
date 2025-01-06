@@ -5,15 +5,15 @@
         - build_resource
       show_signature: false
 
-::: quickrest.mixins.resource.ResourceParams
+::: quickrest.mixins.resource.ResourceConfig
     options:
       members: false
 
-::: quickrest.mixins.resource.RouterParams
+::: quickrest.mixins.resource.RouterConfig
     options:
       members: false
 
-::: quickrest.mixins.resource.build_mixin
+::: quickrest.mixins.resource.build_resource
     options:
       show_signature: false
 

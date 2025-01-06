@@ -1,3 +1,3 @@
-::: quickrest.mixins.create.CreateParams
+::: quickrest.mixins.create.CreateConfig
 
 ::: quickrest.mixins.create.CreateMixin

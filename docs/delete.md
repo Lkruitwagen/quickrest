@@ -1,3 +1,3 @@
-::: quickrest.mixins.delete.DeleteParams
+::: quickrest.mixins.delete.DeleteConfig
 
 ::: quickrest.mixins.delete.DeleteMixin

@@ -1,3 +1,3 @@
-::: quickrest.mixins.read.ReadParams
+::: quickrest.mixins.read.ReadConfig
 
 ::: quickrest.mixins.read.ReadMixin
