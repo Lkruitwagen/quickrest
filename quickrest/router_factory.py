@@ -1,4 +1,4 @@
-from quickrest.mixins.base import Base
+from quickrest.mixins.resource import Base
 
 
 class RouterFactory:

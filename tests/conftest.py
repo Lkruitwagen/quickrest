@@ -95,24 +95,24 @@ def app(db):
 
 @pytest.fixture(autouse=True, scope="session")
 def app_types():
-    from quickrest import Base, ResourceParams, RouterFactory, build_mixin
+    from quickrest import Base, ResourceConfig, RouterFactory, build_resource
 
     engine = create_engine("sqlite:///database-types.db", echo=False)
 
     SessionMaker = sessionmaker(bind=engine)
 
     # instantiate the Resource class
-    ResourceInt = build_mixin(
+    ResourceInt = build_resource(
         id_type=int,
         sessionmaker=SessionMaker,
     )
 
-    ResourceUUID = build_mixin(
+    ResourceUUID = build_resource(
         id_type=UUID,
         sessionmaker=SessionMaker,
     )
 
-    ResourceUUIDSlug = build_mixin(
+    ResourceUUIDSlug = build_resource(
         id_type=UUID,
         slug=True,
         sessionmaker=SessionMaker,
@@ -130,7 +130,7 @@ def app_types():
             "author", "last_name"
         )
 
-        class resource_cfg(ResourceParams):
+        class resource_cfg(ResourceConfig):
             serialize = ["author_last_name"]
 
     class Author(Base, ResourceInt):
@@ -143,7 +143,7 @@ def app_types():
         def full_name(self) -> str:
             return f"{self.first_name} {self.last_name}"
 
-        class resource_cfg(ResourceParams):
+        class resource_cfg(ResourceConfig):
             serialize = ["full_name"]
             pop_params = ["dark_secret"]
 
@@ -174,9 +174,7 @@ def app_types():
             content=content, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY
         )
 
-    RouterFactory.mount(
-        app, {"authors": Author, "books": Book, "cheeses": Cheese, "knights": Knight}
-    )
+    RouterFactory.mount(app, [Author, Book, Cheese, Knight])
 
     yield TestClient(app)
 
