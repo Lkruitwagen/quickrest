@@ -1,5 +1,7 @@
 site_name: QuickRest
 
+repo_url: https://github.com/example/repository/
+
 theme:
   name: "material"
 
