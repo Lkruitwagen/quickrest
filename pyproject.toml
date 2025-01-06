@@ -1,5 +1,5 @@
 [project]
-name = "quickrest"
+name = "fastapi-quickrest"
 dynamic = ["version"]
 description = "You deserve a..."
 readme = "README.md"
