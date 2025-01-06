@@ -37,6 +37,7 @@ dev = [
     "pre-commit",
     "pytest-ordering",
     "mkdocs-material",
+    "mkdocstrings-python",
     "httpx",
     "mypy",
 ]
