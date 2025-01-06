@@ -1,3 +1,11 @@
+from importlib.metadata import PackageNotFoundError, version
+
+try:
+    __version__ = version("quickrest")
+except PackageNotFoundError:
+    # package is not installed
+    pass
+
 from quickrest.mixins.access_control import (
     BaseUserModel,
     User,

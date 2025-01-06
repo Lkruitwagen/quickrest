@@ -12,7 +12,7 @@ A schema-first CRUD-generation framework for FastAPI and SQLAlchemy so your team
 [coverage badge]: https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/Lkruitwagen/a16058370777530ed286dab325015195/raw/quickrest_coverage_badge.json
 
 
-Full Documentation: [lucaskruitwagen.github.io/quickrest](https://lucaskruitwagen.github.io/quickrest)
+Full Documentation: [lucaskruitwagen.github.io/quickrest](https://lkruitwagen.github.io/quickrest/)
 
 Issues and Feature Requests: [github.com/Lkruitwagen/quickrest/issues](https://github.com/Lkruitwagen/quickrest/issues)
 
@@ -24,12 +24,12 @@ Issues and Feature Requests: [github.com/Lkruitwagen/quickrest/issues](https://g
 - Row-level fine-grained access control via developer-defineable user generation
 - Many additional configuration options available via `<Method>Config` classes
 
-See [docs](https://lucaskruitwagen.github.io/quickrest) for more.
+See [docs](https://lkruitwagen.github.io/quickrest/) for more.
 
 
 ## Installation
 
-QuickRest is available from the python package index: `pip install quickrest`.
+QuickRest is available from the python package index: `pip install fastapi-quickrest`.
 
 ## Quickstart
 
