@@ -12,13 +12,13 @@ from quickrest.mixins.base import BaseMixin, RESTFactory
 from quickrest.mixins.utils import classproperty
 
 
-class PatchParams(ABC):
+class PatchConfig(ABC):
     """
-    The `PatchParams` class can optionally be defined on the resource class.
-    This class should inherit from `PatchParams` and must be called `patch_cfg`.
+    The `PatchConfig` class can optionally be defined on the resource class.
+    This class should inherit from `PatchConfig` and must be called `patch_cfg`.
     If `patch_cfg` is set to `None`, then the patch route isn't created.
 
-    The `PatchParams` class can be used to limit which parameters are patchable on the resource.
+    The `PatchConfig` class can be used to limit which parameters are patchable on the resource.
     Parameters listed in `patchable_params` can be patched, while parameters listed in `nonpatchable_params` cannot be patched.
     Only one of `patchable_params` and `nonpatchable_params` should be defined.
     If both are defined, the difference between the sets (patchable_params - nonpatchable_params) will be used.
@@ -31,7 +31,7 @@ class PatchParams(ABC):
     ```python
     from sqlalchemy.orm import Mapped, mapped_column
 
-    from quickrest import Base, Resource, PatchParams
+    from quickrest import Base, Resource, PatchConfig
 
     from some_package.auth import authenticate_user
 
@@ -42,7 +42,7 @@ class PatchParams(ABC):
         name: Mapped[str] = mapped_column()
         job_title: Mapped[str] = mapped_column()
 
-        class patch_cfg(PatchParams):
+        class patch_cfg(PatchConfig):
             description = "update an employee"
             summary = "update an employee"
             operation_id = "update_employee"
@@ -84,7 +84,7 @@ class PatchMixin(BaseMixin):
     ## PatchModel
 
     The `PatchModel` is a Pydantic model build using the fields of the sqlalchemy model.
-    The model only includes field that are patchable (and not non-patchable), as defined in `PatchParams`.
+    The model only includes field that are patchable (and not non-patchable), as defined in `PatchConfig`.
     All fields are optional, and only the fields that are included in the request body will be updated.
     Object IDs are never patchable.
 
@@ -97,7 +97,7 @@ class PatchMixin(BaseMixin):
         ```python
         from sqlalchemy.orm import Mapped, mapped_column
 
-        from quickrest import Base, Resource, PatchParams
+        from quickrest import Base, Resource, PatchConfig
 
 
         class Employee(Base, Resource):
@@ -106,7 +106,7 @@ class PatchMixin(BaseMixin):
             name: Mapped[str] = mapped_column()
             job_title: Mapped[str] = mapped_column()
 
-            class patch_cfg(PatchParams):
+            class patch_cfg(PatchConfig):
                 patchable_params = ["job_title"]
         ```
 
@@ -137,7 +137,7 @@ class PatchMixin(BaseMixin):
 
     _patch = None
 
-    class patch_cfg(PatchParams):
+    class patch_cfg(PatchConfig):
         pass
 
     @classproperty

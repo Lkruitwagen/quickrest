@@ -10,10 +10,10 @@ from quickrest.mixins.base import BaseMixin, RESTFactory
 from quickrest.mixins.utils import classproperty
 
 
-class CreateParams:
+class CreateConfig:
     """
-    The `CreateParams` class can optionally be defined on the resource class.
-    This class should inherit from `CreateParams` and must be called `create_cfg`.
+    The `CreateConfig` class can optionally be defined on the resource class.
+    This class should inherit from `CreateConfig` and must be called `create_cfg`.
     If `create_cfg` is set to `None`, then the create route isn't created.
 
     ## Example:
@@ -22,7 +22,7 @@ class CreateParams:
     from sqlalchemy import ForeignKey
     from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-    from quickrest import Base, Resource, CreateParams
+    from quickrest import Base, Resource, CreateConfig
 
     from some_package.auth import authenticate_user
 
@@ -42,7 +42,7 @@ class CreateParams:
         name: Mapped[str] = mapped_column()
         company_id: Mapped[int] = mapped_column(ForeignKey("companies.id"))
 
-        class create_cfg(CreateParams):
+        class create_cfg(CreateConfig):
             description = "create a new employee"
             summary = "create a new employee"
             operation_id = "create_employee"
@@ -126,7 +126,7 @@ class CreateMixin(BaseMixin):
 
     _create = None
 
-    class create_cfg(CreateParams):
+    class create_cfg(CreateConfig):
         pass
 
     @classproperty

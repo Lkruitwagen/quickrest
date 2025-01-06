@@ -41,9 +41,9 @@ def indirect_caller(path):
     return getattr(mod, func)
 
 
-class RouterParams(ABC):
+class RouterConfig(ABC):
     """
-    The RouterParams class is an abstract class that defines the parameters for the APIRouter.
+    The RouterConfig class is an abstract class that defines the parameters for the APIRouter.
     It can be used to set router-level parameters that affect all routes in the router.
     Individual routes (`read_cfg`, `create_cfg`, etc.) can override there parameters.
 
@@ -68,7 +68,7 @@ class RouterParams(ABC):
         first_name: Mapped[str] = mapped_column()
         last_name: Mapped[str] = mapped_column()
 
-        class route_cfg(RouterParams):
+        class route_cfg(RouterConfig):
             prefix = "api"
             tags = ["students"]
             dependencies = [must_be_admin]
@@ -81,9 +81,9 @@ class RouterParams(ABC):
     dependencies: list[Callable] = []
 
 
-class ResourceParams(ABC):
+class ResourceConfig(ABC):
     """
-    The ResourceParams class is an abstract class that defines shared parameters for the CRUD operations and pydantic models of the resource.
+    The ResourceConfig class is an abstract class that defines shared parameters for the CRUD operations and pydantic models of the resource.
 
     The `serialize` attribute is a list of objects that should be included on the resource's BaseModel.
     These attributes are built using the type annotation and are a good way to include relationships in the resource's BaseModel,
@@ -94,7 +94,7 @@ class ResourceParams(ABC):
         Serialized related objects are also, in-turn, serialized, which can lead to deeply nested JSON objects and infinite loops.
         Additionally, if the number of related objects is unknown, the response size can grow outside of the expected bounds.
         We recommend using `serialize` to expose joined types, calculated properties, or n-limited relationships;
-        and use the `routed_relationships` attribute in the `ReadParams` to expose paginated related objects.
+        and use the `routed_relationships` attribute in the `ReadConfig` to expose paginated related objects.
 
     `pop_params` can be used to exclude certain attributes from the resource's models (i.e. the base model, and CRUD-associated models).
 
@@ -121,7 +121,7 @@ class ResourceParams(ABC):
         def full_name(self) -> str:
             return f"{self.first_name} {self.last_name}"
 
-        class resource_cfg(ResourceParams):
+        class resource_cfg(ResourceConfig):
             serialize = ["full_name"]
             pop_params = ["dark_secret"]
     ```
@@ -168,8 +168,8 @@ class ResourceMixin:
 
     Attributes:
         router (fastapi.APIRouter): The FastAPI APIRouter for the resource.
-        router_cfg (RouterParams): The parameters for the APIRouter.
-        resource_cfg (ResourceParams): The parameters for the resource.
+        router_cfg (RouterConfig): The parameters for the APIRouter.
+        resource_cfg (ResourceConfig): The parameters for the resource.
         _sessionmaker (Callable): A callable that returns a SQLAlchemy session.
         _user_generator (Callable): A callable that returns a user model.
         _error_handler (Callable): A callable that handles errors, defaults to `quickrest.mixins.errors.default_error_handler`.
@@ -180,10 +180,10 @@ class ResourceMixin:
     __tablename__: str
     _sessionmaker: Callable
 
-    class router_cfg(RouterParams):
+    class router_cfg(RouterConfig):
         pass
 
-    class resource_cfg(ResourceParams):
+    class resource_cfg(ResourceConfig):
         pass
 
     @classmethod
@@ -339,7 +339,7 @@ class ResourceMixin:
                 db.close()
 
 
-def build_mixin(
+def build_resource(
     sessionmaker: Callable = nullraise,
     user_generator: Callable = nullreturn,
     id_type: type = str,
@@ -409,8 +409,8 @@ def build_mixin(
     return Resource
 
 
-Resource = build_mixin(
-    sessionmaker=indirect_caller(env_settings.QUICKREST_INDIRECT_SESSION_GENERATOR),
+Resource = build_resource(
+    sessionmaker=indirect_caller(env_settings.QUICKREST_INDIRECT_SESSION_GENERATOR)(),
     user_generator=indirect_caller(env_settings.QUICKREST_INDIRECT_USER_GENERATOR),
     id_type=env_settings.QUICKREST_ID_TYPE,
     slug=env_settings.QUICKREST_USE_SLUG,

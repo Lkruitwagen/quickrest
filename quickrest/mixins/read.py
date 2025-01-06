@@ -11,10 +11,10 @@ from quickrest.mixins.base import BaseMixin, RESTFactory
 from quickrest.mixins.utils import classproperty
 
 
-class ReadParams(ABC):
+class ReadConfig(ABC):
     """
-    The `ReadParams` class can optionally be defined on the resource class.
-    This class should inherit from `ReadParams` and must be called `read_cfg`.
+    The `ReadConfig` class can optionally be defined on the resource class.
+    This class should inherit from `ReadConfig` and must be called `read_cfg`.
     If `read_cfg` is set to `None`, then the read route isn't created.
 
     ## Example:
@@ -33,7 +33,7 @@ class ReadParams(ABC):
 
         name: Mapped[str] = mapped_column()
 
-        class read_cfg(ReadParams):
+        class read_cfg(ReadConfig):
             description = "Get a company by ID"
             summary = "Get a company by ID"
             operation_id = "get_company"
@@ -119,7 +119,7 @@ class ReadMixin(BaseMixin):
 
         children: Mapped[list["Child"]] = relationship()
 
-        class read_cfg(ReadParams):
+        class read_cfg(ReadConfig):
             routed_relationships = ["children"]
 
 
@@ -133,7 +133,7 @@ class ReadMixin(BaseMixin):
 
     _read = None
 
-    class read_cfg(ReadParams):
+    class read_cfg(ReadConfig):
         pass
 
     @classproperty

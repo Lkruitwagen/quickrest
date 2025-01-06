@@ -58,7 +58,7 @@ class Owner(
 
     pets: Mapped[list["Pet"]] = relationship(back_populates="owner")
 
-    class read_cfg(ReadParams):
+    class read_cfg(ReadConfig):
         routed_relationships = ["pets"]
 
 

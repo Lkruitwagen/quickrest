@@ -11,10 +11,10 @@ from quickrest.mixins.base import BaseMixin, RESTFactory
 from quickrest.mixins.utils import classproperty
 
 
-class DeleteParams(ABC):
+class DeleteConfig(ABC):
     """
-    The `DeleteParams` class can optionally be defined on the resource class.
-    This class should inherit from `DeleteParams` and must be called `delete_cfg`.
+    The `DeleteConfig` class can optionally be defined on the resource class.
+    This class should inherit from `DeleteConfig` and must be called `delete_cfg`.
     If `delete_cfg` is set to `None`, then the delete route isn't created.
     The delete route is used for deleting a single resource object.
 
@@ -25,7 +25,7 @@ class DeleteParams(ABC):
     ```python
     from sqlalchemy.orm import Mapped, mapped_column
 
-    from quickrest import Base, Resource, DeleteParams
+    from quickrest import Base, Resource, DeleteConfig
 
     from some_package.auth import is_admin_user
 
@@ -36,7 +36,7 @@ class DeleteParams(ABC):
         name: Mapped[str] = mapped_column()
         job_title: Mapped[str] = mapped_column()
 
-        class patch_cfg(DeleteParams):
+        class patch_cfg(DeleteConfig):
             description = "delete an employee"
             summary = "delete an employee"
             operation_id = "delete_employee"
@@ -83,7 +83,7 @@ class DeleteMixin(BaseMixin):
 
     _delete = None
 
-    class delete_cfg(DeleteParams):
+    class delete_cfg(DeleteConfig):
         pass
 
     @classproperty

@@ -8,25 +8,25 @@ from typing import Any, Callable, Optional, Union
 from fastapi import Depends
 from pydantic import BaseModel, Field, create_model
 from sqlalchemy import func, or_
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 
 from quickrest.mixins.base import BaseMixin, RESTFactory
 from quickrest.mixins.utils import classproperty
 
 
-class SearchParams(ABC):
+class SearchConfig(ABC):
     """
-    The `SearchParams` class can optionally be defined on the resource class.
+    The `SearchConfig` class can optionally be defined on the resource class.
     The search route is used for searching for retrieving multiple resource objects
     and is exposed as a GET endpoint on the bare resource path `/{resource_name}`.
-    This class should inherit from `SearchParams` and must be called `search_cfg`.
+    This class should inherit from `SearchConfig` and must be called `search_cfg`.
     If `search_cfg` is set to `None`, then the search route isn't created.
 
-    `SearchParams` has router-defining attributes that can be set to configure the search route,
+    `SearchConfig` has router-defining attributes that can be set to configure the search route,
     including a description, summary, operation_id, and tag labels.
     The `dependencies` attribute can be set to a list of FastAPI dependencies that will be injected into the search route.
 
-    `SearchParams` also exposes powerful configuration options for filtering and searching for resources.
+    `SearchConfig` also exposes powerful configuration options for filtering and searching for resources.
     The `search_eq` (equals), `search_gt` (greater-than), `search_gte` (greater-than-or-equal-to), `search_lt` (less-than),
     and `search_lte` (less-than-or-equal-to) attributes can be set to filter on numeric fields (int, float, date, datetime).
     These parameters can be provided with either a list of field names (`list[str]`) that will expose these fields in the search query,
@@ -53,7 +53,7 @@ class SearchParams(ABC):
     Finally, the `results_limit` attribute can be set to specify the maximum number of results to return in a single search query, defaulting to 10.
     The route will also add a `page` parameter to the query, which can be used to paginate the results.
 
-    See the example below for a demonstration of how to use the `SearchParams` class.
+    See the example below for a demonstration of how to use the `SearchConfig` class.
 
     Attributes:
         description (str, optional): Description of the endpoint. Optional, defaults to `None`.
@@ -115,7 +115,7 @@ class SearchMixin(BaseMixin):
 
     This example shows a typical use case - filtering and searching for an 'employees' resource by business_group, name, start_date, and vaccation_days_taken.
     In this example, the `business_group` parameter is required, and the `secret_nickname` parameter is excluded from the search query.
-    The construction of these query parameters is described above in the [`SearchParams`]() class.
+    The construction of these query parameters is described above in the [`SearchConfig`]() class.
 
     Note that the `SearchEmployee` model isn't actually used as a request body schema, but fields are converted to url query parameters, e.g.
 
@@ -126,7 +126,7 @@ class SearchMixin(BaseMixin):
         ```python
         from sqlalchemy.orm import Mapped, mapped_column
 
-        from quickrest import Base, Resource, SearchParams
+        from quickrest import Base, Resource, SearchConfig
 
         from some_package.auth import admin_user
 
@@ -140,7 +140,7 @@ class SearchMixin(BaseMixin):
             start_date: Mapped[date] = mapped_column()
             vaccation_days_taken: Mapped[int] = mapped_column()
 
-            class search_cfg(SearchParams):
+            class search_cfg(SearchConfig):
                 # search filters
                 search_gte = True  # applies to all numeric fields
                 search_lt = True  # applies to all numeric fields
@@ -199,7 +199,7 @@ class SearchMixin(BaseMixin):
 
     _search = None
 
-    class search_cfg(SearchParams):
+    class search_cfg(SearchConfig):
         pass
 
     @classproperty
@@ -329,6 +329,11 @@ class SearchFactory(RESTFactory):
 
         # maybe add similarity threshold
         if model.search_cfg.search_similarity is not None:
+
+            if not isinstance(model._sessionmaker, sessionmaker):
+                raise ValueError(
+                    "Sessionmaker not set on model - search_similarity requires a database backend."
+                )
 
             if model._sessionmaker.kw.get("bind").dialect.name == "sqlite":
 
