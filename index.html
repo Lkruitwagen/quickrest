@@ -1,0 +1,881 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+        <link rel="next" href="resource/">
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>QuickRest</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.6f8fc17f.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#quickrest" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="QuickRest" class="md-header__button md-logo" aria-label="QuickRest" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            QuickRest
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              QuickRest
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Lkruitwagen/quickrest/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="QuickRest" class="md-nav__button md-logo" aria-label="QuickRest" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    QuickRest
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Lkruitwagen/quickrest/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    QuickRest
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    QuickRest
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#useage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Useage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Useage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#resource-mixin" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resource Mixin
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resource Mixin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#initialization-from-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initialization from Environment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optional-manually-building-resource-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      [Optional] Manually Building Resource class
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fine-grained-access-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fine-Grained Access Control
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#routerfactory" class="md-nav__link">
+    <span class="md-ellipsis">
+      RouterFactory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring Resources
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickstart-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quickstart Example
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extensive-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extensive Example
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="resource/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resource
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    CRUD
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            CRUD
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="read/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Read
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="create/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Create
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="update/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Update
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="delete/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Delete
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="search/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Search
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="access_control/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fine-Grained Access Control
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#useage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Useage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Useage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#resource-mixin" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resource Mixin
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resource Mixin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#initialization-from-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initialization from Environment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optional-manually-building-resource-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      [Optional] Manually Building Resource class
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fine-grained-access-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fine-Grained Access Control
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#routerfactory" class="md-nav__link">
+    <span class="md-ellipsis">
+      RouterFactory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring Resources
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickstart-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quickstart Example
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extensive-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extensive Example
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="quickrest">QuickRest</h1>
+<p><em>You deserve a break.</em></p>
+<p><strong>QuickRest is a schema-first RESTful API framework for <a href="https://fastapi.tiangolo.com/">FastAPI</a>.</strong></p>
+<div class="admonition warning">
+<p class="admonition-title">QuickRest is still in Development</p>
+<p>QuickRest is still under development and isn't yet in a stable release. High-level changes may still be made.</p>
+</div>
+<p><a href="https://opensource.org/licenses/MIT"><img alt="License" src="https://img.shields.io/badge/License-MIT-blue.svg" /></a>
+<img alt="Coverage" src="https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/Lkruitwagen/a16058370777530ed286dab325015195/raw/quickrest_coverage_badge.json" /></p>
+<p>QuickRest provides a series of mixin classes for <a href="https://www.sqlalchemy.org/">SQLAlchemy</a> declarative mapping table classes that automatically build <code>create</code>, <code>read</code>, <code>update</code>, <code>delete</code>, and <code>search</code> (CRUD+Search) FastAPI endpoints, as well as the necessary database controllers and <a href="https://docs.pydantic.dev/latest/">Pydantic</a> models.</p>
+<p>QuickRest also allows the developer to specify related objects or properties to be serialized on the given resource, and can automatically extend <code>read</code> routes with routes for related objects.</p>
+<p>Unique to QuickRest, a developer can also specify fine-grained access-control strategies for tables, by injecting a user-generating (and user-authenticating) function specified by the developer. All endpoint routes are asynchronous.</p>
+<p>QuickRest is not an abstraction of FastAPI and/or SQLAlchemy, the full utility of both libraries is still available. Non-CRUD business logic can live happily alongside QuickRest routes. QuickRest just automates the production of repetitive CRUD routes and controllers, improving maintainability and saving developer time. Your developers can instead focus on more value-adding work, or, you know, take a break.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Simple Schema-First App</label><label for="__tabbed_1_2">OpenAPI Swagger UI with auto-generated CRUD+Search routes</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">uvicorn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span><span class="p">,</span> <span class="n">mapped_column</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">quickrest</span><span class="w"> </span><span class="kn">import</span> <span class="n">Base</span><span class="p">,</span> <span class="n">Resource</span><span class="p">,</span> <span class="n">RouterFactory</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Pet</span><span class="p">(</span><span class="n">Base</span><span class="p">,</span> <span class="n">Resource</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;pets&quot;</span>
+    <span class="c1"># note: all Resource classes have an id column by default</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">()</span>
+    <span class="n">specie</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">()</span>
+
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;QuickRest Quickstart&quot;</span><span class="p">)</span>
+
+<span class="n">RouterFactory</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="p">[</span><span class="n">Pet</span><span class="p">])</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<p><img alt="Hello" src="img/quickstart.png" /></p>
+</div>
+</div>
+</div>
+<h2 id="installation">Installation</h2>
+<p>QuickRest is available via the python package index (PyPi). It can be installed with simply:</p>
+<pre><code>pip install fastapi-quickrest
+</code></pre>
+<h2 id="useage">Useage</h2>
+<p>QuickRest has been designed to abstract all the logic of the CRUD endpoints to the <code>Resource</code> mixin.
+The <code>Resource</code> mixin must be configured with an SQLAlchemy <code>SessionMaker</code> in order to connect to the database.
+It can also be supplied with a user generator dependency that will also allow the developer to mixin fine-grained access control utilities.
+There are two ways to initialize the <code>Resource</code> class: a class will be built automatically using environment variablees; or it can be built manually using <code>build_resource</code>.</p>
+<p>See <a href="resource/">Resource docs</a> for more information.</p>
+<h3 id="resource-mixin">Resource Mixin</h3>
+<p>The <code>Resource</code> class is the primary mixin the build the CRUD+Search endpoints for the resource.
+The Resource can be configured with a <code>ResourceConfig</code> inner class which must be called <code>resource_cfg</code>.
+These properties modify the resource accross all CRUD methods.
+Resources can also be given a <code>router_cfg</code> that subclasses <code>RouterConfig</code>.
+These parameters are provided to FastAPI when building the base router and the individual CRUD routers.
+The Resource mixin automatically builds a pydantic <code>BaseModel</code> and a <code>PaginatedBaseModel</code> which are used by multiple routes.
+Resources are automatically defined with an <code>id</code> column; the developer can choose whether the id type is <code>str</code>, <code>int</code>, or <code>uuid.UUID</code>.
+Resources may also optionally be defined with a unique <code>slug</code> column.</p>
+<p>The default <code>Resource</code> class inherits mixins for each of the CRUD method plus a generic search method, each of which add a controller, router, and any necessary input schema.
+The CRUD mixins each have their own respect configuration class, which can be defined, respectively, as <code>read_cfg</code>, <code>create_cfg</code>, <code>patch_cfg</code>, <code>delete_cfg</code>, and <code>search_cfg</code>.
+These config classes allow the developer to define (or overwrite) endpoint specific properties like the <code>tags</code>, <code>description</code>, and <code>summary</code>.
+They also allow the developer to specify certain properties of the route, like which parameters of the model should be included or excluded.</p>
+<h4 id="initialization-from-environment">Initialization from Environment</h4>
+<p>When the <code>Resource</code> class is first imported, it is initialized from environment variables.
+These environment variables can be used to specify the database connection, as well as indirect references to a user-generator function for fine-grained access control.</p>
+<pre><code>DB_CONNECTION_URL # e.g. "postgresql://username:password@host:port/dtabase_name"
+QUICKREST_INDIRECT_USER_GENERATOR # e.g. "quickrest.mixins.base.nullreturn"
+</code></pre>
+<p>Other environment variables are available to set the default <code>id</code> type and whether resources shuld have a <code>slug</code> type; to indirectly specify the sessionmaker function, and other properties.
+If the environment variables aren't set, the app can still be run, but any calls that create a database session will raise an error.</p>
+<h4 id="optional-manually-building-resource-class">[Optional] Manually Building Resource class</h4>
+<p>The <code>Resource</code> mixin can be built manually using <code>build_resource</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">quickrest</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_resource</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">your_code</span><span class="w"> </span><span class="kn">import</span> <span class="n">SessionMaker</span><span class="p">,</span> <span class="n">user_generator_function</span>
+
+<span class="n">Resource</span> <span class="o">=</span> <span class="n">build_resource</span><span class="p">(</span>
+    <span class="n">user_generator</span><span class="o">=</span><span class="n">user_generator_function</span><span class="p">,</span>
+    <span class="n">sessionmaker</span><span class="o">=</span><span class="n">SessionMaker</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Pet</span><span class="p">(</span><span class="n">Base</span><span class="p">,</span> <span class="n">Resource</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;pets&quot;</span>
+
+
+<span class="o">...</span>
+</code></pre></div>
+<h3 id="fine-grained-access-control">Fine-Grained Access Control</h3>
+<p>QuickRest also provides fine-grained access control mixins for resources.
+Two access control patterns are currently supported: a <code>Private</code> resource, where only the resource creator has access to objects they've created;
+and a <code>Publishable</code> resource, where resource creators can optionally share their objects publicly.
+To use the fine-grained access control utilities, these classes must be defined at runtime from their respective <code>make_private</code> and <code>make_publishable</code> methods.
+These build methods must also reference the owner Resource model that will own the resources.
+This resource must have the <code>User</code> mixin.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">uvicorn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span><span class="p">,</span> <span class="n">mapped_column</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">quickrest</span><span class="w"> </span><span class="kn">import</span> <span class="n">Base</span><span class="p">,</span> <span class="n">Resource</span><span class="p">,</span> <span class="n">RouterFactory</span><span class="p">,</span> <span class="n">make_private</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Owner</span><span class="p">(</span><span class="n">Base</span><span class="p">,</span> <span class="n">Resource</span><span class="p">,</span> <span class="n">User</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;owners&quot;</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Pet</span><span class="p">(</span><span class="n">Base</span><span class="p">,</span> <span class="n">Resource</span><span class="p">,</span> <span class="n">make_private</span><span class="p">(</span><span class="n">user_model</span><span class="o">=</span><span class="n">Owner</span><span class="p">)):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;pets&quot;</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">()</span>
+    <span class="n">specie</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">()</span>
+</code></pre></div>
+<h3 id="routerfactory">RouterFactory</h3>
+<p>The <code>RouterFactory</code> class is needed to finally rebuild all schemae, reconciling any forward references, and then mount the routes to the main FastAPI app.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span><span class="p">,</span> <span class="n">mapped_column</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">quickrest</span><span class="w"> </span><span class="kn">import</span> <span class="n">RouterFactory</span><span class="p">,</span> <span class="n">Base</span><span class="p">,</span> <span class="n">Resource</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Pet</span><span class="p">(</span><span class="n">Base</span><span class="p">,</span> <span class="n">Resource</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;pets&quot;</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">()</span>
+
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+
+<span class="n">RouterFactory</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="p">[</span><span class="n">Pet</span><span class="p">])</span>
+</code></pre></div>
+<h3 id="configuring-resources">Configuring Resources</h3>
+<p>Resources can be configured with the appropriate <code>Config</code> class. Typical FastAPI router settings (like dependencies, route summary, description, operation_id) can be set with these config classes, either universally on the <code>RouterConfig</code> class, or on each CRUD route on the respective <code>&lt;Operation&gt;Config</code>. Additional endpoint-specific configuration options are also available, like which parameters should be patchable.</p>
+<p>The following configuration classes are available, please see the relevant docs for full configuration options.</p>
+<ul>
+<li><a href="resource/#quickrest.mixins.resource.ResourceConfig">ResourceConfig</a></li>
+<li><a href="resource/#quickrest.mixins.resource.RouterConfig">RouterConfig</a></li>
+<li><a href="read/#quickrest.mixins.read.ReadConfig">ReadConfig</a></li>
+<li><a href="create/#quickrest.mixins.create.CreateConfig">CreateConfig</a></li>
+<li><a href="patch.md#quickrest.mixins.patch.PatchConfig">PatchConfig</a></li>
+<li><a href="delete/#quickrest.mixins.delete.DeleteConfig">DeleteConfig</a></li>
+<li><a href="search/#quickrest.mixins.search.SearchConfig">SearchConfig</a></li>
+</ul>
+<p>The config class must be named appropriately, e.g. <code>patch_cfg</code>, extending <code>PatchConfig</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Pet</span><span class="p">(</span><span class="n">Base</span><span class="p">,</span> <span class="n">Resource</span><span class="p">):</span>
+    <span class="c1"># ...</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">read_cfg</span><span class="p">(</span><span class="n">ReadConfig</span><span class="p">):</span>
+        <span class="n">summry</span> <span class="o">=</span> <span class="s2">&quot;retrieve a Pet with a GET request&quot;</span>
+</code></pre></div>
+<p>To disable a CRUD endpoint, the config class must equal <code>None</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Pet</span><span class="p">(</span><span class="n">Base</span><span class="p">,</span> <span class="n">Resource</span><span class="p">):</span>
+    <span class="c1"># ...</span>
+
+    <span class="n">patch_cfg</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+<h2 id="quickstart-example">Quickstart Example</h2>
+<p>This quickstart example</p>
+<h2 id="extensive-example">Extensive Example</h2>
+<p>For a more extensive example, including using fine-grained access control with user-defined functions, see the <a href="https://github.com/Lkruitwagen/quickrest/blob/main/example/app.py">example app</a> on GitHub.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": ".", "features": [], "search": "assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  </body>
+</html>

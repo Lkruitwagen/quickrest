@@ -1,0 +1,2720 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../read/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Resource - QuickRest</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.6f8fc17f.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#quickrest.mixins.resource.ResourceMixin" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="QuickRest" class="md-header__button md-logo" aria-label="QuickRest" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            QuickRest
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Resource
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Lkruitwagen/quickrest/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="QuickRest" class="md-nav__button md-logo" aria-label="QuickRest" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    QuickRest
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Lkruitwagen/quickrest/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QuickRest
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Resource
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Resource
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.ResourceMixin" class="md-nav__link">
+    <span class="md-ellipsis">
+      ResourceMixin
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ResourceMixin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.ResourceMixin._build_basemodel" class="md-nav__link">
+    <span class="md-ellipsis">
+      _build_basemodel
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.ResourceConfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      ResourceConfig
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ResourceConfig">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.ResourceConfig--example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.RouterConfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      RouterConfig
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RouterConfig">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.RouterConfig--example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.build_resource" class="md-nav__link">
+    <span class="md-ellipsis">
+      build_resource
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="build_resource">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.build_resource--primary-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      Primary Key
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.build_resource--error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.build_resource(sessionmaker)" class="md-nav__link">
+    <span class="md-ellipsis">
+      sessionmaker
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.build_resource(user_generator)" class="md-nav__link">
+    <span class="md-ellipsis">
+      user_generator
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.build_resource(id_type)" class="md-nav__link">
+    <span class="md-ellipsis">
+      id_type
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.build_resource(slug)" class="md-nav__link">
+    <span class="md-ellipsis">
+      slug
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.build_resource(error_handler)" class="md-nav__link">
+    <span class="md-ellipsis">
+      error_handler
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.base.EnvSettings" class="md-nav__link">
+    <span class="md-ellipsis">
+      EnvSettings
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    CRUD
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            CRUD
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../read/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Read
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../create/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Create
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../update/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Update
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../delete/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Delete
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../search/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Search
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../access_control/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fine-Grained Access Control
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.ResourceMixin" class="md-nav__link">
+    <span class="md-ellipsis">
+      ResourceMixin
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ResourceMixin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.ResourceMixin._build_basemodel" class="md-nav__link">
+    <span class="md-ellipsis">
+      _build_basemodel
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.ResourceConfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      ResourceConfig
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ResourceConfig">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.ResourceConfig--example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.RouterConfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      RouterConfig
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RouterConfig">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.RouterConfig--example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.build_resource" class="md-nav__link">
+    <span class="md-ellipsis">
+      build_resource
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="build_resource">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.build_resource--primary-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      Primary Key
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.build_resource--error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.build_resource(sessionmaker)" class="md-nav__link">
+    <span class="md-ellipsis">
+      sessionmaker
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.build_resource(user_generator)" class="md-nav__link">
+    <span class="md-ellipsis">
+      user_generator
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.build_resource(id_type)" class="md-nav__link">
+    <span class="md-ellipsis">
+      id_type
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.build_resource(slug)" class="md-nav__link">
+    <span class="md-ellipsis">
+      slug
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.resource.build_resource(error_handler)" class="md-nav__link">
+    <span class="md-ellipsis">
+      error_handler
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.base.EnvSettings" class="md-nav__link">
+    <span class="md-ellipsis">
+      EnvSettings
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+  <h1>Resource</h1>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="quickrest.mixins.resource.ResourceMixin" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>ResourceMixin</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents first">
+
+
+        <p>The ResourceMixin class is the primary mixin for attaching a router with CRUD operations to a SQLAlchemy model.
+It inherits from a ResourceBase class and ResourceBaseSlug class that provide the choice of primary key and slug fields, respectively, based on <code>env_settings</code>.
+It also inherits from the CreateMixin, ReadMixin, PatchMixin, DeleteMixin, and SearchMixin, which provide the CRUD+Search operations and routes for the resource.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.resource.ResourceMixin.router">router</span></code></td>
+            <td>
+                  <code><span title="fastapi.APIRouter">APIRouter</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The FastAPI APIRouter for the resource.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.resource.ResourceMixin.router_cfg">router_cfg</span></code></td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="quickrest.mixins.resource.RouterConfig" href="#quickrest.mixins.resource.RouterConfig">RouterConfig</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The parameters for the APIRouter.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.resource.ResourceMixin.resource_cfg">resource_cfg</span></code></td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="quickrest.mixins.resource.ResourceConfig" href="#quickrest.mixins.resource.ResourceConfig">ResourceConfig</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The parameters for the resource.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.resource.ResourceMixin._sessionmaker">_sessionmaker</span></code></td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A callable that returns a SQLAlchemy session.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.resource.ResourceMixin._user_generator">_user_generator</span></code></td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A callable that returns a user model.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.resource.ResourceMixin._error_handler">_error_handler</span></code></td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A callable that handles errors, defaults to <code>quickrest.mixins.errors.default_error_handler</code>.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>quickrest/mixins/resource.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span>
+<span class="normal">339</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">ResourceMixin</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The ResourceMixin class is the primary mixin for attaching a router with CRUD operations to a SQLAlchemy model.</span>
+<span class="sd">    It inherits from a ResourceBase class and ResourceBaseSlug class that provide the choice of primary key and slug fields, respectively, based on `env_settings`.</span>
+<span class="sd">    It also inherits from the CreateMixin, ReadMixin, PatchMixin, DeleteMixin, and SearchMixin, which provide the CRUD+Search operations and routes for the resource.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        router (fastapi.APIRouter): The FastAPI APIRouter for the resource.</span>
+<span class="sd">        router_cfg (RouterConfig): The parameters for the APIRouter.</span>
+<span class="sd">        resource_cfg (ResourceConfig): The parameters for the resource.</span>
+<span class="sd">        _sessionmaker (Callable): A callable that returns a SQLAlchemy session.</span>
+<span class="sd">        _user_generator (Callable): A callable that returns a user model.</span>
+<span class="sd">        _error_handler (Callable): A callable that handles errors, defaults to `quickrest.mixins.errors.default_error_handler`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">router</span><span class="p">:</span> <span class="n">APIRouter</span>
+    <span class="n">__tablename__</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">_sessionmaker</span><span class="p">:</span> <span class="n">Callable</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">router_cfg</span><span class="p">(</span><span class="n">RouterConfig</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">resource_cfg</span><span class="p">(</span><span class="n">ResourceConfig</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_basemodel</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Each Resource class has a Pydantic `BaseModel` that is used to serialize the response for the API endpoints.</span>
+<span class="sd">        This method builds the BaseModel using the declared columns on the SQLAlchemy model and the `resource_cfg` parameters.</span>
+<span class="sd">        Each column is defined as a field on the BaseModel, with the python-equivalent type of the column as the type of the field.</span>
+<span class="sd">        Columns that are `nullable` are `Optional` on the pydantic model.</span>
+<span class="sd">        Relationships are also added to the pydantic model as fields if they are included in the `resource_cfg.serialize` list.</span>
+<span class="sd">        Relationship fields have the type of the basemodel of the related resource, which is instatiated as a `ForwardRef` and then evaluated when the router is built.</span>
+<span class="sd">        If the relationship is many-to-many, the field is a list of the related resource&#39;s basemodel.</span>
+<span class="sd">        Any parameters in the `pop_params` list are excluded from the BaseModel.</span>
+
+<span class="sd">        When multiple resource objects are returned by a route (for example, a search route or a related object route),</span>
+<span class="sd">        the response is paginated using a `PaginatedBaseModel`.</span>
+<span class="sd">        The PaginatedBaseModel includes a list of the resource object&#39;s BaseModel and metadata about the pagination: the current page and the total number of pages.</span>
+
+<span class="sd">        === &quot;SQLAlchemy Model&quot;</span>
+
+<span class="sd">            ```python</span>
+<span class="sd">            from sqlalchemy.orm import Mapped, mapped_column</span>
+
+<span class="sd">            from quickrest import Base, Resource</span>
+
+
+<span class="sd">            class Book(Base, Resource):</span>
+<span class="sd">                __tablename__ = &quot;books&quot;</span>
+<span class="sd">                title: Mapped[str] = mapped_column()</span>
+<span class="sd">                year: Mapped[Optional[int]] = mapped_column(nullable=True)</span>
+<span class="sd">                author_name: Mapped[str] = mapped_column()</span>
+<span class="sd">            ```</span>
+
+<span class="sd">        === &quot;Equivalent Pydantic Model&quot;</span>
+
+<span class="sd">            ```python</span>
+<span class="sd">            from typing import Optional</span>
+
+<span class="sd">            from pydantic import BaseModel</span>
+
+
+<span class="sd">            class BookBase(BaseModel):</span>
+<span class="sd">                id: int</span>
+<span class="sd">                title: str</span>
+<span class="sd">                year: Optional[int]</span>
+<span class="sd">                author_name: str</span>
+<span class="sd">            ```</span>
+
+<span class="sd">        === &quot;Paginated Pydantic Model&quot;</span>
+
+<span class="sd">            ```python</span>
+<span class="sd">            from typing import Optional</span>
+
+<span class="sd">            from pydantic import BaseModel</span>
+
+
+<span class="sd">            class BookBase(BaseModel):</span>
+<span class="sd">                id: int</span>
+<span class="sd">                title: str</span>
+<span class="sd">                year: Optional[int]</span>
+<span class="sd">                author_name: str</span>
+
+
+<span class="sd">            class PaginatedBookBase(BaseModel):</span>
+<span class="sd">                books: list[BookBase]</span>
+<span class="sd">                page: int</span>
+<span class="sd">                total_pages: int</span>
+<span class="sd">            ```</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__table__</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">Optional</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">python_type</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">nullable</span>
+                <span class="k">else</span> <span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">python_type</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cols</span>
+            <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">resource_cfg</span><span class="o">.</span><span class="n">pop_params</span>
+        <span class="p">}</span>
+
+        <span class="n">serialized_attrs</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__mapper__</span><span class="o">.</span><span class="n">relationships</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">key</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">resource_cfg</span><span class="o">.</span><span class="n">serialize</span><span class="p">:</span>
+
+                <span class="n">serialized_attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">remote_side</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1"># if the relationship is many-to-many, we need to use a list</span>
+                    <span class="n">fields</span><span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">ForwardRef</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">class_</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)],</span> <span class="o">...</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># otherwise, we can just use the type of the primary key</span>
+                    <span class="n">fields</span><span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ForwardRef</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">class_</span><span class="o">.</span><span class="vm">__name__</span><span class="p">),</span> <span class="o">...</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">prop_key</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">resource_cfg</span><span class="o">.</span><span class="n">serialize</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">serialized_attrs</span><span class="p">):</span>
+            <span class="c1"># handle associated proxy case</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">prop_key</span><span class="p">),</span> <span class="n">ColumnAssociationProxyInstance</span><span class="p">):</span>
+                <span class="n">fields</span><span class="p">[</span><span class="n">prop_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">prop_key</span><span class="p">)</span><span class="o">.</span><span class="n">remote_attr</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">python_type</span><span class="p">,</span>
+                    <span class="o">...</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="c1"># handle property case</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">prop_key</span><span class="p">),</span> <span class="nb">property</span><span class="p">):</span>
+                <span class="n">fields</span><span class="p">[</span><span class="n">prop_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">prop_key</span><span class="p">)</span><span class="o">.</span><span class="n">fget</span><span class="o">.</span><span class="vm">__annotations__</span><span class="p">[</span><span class="s2">&quot;return&quot;</span><span class="p">],</span>
+                    <span class="o">...</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Property </span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2"> of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">prop_key</span><span class="p">))</span><span class="si">}</span><span class="s2"> not supported - please raise an issue or a PR!&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="o">**</span><span class="n">fields</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build_models</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+
+        <span class="bp">cls</span><span class="o">.</span><span class="n">basemodel</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_build_basemodel</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">_attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;create&quot;</span><span class="p">,</span> <span class="s2">&quot;read&quot;</span><span class="p">,</span> <span class="s2">&quot;delete&quot;</span><span class="p">,</span> <span class="s2">&quot;patch&quot;</span><span class="p">,</span> <span class="s2">&quot;search&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">_attr</span><span class="p">):</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">_attr</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build_router</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="bp">cls</span><span class="o">.</span><span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span>
+            <span class="n">prefix</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">router_cfg</span><span class="o">.</span><span class="n">prefix</span> <span class="ow">or</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">__tablename__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">tags</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">router_cfg</span><span class="o">.</span><span class="n">tags</span><span class="p">,</span>
+            <span class="n">dependencies</span><span class="o">=</span><span class="p">[</span><span class="n">Depends</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">router_cfg</span><span class="o">.</span><span class="n">dependencies</span><span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;read&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;read_cfg&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">attach_route</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;create&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;create_cfg&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">create</span><span class="o">.</span><span class="n">attach_route</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;delete&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;delete_cfg&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">delete</span><span class="o">.</span><span class="n">attach_route</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;patch&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;patch_cfg&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">attach_route</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;search&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;search_cfg&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">search</span><span class="o">.</span><span class="n">attach_route</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">db_generator</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Session</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">db</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_sessionmaker</span><span class="p">()</span>
+            <span class="k">yield</span> <span class="n">db</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="quickrest.mixins.resource.ResourceMixin._build_basemodel" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">_build_basemodel</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Each Resource class has a Pydantic <code>BaseModel</code> that is used to serialize the response for the API endpoints.
+This method builds the BaseModel using the declared columns on the SQLAlchemy model and the <code>resource_cfg</code> parameters.
+Each column is defined as a field on the BaseModel, with the python-equivalent type of the column as the type of the field.
+Columns that are <code>nullable</code> are <code>Optional</code> on the pydantic model.
+Relationships are also added to the pydantic model as fields if they are included in the <code>resource_cfg.serialize</code> list.
+Relationship fields have the type of the basemodel of the related resource, which is instatiated as a <code>ForwardRef</code> and then evaluated when the router is built.
+If the relationship is many-to-many, the field is a list of the related resource's basemodel.
+Any parameters in the <code>pop_params</code> list are excluded from the BaseModel.</p>
+<p>When multiple resource objects are returned by a route (for example, a search route or a related object route),
+the response is paginated using a <code>PaginatedBaseModel</code>.
+The PaginatedBaseModel includes a list of the resource object's BaseModel and metadata about the pagination: the current page and the total number of pages.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="quickrest.mixins.resource.ResourceMixin._build_basemodel--__tabbed_1_1" name="quickrest.mixins.resource.ResourceMixin._build_basemodel--__tabbed_1" type="radio" /><input id="quickrest.mixins.resource.ResourceMixin._build_basemodel--__tabbed_1_2" name="quickrest.mixins.resource.ResourceMixin._build_basemodel--__tabbed_1" type="radio" /><input id="quickrest.mixins.resource.ResourceMixin._build_basemodel--__tabbed_1_3" name="quickrest.mixins.resource.ResourceMixin._build_basemodel--__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="quickrest.mixins.resource.ResourceMixin._build_basemodel--__tabbed_1_1">SQLAlchemy Model</label><label for="quickrest.mixins.resource.ResourceMixin._build_basemodel--__tabbed_1_2">Equivalent Pydantic Model</label><label for="quickrest.mixins.resource.ResourceMixin._build_basemodel--__tabbed_1_3">Paginated Pydantic Model</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span><span class="p">,</span> <span class="n">mapped_column</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">quickrest</span><span class="w"> </span><span class="kn">import</span> <span class="n">Base</span><span class="p">,</span> <span class="n">Resource</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Book</span><span class="p">(</span><span class="n">Base</span><span class="p">,</span> <span class="n">Resource</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;books&quot;</span>
+    <span class="n">title</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">()</span>
+    <span class="n">year</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">author_name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">BookBase</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">year</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="n">author_name</span><span class="p">:</span> <span class="nb">str</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">BookBase</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">year</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="n">author_name</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">PaginatedBookBase</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">books</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BookBase</span><span class="p">]</span>
+    <span class="n">page</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">total_pages</span><span class="p">:</span> <span class="nb">int</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+
+            <details class="quote">
+              <summary>Source code in <code>quickrest/mixins/resource.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_build_basemodel</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Each Resource class has a Pydantic `BaseModel` that is used to serialize the response for the API endpoints.</span>
+<span class="sd">    This method builds the BaseModel using the declared columns on the SQLAlchemy model and the `resource_cfg` parameters.</span>
+<span class="sd">    Each column is defined as a field on the BaseModel, with the python-equivalent type of the column as the type of the field.</span>
+<span class="sd">    Columns that are `nullable` are `Optional` on the pydantic model.</span>
+<span class="sd">    Relationships are also added to the pydantic model as fields if they are included in the `resource_cfg.serialize` list.</span>
+<span class="sd">    Relationship fields have the type of the basemodel of the related resource, which is instatiated as a `ForwardRef` and then evaluated when the router is built.</span>
+<span class="sd">    If the relationship is many-to-many, the field is a list of the related resource&#39;s basemodel.</span>
+<span class="sd">    Any parameters in the `pop_params` list are excluded from the BaseModel.</span>
+
+<span class="sd">    When multiple resource objects are returned by a route (for example, a search route or a related object route),</span>
+<span class="sd">    the response is paginated using a `PaginatedBaseModel`.</span>
+<span class="sd">    The PaginatedBaseModel includes a list of the resource object&#39;s BaseModel and metadata about the pagination: the current page and the total number of pages.</span>
+
+<span class="sd">    === &quot;SQLAlchemy Model&quot;</span>
+
+<span class="sd">        ```python</span>
+<span class="sd">        from sqlalchemy.orm import Mapped, mapped_column</span>
+
+<span class="sd">        from quickrest import Base, Resource</span>
+
+
+<span class="sd">        class Book(Base, Resource):</span>
+<span class="sd">            __tablename__ = &quot;books&quot;</span>
+<span class="sd">            title: Mapped[str] = mapped_column()</span>
+<span class="sd">            year: Mapped[Optional[int]] = mapped_column(nullable=True)</span>
+<span class="sd">            author_name: Mapped[str] = mapped_column()</span>
+<span class="sd">        ```</span>
+
+<span class="sd">    === &quot;Equivalent Pydantic Model&quot;</span>
+
+<span class="sd">        ```python</span>
+<span class="sd">        from typing import Optional</span>
+
+<span class="sd">        from pydantic import BaseModel</span>
+
+
+<span class="sd">        class BookBase(BaseModel):</span>
+<span class="sd">            id: int</span>
+<span class="sd">            title: str</span>
+<span class="sd">            year: Optional[int]</span>
+<span class="sd">            author_name: str</span>
+<span class="sd">        ```</span>
+
+<span class="sd">    === &quot;Paginated Pydantic Model&quot;</span>
+
+<span class="sd">        ```python</span>
+<span class="sd">        from typing import Optional</span>
+
+<span class="sd">        from pydantic import BaseModel</span>
+
+
+<span class="sd">        class BookBase(BaseModel):</span>
+<span class="sd">            id: int</span>
+<span class="sd">            title: str</span>
+<span class="sd">            year: Optional[int]</span>
+<span class="sd">            author_name: str</span>
+
+
+<span class="sd">        class PaginatedBookBase(BaseModel):</span>
+<span class="sd">            books: list[BookBase]</span>
+<span class="sd">            page: int</span>
+<span class="sd">            total_pages: int</span>
+<span class="sd">        ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__table__</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">Optional</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">python_type</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">nullable</span>
+            <span class="k">else</span> <span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">python_type</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cols</span>
+        <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">resource_cfg</span><span class="o">.</span><span class="n">pop_params</span>
+    <span class="p">}</span>
+
+    <span class="n">serialized_attrs</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__mapper__</span><span class="o">.</span><span class="n">relationships</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">key</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">resource_cfg</span><span class="o">.</span><span class="n">serialize</span><span class="p">:</span>
+
+            <span class="n">serialized_attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">remote_side</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># if the relationship is many-to-many, we need to use a list</span>
+                <span class="n">fields</span><span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">ForwardRef</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">class_</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)],</span> <span class="o">...</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># otherwise, we can just use the type of the primary key</span>
+                <span class="n">fields</span><span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ForwardRef</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">class_</span><span class="o">.</span><span class="vm">__name__</span><span class="p">),</span> <span class="o">...</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">prop_key</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">resource_cfg</span><span class="o">.</span><span class="n">serialize</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">serialized_attrs</span><span class="p">):</span>
+        <span class="c1"># handle associated proxy case</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">prop_key</span><span class="p">),</span> <span class="n">ColumnAssociationProxyInstance</span><span class="p">):</span>
+            <span class="n">fields</span><span class="p">[</span><span class="n">prop_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">prop_key</span><span class="p">)</span><span class="o">.</span><span class="n">remote_attr</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">python_type</span><span class="p">,</span>
+                <span class="o">...</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="c1"># handle property case</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">prop_key</span><span class="p">),</span> <span class="nb">property</span><span class="p">):</span>
+            <span class="n">fields</span><span class="p">[</span><span class="n">prop_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">prop_key</span><span class="p">)</span><span class="o">.</span><span class="n">fget</span><span class="o">.</span><span class="vm">__annotations__</span><span class="p">[</span><span class="s2">&quot;return&quot;</span><span class="p">],</span>
+                <span class="o">...</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Property </span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2"> of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">prop_key</span><span class="p">))</span><span class="si">}</span><span class="s2"> not supported - please raise an issue or a PR!&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="o">**</span><span class="n">fields</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="quickrest.mixins.resource.ResourceConfig" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>ResourceConfig</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents first">
+
+
+        <p>The ResourceConfig class is an abstract class that defines shared parameters for the CRUD operations and pydantic models of the resource.</p>
+<p>The <code>serialize</code> attribute is a list of objects that should be included on the resource's BaseModel.
+These attributes are built using the type annotation and are a good way to include relationships in the resource's BaseModel,
+or other properties like hybrid properties or association proxies.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The <code>serialize</code> attribute is a powerful way to add features for an API consumer (e.g. a front-end UI), but it can also be dangerous.
+Serialized related objects are also, in-turn, serialized, which can lead to deeply nested JSON objects and infinite loops.
+Additionally, if the number of related objects is unknown, the response size can grow outside of the expected bounds.
+We recommend using <code>serialize</code> to expose joined types, calculated properties, or n-limited relationships;
+and use the <code>routed_relationships</code> attribute in the <code>ReadConfig</code> to expose paginated related objects.</p>
+</div>
+<p><code>pop_params</code> can be used to exclude certain attributes from the resource's models (i.e. the base model, and CRUD-associated models).</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.resource.ResourceConfig.serialize">serialize</span></code></td>
+            <td>
+                  <code>list[str]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of objects to be included on the resource's BaseModel.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.resource.ResourceConfig.pop_params">pop_params</span></code></td>
+            <td>
+                  <code>list[str]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of objects that should be excluded from the resource models.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+        <h4 id="quickrest.mixins.resource.ResourceConfig--example">Example</h4>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span><span class="p">,</span> <span class="n">mapped_column</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">quickrest</span><span class="w"> </span><span class="kn">import</span> <span class="n">Base</span><span class="p">,</span> <span class="n">Resource</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Student</span><span class="p">(</span><span class="n">Base</span><span class="p">,</span> <span class="n">Resource</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;companies&quot;</span>
+
+    <span class="n">first_name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">()</span>
+    <span class="n">last_name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">()</span>
+    <span class="n">dark_secret</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">full_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">first_name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">last_name</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">resource_cfg</span><span class="p">(</span><span class="n">ResourceConfig</span><span class="p">):</span>
+        <span class="n">serialize</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;full_name&quot;</span><span class="p">]</span>
+        <span class="n">pop_params</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;dark_secret&quot;</span><span class="p">]</span>
+</code></pre></div>
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>quickrest/mixins/resource.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">ResourceConfig</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The ResourceConfig class is an abstract class that defines shared parameters for the CRUD operations and pydantic models of the resource.</span>
+
+<span class="sd">    The `serialize` attribute is a list of objects that should be included on the resource&#39;s BaseModel.</span>
+<span class="sd">    These attributes are built using the type annotation and are a good way to include relationships in the resource&#39;s BaseModel,</span>
+<span class="sd">    or other properties like hybrid properties or association proxies.</span>
+
+<span class="sd">    !!! warning</span>
+<span class="sd">        The `serialize` attribute is a powerful way to add features for an API consumer (e.g. a front-end UI), but it can also be dangerous.</span>
+<span class="sd">        Serialized related objects are also, in-turn, serialized, which can lead to deeply nested JSON objects and infinite loops.</span>
+<span class="sd">        Additionally, if the number of related objects is unknown, the response size can grow outside of the expected bounds.</span>
+<span class="sd">        We recommend using `serialize` to expose joined types, calculated properties, or n-limited relationships;</span>
+<span class="sd">        and use the `routed_relationships` attribute in the `ReadConfig` to expose paginated related objects.</span>
+
+<span class="sd">    `pop_params` can be used to exclude certain attributes from the resource&#39;s models (i.e. the base model, and CRUD-associated models).</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        serialize (list[str]): A list of objects to be included on the resource&#39;s BaseModel.</span>
+<span class="sd">        pop_params (list[str]): A list of objects that should be excluded from the resource models.</span>
+
+<span class="sd">    ## Example</span>
+
+<span class="sd">    ```python</span>
+<span class="sd">    from sqlalchemy.orm import Mapped, mapped_column</span>
+
+<span class="sd">    from quickrest import Base, Resource</span>
+
+
+<span class="sd">    class Student(Base, Resource):</span>
+<span class="sd">        __tablename__ = &quot;companies&quot;</span>
+
+<span class="sd">        first_name: Mapped[str] = mapped_column()</span>
+<span class="sd">        last_name: Mapped[str] = mapped_column()</span>
+<span class="sd">        dark_secret: Mapped[str] = mapped_column()</span>
+
+<span class="sd">        @property</span>
+<span class="sd">        def full_name(self) -&gt; str:</span>
+<span class="sd">            return f&quot;{self.first_name} {self.last_name}&quot;</span>
+
+<span class="sd">        class resource_cfg(ResourceConfig):</span>
+<span class="sd">            serialize = [&quot;full_name&quot;]</span>
+<span class="sd">            pop_params = [&quot;dark_secret&quot;]</span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">serialize</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">pop_params</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="quickrest.mixins.resource.RouterConfig" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>RouterConfig</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents first">
+
+
+        <p>The RouterConfig class is an abstract class that defines the parameters for the APIRouter.
+It can be used to set router-level parameters that affect all routes in the router.
+Individual routes (<code>read_cfg</code>, <code>create_cfg</code>, etc.) can override there parameters.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.resource.RouterConfig.prefix">prefix</span></code></td>
+            <td>
+                  <code><span title="typing.Optional">Optional</span>[str]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The prefix for the APIRouter.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.resource.RouterConfig.tags">tags</span></code></td>
+            <td>
+                  <code><span title="typing.Optional">Optional</span>[list[str]]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of tags for the APIRouter.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.resource.RouterConfig.dependencies">dependencies</span></code></td>
+            <td>
+                  <code>list[<span title="typing.Callable">Callable</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Injectible dependencies for the APIRouter.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+        <h4 id="quickrest.mixins.resource.RouterConfig--example">Example</h4>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span><span class="p">,</span> <span class="n">mapped_column</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">quickrest</span><span class="w"> </span><span class="kn">import</span> <span class="n">Base</span><span class="p">,</span> <span class="n">Resource</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">some_package.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">must_be_admin</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Student</span><span class="p">(</span><span class="n">Base</span><span class="p">,</span> <span class="n">Resource</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;companies&quot;</span>
+
+    <span class="n">first_name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">()</span>
+    <span class="n">last_name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">()</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">route_cfg</span><span class="p">(</span><span class="n">RouterConfig</span><span class="p">):</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;api&quot;</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;students&quot;</span><span class="p">]</span>
+        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="n">must_be_admin</span><span class="p">]</span>
+</code></pre></div>
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>quickrest/mixins/resource.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">RouterConfig</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The RouterConfig class is an abstract class that defines the parameters for the APIRouter.</span>
+<span class="sd">    It can be used to set router-level parameters that affect all routes in the router.</span>
+<span class="sd">    Individual routes (`read_cfg`, `create_cfg`, etc.) can override there parameters.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        prefix (Optional[str]): The prefix for the APIRouter.</span>
+<span class="sd">        tags (Optional[list[str]]): A list of tags for the APIRouter.</span>
+<span class="sd">        dependencies (list[Callable]): Injectible dependencies for the APIRouter.</span>
+
+<span class="sd">    ## Example</span>
+
+<span class="sd">    ```python</span>
+<span class="sd">    from sqlalchemy.orm import Mapped, mapped_column</span>
+
+<span class="sd">    from quickrest import Base, Resource</span>
+
+<span class="sd">    from some_package.auth import must_be_admin</span>
+
+
+<span class="sd">    class Student(Base, Resource):</span>
+<span class="sd">        __tablename__ = &quot;companies&quot;</span>
+
+<span class="sd">        first_name: Mapped[str] = mapped_column()</span>
+<span class="sd">        last_name: Mapped[str] = mapped_column()</span>
+
+<span class="sd">        class route_cfg(RouterConfig):</span>
+<span class="sd">            prefix = &quot;api&quot;</span>
+<span class="sd">            tags = [&quot;students&quot;]</span>
+<span class="sd">            dependencies = [must_be_admin]</span>
+<span class="sd">    ```</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">tags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">Enum</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">dependencies</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="quickrest.mixins.resource.build_resource" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">build_resource</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents first">
+
+        <p>Ths method builds a resource class with the given parameters.
+Accepts a user-defined <code>sessionmaker</code> that can be used to generate a database session.
+If using fine-grained access control, a <code>user_generator</code> can be provided to generate a user model from request data.</p>
+<h4 id="quickrest.mixins.resource.build_resource--primary-key">Primary Key</h4>
+<p>The id_type parameter can be <code>str</code>, <code>uuid.UUID</code>, or <code>int</code>, which will determine the type of the resource's ID.
+If str, resources will need to be provided with a unique string ID.
+If UUID or Int, resources will be automatically provided with a UUID or Int ID, respectively.
+If slug is True, the resource will have a slug field.</p>
+<h4 id="quickrest.mixins.resource.build_resource--error-handling">Error Handling</h4>
+<p>An <code>error_handler</code> can be provided to handle errors in the inner controller functions.
+By default, the <code>default_error_handler</code> is used.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+<h3 id="quickrest.mixins.resource.build_resource(sessionmaker)" class="doc doc-heading doc-heading-parameter">                  <code>sessionmaker</code>
+</h3>            </td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A callable that returns a SQLAlchemy session.</p>
+              </div>
+            </td>
+            <td>
+                  <code><span title="quickrest.mixins.resource.nullraise">nullraise</span></code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+<h3 id="quickrest.mixins.resource.build_resource(user_generator)" class="doc doc-heading doc-heading-parameter">                  <code>user_generator</code>
+</h3>            </td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A callable that returns a user model.</p>
+              </div>
+            </td>
+            <td>
+                  <code><span title="quickrest.mixins.resource.nullreturn">nullreturn</span></code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+<h3 id="quickrest.mixins.resource.build_resource(id_type)" class="doc doc-heading doc-heading-parameter">                  <code>id_type</code>
+</h3>            </td>
+            <td>
+                  <code>type</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The type of the resource's ID. Must be str, uuid.UUID, or int.</p>
+              </div>
+            </td>
+            <td>
+                  <code>str</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+<h3 id="quickrest.mixins.resource.build_resource(slug)" class="doc doc-heading doc-heading-parameter">                  <code>slug</code>
+</h3>            </td>
+            <td>
+                  <code>bool</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If True, the resource will have a slug field.</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+<h3 id="quickrest.mixins.resource.build_resource(error_handler)" class="doc doc-heading doc-heading-parameter">                  <code>error_handler</code>
+</h3>            </td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A callable that handles errors.</p>
+              </div>
+            </td>
+            <td>
+                  <code><span title="quickrest.mixins.errors.default_error_handler">default_error_handler</span></code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>type</code></td>            <td>
+                  <code>type</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A Resource class.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+            <details class="quote">
+              <summary>Source code in <code>quickrest/mixins/resource.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span>
+<span class="normal">346</span>
+<span class="normal">347</span>
+<span class="normal">348</span>
+<span class="normal">349</span>
+<span class="normal">350</span>
+<span class="normal">351</span>
+<span class="normal">352</span>
+<span class="normal">353</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span>
+<span class="normal">366</span>
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
+<span class="normal">376</span>
+<span class="normal">377</span>
+<span class="normal">378</span>
+<span class="normal">379</span>
+<span class="normal">380</span>
+<span class="normal">381</span>
+<span class="normal">382</span>
+<span class="normal">383</span>
+<span class="normal">384</span>
+<span class="normal">385</span>
+<span class="normal">386</span>
+<span class="normal">387</span>
+<span class="normal">388</span>
+<span class="normal">389</span>
+<span class="normal">390</span>
+<span class="normal">391</span>
+<span class="normal">392</span>
+<span class="normal">393</span>
+<span class="normal">394</span>
+<span class="normal">395</span>
+<span class="normal">396</span>
+<span class="normal">397</span>
+<span class="normal">398</span>
+<span class="normal">399</span>
+<span class="normal">400</span>
+<span class="normal">401</span>
+<span class="normal">402</span>
+<span class="normal">403</span>
+<span class="normal">404</span>
+<span class="normal">405</span>
+<span class="normal">406</span>
+<span class="normal">407</span>
+<span class="normal">408</span>
+<span class="normal">409</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">build_resource</span><span class="p">(</span>
+    <span class="n">sessionmaker</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">nullraise</span><span class="p">,</span>
+    <span class="n">user_generator</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">nullreturn</span><span class="p">,</span>
+    <span class="n">id_type</span><span class="p">:</span> <span class="nb">type</span> <span class="o">=</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">slug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">error_handler</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">default_error_handler</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ths method builds a resource class with the given parameters.</span>
+<span class="sd">    Accepts a user-defined `sessionmaker` that can be used to generate a database session.</span>
+<span class="sd">    If using fine-grained access control, a `user_generator` can be provided to generate a user model from request data.</span>
+
+<span class="sd">    ## Primary Key</span>
+
+<span class="sd">    The id_type parameter can be `str`, `uuid.UUID`, or `int`, which will determine the type of the resource&#39;s ID.</span>
+<span class="sd">    If str, resources will need to be provided with a unique string ID.</span>
+<span class="sd">    If UUID or Int, resources will be automatically provided with a UUID or Int ID, respectively.</span>
+<span class="sd">    If slug is True, the resource will have a slug field.</span>
+
+<span class="sd">    ## Error Handling</span>
+
+<span class="sd">    An `error_handler` can be provided to handle errors in the inner controller functions.</span>
+<span class="sd">    By default, the `default_error_handler` is used.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        sessionmaker (Callable): A callable that returns a SQLAlchemy session.</span>
+<span class="sd">        user_generator (Callable): A callable that returns a user model.</span>
+<span class="sd">        id_type (type): The type of the resource&#39;s ID. Must be str, uuid.UUID, or int.</span>
+<span class="sd">        slug (bool): If True, the resource will have a slug field.</span>
+<span class="sd">        error_handler (Callable): A callable that handles errors.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        type: A Resource class.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">assert</span> <span class="p">(</span>
+        <span class="s2">&quot;return&quot;</span> <span class="ow">in</span> <span class="n">user_generator</span><span class="o">.</span><span class="vm">__annotations__</span>
+    <span class="p">),</span> <span class="s2">&quot;user_generator must have a return annotation&quot;</span>
+
+    <span class="n">ResourceBase</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="nb">object</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">id_type</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">ResourceBase</span> <span class="o">=</span> <span class="n">ResourceBaseStr</span>
+    <span class="k">elif</span> <span class="n">id_type</span> <span class="ow">is</span> <span class="n">UUID</span><span class="p">:</span>
+        <span class="n">ResourceBase</span> <span class="o">=</span> <span class="n">ResourceBaseUUID</span>
+    <span class="k">elif</span> <span class="n">id_type</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">ResourceBase</span> <span class="o">=</span> <span class="n">ResourceBaseInt</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;id_type must be str, uuid.UUID, or int, got </span><span class="si">{</span><span class="n">id_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">Resource</span><span class="p">(</span>
+        <span class="n">ResourceBase</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
+        <span class="n">ResourceBaseSlug</span> <span class="k">if</span> <span class="n">slug</span> <span class="k">else</span> <span class="n">ResourceBaseSlugPass</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
+        <span class="n">ResourceMixin</span><span class="p">,</span>
+        <span class="n">CreateMixin</span><span class="p">,</span>
+        <span class="n">ReadMixin</span><span class="p">,</span>
+        <span class="n">PatchMixin</span><span class="p">,</span>
+        <span class="n">DeleteMixin</span><span class="p">,</span>
+        <span class="n">SearchMixin</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="n">_id_type</span> <span class="o">=</span> <span class="n">id_type</span>
+        <span class="n">_sessionmaker</span> <span class="o">=</span> <span class="n">sessionmaker</span>
+        <span class="n">_user_generator</span> <span class="o">=</span> <span class="n">user_generator</span>
+        <span class="n">_error_handler</span> <span class="o">=</span> <span class="n">error_handler</span>
+
+    <span class="k">return</span> <span class="n">Resource</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="quickrest.mixins.base.EnvSettings" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>EnvSettings</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents first">
+
+
+        <p>Settings to load automatically from environment variables.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.base.EnvSettings.POSTGRES_DB_SCHEME">POSTGRES_DB_SCHEME</span></code></td>
+            <td>
+                  <code><span title="typing.Optional">Optional</span>[str]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The scheme for the Postgres database, defaults to just "postgresql".</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.base.EnvSettings.POSTGRES_DB_USER">POSTGRES_DB_USER</span></code></td>
+            <td>
+                  <code><span title="typing.Optional">Optional</span>[str]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The username for the Postgres database.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.base.EnvSettings.POSTGRES_DB_PASSWORD">POSTGRES_DB_PASSWORD</span></code></td>
+            <td>
+                  <code><span title="typing.Optional">Optional</span>[str]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The password for the Postgres database.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.base.EnvSettings.POSTGRES_DB_HOST">POSTGRES_DB_HOST</span></code></td>
+            <td>
+                  <code><span title="typing.Optional">Optional</span>[str]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The host for the Postgres database.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.base.EnvSettings.POSTGRES_DB_PORT">POSTGRES_DB_PORT</span></code></td>
+            <td>
+                  <code><span title="typing.Optional">Optional</span>[int]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The port for the Postgres database.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.base.EnvSettings.POSTGRES_DB_NAME">POSTGRES_DB_NAME</span></code></td>
+            <td>
+                  <code><span title="typing.Optional">Optional</span>[str]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The name of the Postgres database.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.base.EnvSettings.SQLITE_DB_PATH">SQLITE_DB_PATH</span></code></td>
+            <td>
+                  <code><span title="typing.Optional">Optional</span>[str]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A file path for the SQLite database (not pre-pended with <code>sqlite:///</code>).</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.base.EnvSettings.pg_dsn">pg_dsn</span></code></td>
+            <td>
+                  <code><span title="typing.Optional">Optional</span>[<span title="pydantic.PostgresDsn">PostgresDsn</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A postgres DSN generated from the environment variables.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.base.EnvSettings.DB_CONNECTION_URL">DB_CONNECTION_URL</span></code></td>
+            <td>
+                  <code><span title="typing.Optional">Optional</span>[str]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The connection string for the database, populated by the Postgres DSN or the SQLite path.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.base.EnvSettings.QUICKREST_ID_TYPE">QUICKREST_ID_TYPE</span></code></td>
+            <td>
+                  <code>type</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The default ID type for Resources, defaults to <code>Int</code></p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.base.EnvSettings.QUICKREST_USE_SLUG">QUICKREST_USE_SLUG</span></code></td>
+            <td>
+                  <code>bool</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Whether to use slug unique identifiers on Resources, defaults to False</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.base.EnvSettings.QUICKREST_INDIRECT_SESSION_GENERATOR">QUICKREST_INDIRECT_SESSION_GENERATOR</span></code></td>
+            <td>
+                  <code>str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The path to the session generator function, defaults to <code>quickrest.mixins.resource.default_sessionmaker</code></p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.base.EnvSettings.QUICKREST_INDIRECT_USER_GENERATOR">QUICKREST_INDIRECT_USER_GENERATOR</span></code></td>
+            <td>
+                  <code>str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The path to the user generator function, defaults to <code>quickrest.mixins.resource.nullreturn</code></p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.base.EnvSettings.QUICKREST_ERROR_HANDLER">QUICKREST_ERROR_HANDLER</span></code></td>
+            <td>
+                  <code>str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The path to the error handler function, defaults to <code>quickrest.mixins.errors.default_error_handler</code></p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>quickrest/mixins/base.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 10</span>
+<span class="normal"> 11</span>
+<span class="normal"> 12</span>
+<span class="normal"> 13</span>
+<span class="normal"> 14</span>
+<span class="normal"> 15</span>
+<span class="normal"> 16</span>
+<span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">EnvSettings</span><span class="p">(</span><span class="n">BaseSettings</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Settings to load automatically from environment variables.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        POSTGRES_DB_SCHEME (Optional[str]): The scheme for the Postgres database, defaults to just &quot;postgresql&quot;.</span>
+<span class="sd">        POSTGRES_DB_USER (Optional[str]): The username for the Postgres database.</span>
+<span class="sd">        POSTGRES_DB_PASSWORD (Optional[str]): The password for the Postgres database.</span>
+<span class="sd">        POSTGRES_DB_HOST (Optional[str]): The host for the Postgres database.</span>
+<span class="sd">        POSTGRES_DB_PORT (Optional[int]): The port for the Postgres database.</span>
+<span class="sd">        POSTGRES_DB_NAME (Optional[str]): The name of the Postgres database.</span>
+<span class="sd">        SQLITE_DB_PATH (Optional[str]): A file path for the SQLite database (not pre-pended with `sqlite:///`).</span>
+<span class="sd">        pg_dsn (Optional[PostgresDsn]): A postgres DSN generated from the environment variables.</span>
+<span class="sd">        DB_CONNECTION_URL (Optional[str]): The connection string for the database, populated by the Postgres DSN or the SQLite path.</span>
+<span class="sd">        QUICKREST_ID_TYPE (type): The default ID type for Resources, defaults to `Int`</span>
+<span class="sd">        QUICKREST_USE_SLUG (bool): Whether to use slug unique identifiers on Resources, defaults to False</span>
+<span class="sd">        QUICKREST_INDIRECT_SESSION_GENERATOR (str): The path to the session generator function, defaults to `quickrest.mixins.resource.default_sessionmaker`</span>
+<span class="sd">        QUICKREST_INDIRECT_USER_GENERATOR (str): The path to the user generator function, defaults to `quickrest.mixins.resource.nullreturn`</span>
+<span class="sd">        QUICKREST_ERROR_HANDLER (str): The path to the error handler function, defaults to `quickrest.mixins.errors.default_error_handler`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">POSTGRES_DB_SCHEME</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">POSTGRES_DB_USER</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">POSTGRES_DB_PASSWORD</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">POSTGRES_DB_HOST</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">POSTGRES_DB_PORT</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">POSTGRES_DB_NAME</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">SQLITE_DB_PATH</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">pg_dsn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PostgresDsn</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">DB_CONNECTION_URL</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># default ID type</span>
+    <span class="n">QUICKREST_ID_TYPE</span><span class="p">:</span> <span class="nb">type</span> <span class="o">=</span> <span class="nb">int</span>
+
+    <span class="c1"># default slug use</span>
+    <span class="n">QUICKREST_USE_SLUG</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># session_generator</span>
+    <span class="n">QUICKREST_INDIRECT_SESSION_GENERATOR</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;quickrest.mixins.resource.default_sessionmaker&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># user_generator</span>
+    <span class="n">QUICKREST_INDIRECT_USER_GENERATOR</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;quickrest.mixins.resource.nullreturn&quot;</span>
+
+    <span class="c1"># error handler</span>
+    <span class="n">QUICKREST_ERROR_HANDLER</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;quickrest.mixins.errors.default_error_handler&quot;</span>
+
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;pg_dsn&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_pg_dsn</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">PostgresDsn</span><span class="o">.</span><span class="n">build</span><span class="p">(</span>
+                    <span class="n">scheme</span><span class="o">=</span><span class="n">info</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;POSTGRES_DB_SCHEME&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="s2">&quot;postgresql&quot;</span><span class="p">,</span>
+                    <span class="n">username</span><span class="o">=</span><span class="n">info</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;POSTGRES_DB_USER&quot;</span><span class="p">],</span>
+                    <span class="n">password</span><span class="o">=</span><span class="n">info</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;POSTGRES_DB_PASSWORD&quot;</span><span class="p">],</span>
+                    <span class="n">host</span><span class="o">=</span><span class="n">info</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;POSTGRES_DB_HOST&quot;</span><span class="p">],</span>
+                    <span class="n">port</span><span class="o">=</span><span class="n">info</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;POSTGRES_DB_PORT&quot;</span><span class="p">],</span>
+                    <span class="n">path</span><span class="o">=</span><span class="n">info</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;POSTGRES_DB_NAME&quot;</span><span class="p">],</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">e</span>
+        <span class="k">return</span> <span class="n">v</span>
+
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;DB_CONNECTION_URL&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_db_path</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pg_dsn&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;pg_dsn&quot;</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">info</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SQLITE_DB_PATH&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;sqlite:///&quot;</span> <span class="o">+</span> <span class="n">info</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;SQLITE_DB_PATH&quot;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">v</span>
+
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;QUICKREST_ID_TYPE&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_id_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;str&quot;</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="nb">str</span>
+                <span class="k">elif</span> <span class="n">v</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;int&quot;</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="nb">int</span>
+                <span class="k">elif</span> <span class="n">v</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;uuid&quot;</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">UUID</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;ENV(QUICKREST_ID_TYPE) must be one of &#39;str&#39;, &#39;int&#39;, or &#39;uuid&#39;&quot;</span>
+                    <span class="p">)</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">UUID</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">v</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ENV(QUICKREST_ID_TYPE) must be a string&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  </body>
+</html>

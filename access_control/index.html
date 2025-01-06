@@ -1,0 +1,1939 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../search/">
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Fine-Grained Access Control - QuickRest</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.6f8fc17f.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#quickrest.mixins.access_control" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="QuickRest" class="md-header__button md-logo" aria-label="QuickRest" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            QuickRest
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Fine-Grained Access Control
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Lkruitwagen/quickrest/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="QuickRest" class="md-nav__button md-logo" aria-label="QuickRest" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    QuickRest
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Lkruitwagen/quickrest/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QuickRest
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../resource/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resource
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    CRUD
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            CRUD
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../read/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Read
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../create/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Create
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../update/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Update
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../delete/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Delete
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../search/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Search
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Fine-Grained Access Control
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Fine-Grained Access Control
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control" class="md-nav__link">
+    <span class="md-ellipsis">
+      access_control
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="access_control">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control--example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.BaseUserModel" class="md-nav__link">
+    <span class="md-ellipsis">
+      BaseUserModel
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.User" class="md-nav__link">
+    <span class="md-ellipsis">
+      User
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.make_private" class="md-nav__link">
+    <span class="md-ellipsis">
+      make_private
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="make_private">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.make_private(user_model)" class="md-nav__link">
+    <span class="md-ellipsis">
+      user_model
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.make_publishable" class="md-nav__link">
+    <span class="md-ellipsis">
+      make_publishable
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="make_publishable">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.make_publishable(user_model)" class="md-nav__link">
+    <span class="md-ellipsis">
+      user_model
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.BaseUserModel" class="md-nav__link">
+    <span class="md-ellipsis">
+      BaseUserModel
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.User" class="md-nav__link">
+    <span class="md-ellipsis">
+      User
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.make_private" class="md-nav__link">
+    <span class="md-ellipsis">
+      make_private
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="make_private">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.make_private(user_model)" class="md-nav__link">
+    <span class="md-ellipsis">
+      user_model
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.make_publishable" class="md-nav__link">
+    <span class="md-ellipsis">
+      make_publishable
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="make_publishable">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.make_publishable(user_model)" class="md-nav__link">
+    <span class="md-ellipsis">
+      user_model
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control" class="md-nav__link">
+    <span class="md-ellipsis">
+      access_control
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="access_control">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control--example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.BaseUserModel" class="md-nav__link">
+    <span class="md-ellipsis">
+      BaseUserModel
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.User" class="md-nav__link">
+    <span class="md-ellipsis">
+      User
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.make_private" class="md-nav__link">
+    <span class="md-ellipsis">
+      make_private
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="make_private">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.make_private(user_model)" class="md-nav__link">
+    <span class="md-ellipsis">
+      user_model
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.make_publishable" class="md-nav__link">
+    <span class="md-ellipsis">
+      make_publishable
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="make_publishable">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.make_publishable(user_model)" class="md-nav__link">
+    <span class="md-ellipsis">
+      user_model
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.BaseUserModel" class="md-nav__link">
+    <span class="md-ellipsis">
+      BaseUserModel
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.User" class="md-nav__link">
+    <span class="md-ellipsis">
+      User
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.make_private" class="md-nav__link">
+    <span class="md-ellipsis">
+      make_private
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="make_private">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.make_private(user_model)" class="md-nav__link">
+    <span class="md-ellipsis">
+      user_model
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.make_publishable" class="md-nav__link">
+    <span class="md-ellipsis">
+      make_publishable
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="make_publishable">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quickrest.mixins.access_control.make_publishable(user_model)" class="md-nav__link">
+    <span class="md-ellipsis">
+      user_model
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+  <h1>Fine-Grained Access Control</h1>
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="quickrest.mixins.access_control"></a>
+    <div class="doc doc-contents first">
+
+        <p>QuickRest provides fine-grained access control for resources, which is to say, it allows developers to define which users can access which rows in the database.
+This is achieved by defining a <code>BaseUserModel</code> and a user-defined function that returns the current user.
+The <code>BaseUserModel</code> should be subclassed by the user model and should provide a <code>id</code> field.
+The user-defined function should return an instance of the <code>BaseUserModel</code> with the current user's id.</p>
+<p>Then, Resource classes can be mixed-in with either the Private or Publishable access-control mixins.
+These mixins use the current user object to provide additional filtering on all queries made to the resource table.
+Fine-grained access control can be combined with route-level access control via dependency-injection to provide a secure API.</p>
+<h3 id="quickrest.mixins.access_control--example">Example:</h3>
+<p>The following example shows how to use the <code>BaseUserModel</code> and a user-defined function to provide fine-grained access control on resources:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">uvicorn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span><span class="p">,</span> <span class="n">HTTPException</span><span class="p">,</span> <span class="n">Request</span><span class="p">,</span> <span class="n">status</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">RequestValidationError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.responses</span><span class="w"> </span><span class="kn">import</span> <span class="n">JSONResponse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">ForeignKey</span><span class="p">,</span> <span class="n">create_engine</span><span class="p">,</span> <span class="n">event</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span><span class="p">,</span> <span class="n">mapped_column</span><span class="p">,</span> <span class="n">relationship</span><span class="p">,</span> <span class="n">sessionmaker</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">quickrest</span><span class="w"> </span><span class="kn">import</span> <span class="n">Base</span><span class="p">,</span> <span class="n">BaseUserModel</span><span class="p">,</span> <span class="n">make_private</span><span class="p">,</span> <span class="n">User</span><span class="p">,</span> <span class="n">Resource</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">user_defined_code</span><span class="w"> </span><span class="kn">import</span> <span class="n">decode_token</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">UserToken</span><span class="p">(</span><span class="n">BaseUserModel</span><span class="p">):</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">permissions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_current_user</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UserToken</span><span class="p">:</span>
+
+    <span class="c1"># write your own auth logic here - normally decoding tokens etc</span>
+    <span class="n">_id</span><span class="p">,</span> <span class="n">permissions</span> <span class="o">=</span> <span class="n">decode_token</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Authorization&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">UserToken</span><span class="p">(</span>
+        <span class="nb">id</span><span class="o">=</span><span class="n">_id</span><span class="p">,</span>
+        <span class="n">permissions</span><span class="o">=</span><span class="n">permissions</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Owner</span><span class="p">(</span>
+    <span class="n">Base</span><span class="p">,</span>
+    <span class="n">Resource</span><span class="p">,</span>
+    <span class="n">User</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;owners&quot;</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">()</span>
+
+    <span class="n">pets</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="s2">&quot;Pet&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;owner&quot;</span><span class="p">)</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">read_cfg</span><span class="p">(</span><span class="n">ReadConfig</span><span class="p">):</span>
+        <span class="n">routed_relationships</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;pets&quot;</span><span class="p">]</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Pet</span><span class="p">(</span><span class="n">Base</span><span class="p">,</span> <span class="n">Resource</span><span class="p">,</span> <span class="n">make_publishable</span><span class="p">(</span><span class="n">user_model</span><span class="o">=</span><span class="n">Owner</span><span class="p">)):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;pets&quot;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">()</span>
+    <span class="n">species</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">()</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="quickrest.mixins.access_control.BaseUserModel" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>BaseUserModel</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>A basemodel for authenticated users.</p>
+<p>Developers using fine-grained access control should subclass this model and provide a <code>id</code> field.
+This model should be returned by an authentication dependency, that, for example, decode a JWT token and returns the user id.
+There is only one require attribute, which is the user id.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.access_control.BaseUserModel.id">id</span></code></td>
+            <td>
+                  <code>str | int | <span title="uuid.UUID">UUID</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The user id.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>quickrest/mixins/access_control.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">BaseUserModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A basemodel for authenticated users.</span>
+
+<span class="sd">    Developers using fine-grained access control should subclass this model and provide a `id` field.</span>
+<span class="sd">    This model should be returned by an authentication dependency, that, for example, decode a JWT token and returns the user id.</span>
+<span class="sd">    There is only one require attribute, which is the user id.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        id (str | int | UUID): The user id.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">UUID</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="quickrest.mixins.access_control.User" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>User</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>The User mixin that identifies the user model and provides access control for the user resource.</p>
+<p>Provides a classmethod <code>access_control</code> that filters the query to only include resources with the same id as the user.</p>
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>quickrest/mixins/access_control.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">User</span><span class="p">(</span><span class="n">ResourceBaseMeta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The User mixin that identifies the user model and provides access control for the user resource.</span>
+
+<span class="sd">    Provides a classmethod `access_control` that filters the query to only include resources with the same id as the user.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">access_control</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Q</span><span class="p">:</span> <span class="n">Query</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">UserTokenMeta</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Query</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="quickrest.mixins.access_control.make_private" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">make_private</span><span class="p">(</span><span class="n">user_model</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Builds the <code>Private</code> mixin, referencing the defined <code>User</code> class.
+The <code>Private</code> mixin provides a <code>&lt;owner&gt;_id</code> column that references the user that owns the resource.
+Private resources can only be read (or patched, deleted) by the resource owner.
+A classmethod <code>access_control</code> that filters incoming queries to filter <code>&lt;owner&gt;_id</code> to the same id as the requesting user.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+<h3 id="quickrest.mixins.access_control.make_private(user_model)" class="doc doc-heading doc-heading-parameter">                  <code>user_model</code>
+</h3>            </td>
+            <td>
+                  <code><span title="quickrest.mixins.access_control.ResourceBaseMeta">ResourceBaseMeta</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The user model to reference in the mixin.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>type</code></td>            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The Private mixin class.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+            <details class="quote">
+              <summary>Source code in <code>quickrest/mixins/access_control.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">make_private</span><span class="p">(</span><span class="n">user_model</span><span class="p">:</span> <span class="n">DeclarativeBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Builds the `Private` mixin, referencing the defined `User` class.</span>
+<span class="sd">    The `Private` mixin provides a `&lt;owner&gt;_id` column that references the user that owns the resource.</span>
+<span class="sd">    Private resources can only be read (or patched, deleted) by the resource owner.</span>
+<span class="sd">    A classmethod `access_control` that filters incoming queries to filter `&lt;owner&gt;_id` to the same id as the requesting user.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        user_model (ResourceBaseMeta): The user model to reference in the mixin.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        type: The Private mixin class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cls_annotations</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="p">],</span>
+    <span class="p">}</span>
+
+    <span class="nd">@declared_attr</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resource_owner_relationship</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">relationship</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">access_control</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Q</span><span class="p">:</span> <span class="n">Query</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Query</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;_id&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+    <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span>
+        <span class="s2">&quot;Publishable&quot;</span><span class="p">,</span>
+        <span class="p">(</span><span class="nb">object</span><span class="p">,),</span>
+        <span class="p">{</span>
+            <span class="c1"># class topmatter</span>
+            <span class="s2">&quot;__doc__&quot;</span><span class="p">:</span> <span class="s2">&quot;class created by type&quot;</span><span class="p">,</span>
+            <span class="c1"># column type annotations</span>
+            <span class="s2">&quot;__annotations__&quot;</span><span class="p">:</span> <span class="n">cls_annotations</span><span class="p">,</span>
+            <span class="c1"># class attributes (i.e. columns)</span>
+            <span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="o">+</span> <span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">user_model</span><span class="o">.</span><span class="n">__tablename__</span> <span class="o">+</span> <span class="s2">&quot;.id&quot;</span><span class="p">)),</span>
+            <span class="c1"># class methods (inc. relationships)</span>
+            <span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">resource_owner_relationship</span><span class="p">,</span>
+            <span class="s2">&quot;access_control&quot;</span><span class="p">:</span> <span class="nb">classmethod</span><span class="p">(</span><span class="n">access_control</span><span class="p">),</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="bp">cls</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="quickrest.mixins.access_control.make_publishable" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">make_publishable</span><span class="p">(</span><span class="n">user_model</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Builds the <code>Publishable</code> mixin, referencing the defined <code>User</code> class.
+The <code>Publishable</code> mixin provides a <code>public (boolean)</code> column that can be used to mark resources as readable by all users,
+and an <code>&lt;owner&gt;_id</code> column that references the user that owns the resource.
+Public resources can still be protected at the route-level, and remain only editable by the resource owner.
+A classmethod <code>access_control</code> that filters incoming queries to include only resources with the same <code>&lt;owner&gt;_id</code> as the requesting user or resources marked as public.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+<h3 id="quickrest.mixins.access_control.make_publishable(user_model)" class="doc doc-heading doc-heading-parameter">                  <code>user_model</code>
+</h3>            </td>
+            <td>
+                  <code><span title="quickrest.mixins.access_control.ResourceBaseMeta">ResourceBaseMeta</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The user model to reference in the mixin.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>type</code></td>            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The Publishable mixin class.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+            <details class="quote">
+              <summary>Source code in <code>quickrest/mixins/access_control.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">make_publishable</span><span class="p">(</span><span class="n">user_model</span><span class="p">:</span> <span class="n">ResourceBaseMeta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Builds the `Publishable` mixin, referencing the defined `User` class.</span>
+<span class="sd">    The `Publishable` mixin provides a `public (boolean)` column that can be used to mark resources as readable by all users,</span>
+<span class="sd">    and an `&lt;owner&gt;_id` column that references the user that owns the resource.</span>
+<span class="sd">    Public resources can still be protected at the route-level, and remain only editable by the resource owner.</span>
+<span class="sd">    A classmethod `access_control` that filters incoming queries to include only resources with the same `&lt;owner&gt;_id` as the requesting user or resources marked as public.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        user_model (ResourceBaseMeta): The user model to reference in the mixin.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        type: The Publishable mixin class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cls_annotations</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="p">],</span>
+        <span class="s2">&quot;public&quot;</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span>
+    <span class="p">}</span>
+
+    <span class="nd">@declared_attr</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resource_owner_relationship</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">relationship</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">access_control</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Q</span><span class="p">:</span> <span class="n">Query</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Query</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+            <span class="n">or_</span><span class="p">(</span>
+                <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;_id&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+                <span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">public</span> <span class="o">==</span> <span class="kc">True</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span>
+        <span class="s2">&quot;Publishable&quot;</span><span class="p">,</span>
+        <span class="p">(</span><span class="nb">object</span><span class="p">,),</span>
+        <span class="p">{</span>
+            <span class="c1"># class topmatter</span>
+            <span class="s2">&quot;__doc__&quot;</span><span class="p">:</span> <span class="s2">&quot;class created by type&quot;</span><span class="p">,</span>
+            <span class="c1"># column type annotations</span>
+            <span class="s2">&quot;__annotations__&quot;</span><span class="p">:</span> <span class="n">cls_annotations</span><span class="p">,</span>
+            <span class="c1"># class attributes (i.e. columns)</span>
+            <span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="o">+</span> <span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">user_model</span><span class="o">.</span><span class="n">__tablename__</span> <span class="o">+</span> <span class="s2">&quot;.id&quot;</span><span class="p">)),</span>
+            <span class="s2">&quot;public&quot;</span><span class="p">:</span> <span class="n">mapped_column</span><span class="p">(),</span>
+            <span class="c1"># class methods (inc. relationships)</span>
+            <span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">resource_owner_relationship</span><span class="p">,</span>
+            <span class="s2">&quot;access_control&quot;</span><span class="p">:</span> <span class="nb">classmethod</span><span class="p">(</span><span class="n">access_control</span><span class="p">),</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="bp">cls</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="quickrest.mixins.access_control.BaseUserModel" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>BaseUserModel</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents first">
+
+
+        <p>A basemodel for authenticated users.</p>
+<p>Developers using fine-grained access control should subclass this model and provide a <code>id</code> field.
+This model should be returned by an authentication dependency, that, for example, decode a JWT token and returns the user id.
+There is only one require attribute, which is the user id.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="quickrest.mixins.access_control.BaseUserModel.id">id</span></code></td>
+            <td>
+                  <code>str | int | <span title="uuid.UUID">UUID</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The user id.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>quickrest/mixins/access_control.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">BaseUserModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A basemodel for authenticated users.</span>
+
+<span class="sd">    Developers using fine-grained access control should subclass this model and provide a `id` field.</span>
+<span class="sd">    This model should be returned by an authentication dependency, that, for example, decode a JWT token and returns the user id.</span>
+<span class="sd">    There is only one require attribute, which is the user id.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        id (str | int | UUID): The user id.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">UUID</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="quickrest.mixins.access_control.User" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>User</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents first">
+
+
+        <p>The User mixin that identifies the user model and provides access control for the user resource.</p>
+<p>Provides a classmethod <code>access_control</code> that filters the query to only include resources with the same id as the user.</p>
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>quickrest/mixins/access_control.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">User</span><span class="p">(</span><span class="n">ResourceBaseMeta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The User mixin that identifies the user model and provides access control for the user resource.</span>
+
+<span class="sd">    Provides a classmethod `access_control` that filters the query to only include resources with the same id as the user.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">access_control</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Q</span><span class="p">:</span> <span class="n">Query</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">UserTokenMeta</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Query</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="quickrest.mixins.access_control.make_private" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">make_private</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents first">
+
+        <p>Builds the <code>Private</code> mixin, referencing the defined <code>User</code> class.
+The <code>Private</code> mixin provides a <code>&lt;owner&gt;_id</code> column that references the user that owns the resource.
+Private resources can only be read (or patched, deleted) by the resource owner.
+A classmethod <code>access_control</code> that filters incoming queries to filter <code>&lt;owner&gt;_id</code> to the same id as the requesting user.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+<h3 id="quickrest.mixins.access_control.make_private(user_model)" class="doc doc-heading doc-heading-parameter">                  <code>user_model</code>
+</h3>            </td>
+            <td>
+                  <code><span title="quickrest.mixins.access_control.ResourceBaseMeta">ResourceBaseMeta</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The user model to reference in the mixin.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>type</code></td>            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The Private mixin class.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+            <details class="quote">
+              <summary>Source code in <code>quickrest/mixins/access_control.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">make_private</span><span class="p">(</span><span class="n">user_model</span><span class="p">:</span> <span class="n">DeclarativeBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Builds the `Private` mixin, referencing the defined `User` class.</span>
+<span class="sd">    The `Private` mixin provides a `&lt;owner&gt;_id` column that references the user that owns the resource.</span>
+<span class="sd">    Private resources can only be read (or patched, deleted) by the resource owner.</span>
+<span class="sd">    A classmethod `access_control` that filters incoming queries to filter `&lt;owner&gt;_id` to the same id as the requesting user.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        user_model (ResourceBaseMeta): The user model to reference in the mixin.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        type: The Private mixin class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cls_annotations</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="p">],</span>
+    <span class="p">}</span>
+
+    <span class="nd">@declared_attr</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resource_owner_relationship</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">relationship</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">access_control</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Q</span><span class="p">:</span> <span class="n">Query</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Query</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;_id&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+    <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span>
+        <span class="s2">&quot;Publishable&quot;</span><span class="p">,</span>
+        <span class="p">(</span><span class="nb">object</span><span class="p">,),</span>
+        <span class="p">{</span>
+            <span class="c1"># class topmatter</span>
+            <span class="s2">&quot;__doc__&quot;</span><span class="p">:</span> <span class="s2">&quot;class created by type&quot;</span><span class="p">,</span>
+            <span class="c1"># column type annotations</span>
+            <span class="s2">&quot;__annotations__&quot;</span><span class="p">:</span> <span class="n">cls_annotations</span><span class="p">,</span>
+            <span class="c1"># class attributes (i.e. columns)</span>
+            <span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="o">+</span> <span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">user_model</span><span class="o">.</span><span class="n">__tablename__</span> <span class="o">+</span> <span class="s2">&quot;.id&quot;</span><span class="p">)),</span>
+            <span class="c1"># class methods (inc. relationships)</span>
+            <span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">resource_owner_relationship</span><span class="p">,</span>
+            <span class="s2">&quot;access_control&quot;</span><span class="p">:</span> <span class="nb">classmethod</span><span class="p">(</span><span class="n">access_control</span><span class="p">),</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="bp">cls</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="quickrest.mixins.access_control.make_publishable" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">make_publishable</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents first">
+
+        <p>Builds the <code>Publishable</code> mixin, referencing the defined <code>User</code> class.
+The <code>Publishable</code> mixin provides a <code>public (boolean)</code> column that can be used to mark resources as readable by all users,
+and an <code>&lt;owner&gt;_id</code> column that references the user that owns the resource.
+Public resources can still be protected at the route-level, and remain only editable by the resource owner.
+A classmethod <code>access_control</code> that filters incoming queries to include only resources with the same <code>&lt;owner&gt;_id</code> as the requesting user or resources marked as public.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+<h3 id="quickrest.mixins.access_control.make_publishable(user_model)" class="doc doc-heading doc-heading-parameter">                  <code>user_model</code>
+</h3>            </td>
+            <td>
+                  <code><span title="quickrest.mixins.access_control.ResourceBaseMeta">ResourceBaseMeta</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The user model to reference in the mixin.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>type</code></td>            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The Publishable mixin class.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+            <details class="quote">
+              <summary>Source code in <code>quickrest/mixins/access_control.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">make_publishable</span><span class="p">(</span><span class="n">user_model</span><span class="p">:</span> <span class="n">ResourceBaseMeta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Builds the `Publishable` mixin, referencing the defined `User` class.</span>
+<span class="sd">    The `Publishable` mixin provides a `public (boolean)` column that can be used to mark resources as readable by all users,</span>
+<span class="sd">    and an `&lt;owner&gt;_id` column that references the user that owns the resource.</span>
+<span class="sd">    Public resources can still be protected at the route-level, and remain only editable by the resource owner.</span>
+<span class="sd">    A classmethod `access_control` that filters incoming queries to include only resources with the same `&lt;owner&gt;_id` as the requesting user or resources marked as public.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        user_model (ResourceBaseMeta): The user model to reference in the mixin.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        type: The Publishable mixin class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cls_annotations</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="p">],</span>
+        <span class="s2">&quot;public&quot;</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span>
+    <span class="p">}</span>
+
+    <span class="nd">@declared_attr</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resource_owner_relationship</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">relationship</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">access_control</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Q</span><span class="p">:</span> <span class="n">Query</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Query</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+            <span class="n">or_</span><span class="p">(</span>
+                <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;_id&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+                <span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">public</span> <span class="o">==</span> <span class="kc">True</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span>
+        <span class="s2">&quot;Publishable&quot;</span><span class="p">,</span>
+        <span class="p">(</span><span class="nb">object</span><span class="p">,),</span>
+        <span class="p">{</span>
+            <span class="c1"># class topmatter</span>
+            <span class="s2">&quot;__doc__&quot;</span><span class="p">:</span> <span class="s2">&quot;class created by type&quot;</span><span class="p">,</span>
+            <span class="c1"># column type annotations</span>
+            <span class="s2">&quot;__annotations__&quot;</span><span class="p">:</span> <span class="n">cls_annotations</span><span class="p">,</span>
+            <span class="c1"># class attributes (i.e. columns)</span>
+            <span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="o">+</span> <span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">user_model</span><span class="o">.</span><span class="n">__tablename__</span> <span class="o">+</span> <span class="s2">&quot;.id&quot;</span><span class="p">)),</span>
+            <span class="s2">&quot;public&quot;</span><span class="p">:</span> <span class="n">mapped_column</span><span class="p">(),</span>
+            <span class="c1"># class methods (inc. relationships)</span>
+            <span class="n">user_model</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">resource_owner_relationship</span><span class="p">,</span>
+            <span class="s2">&quot;access_control&quot;</span><span class="p">:</span> <span class="nb">classmethod</span><span class="p">(</span><span class="n">access_control</span><span class="p">),</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="bp">cls</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  </body>
+</html>
