@@ -56,7 +56,7 @@ QuickRest is not an abstraction of FastAPI and/or SQLAlchemy, the full utility o
 
 QuickRest is available via the python package index (PyPi). It can be installed with simply:
 
-    pip install quickrest
+    pip install fastapi-quickrest
 
 ## Useage
 
